@@ -1,4 +1,5 @@
 import 'package:chefconnect/myposts.dart';
+import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/profile1.dart';
 import 'package:chefconnect/setings.dart';
 import 'package:chefconnect/signout';
@@ -269,29 +270,6 @@ class _TopPortion extends StatelessWidget {
   }
 }
 
-class CustomBottomNavigationBar extends StatelessWidget {
-  const CustomBottomNavigationBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      backgroundColor: Colors.white,
-      buttonBackgroundColor: Colors.green,
-      color: Colors.green,
-      animationDuration: Duration(milliseconds: 300),
-      items: const <Widget>[
-        Icon(Icons.home, size: 26, color: Colors.white),
-        Icon(Icons.message, size: 26, color: Colors.white),
-        Icon(Icons.add, size: 26, color        : Colors.white),
-        Icon(Icons.notifications, size: 26, color: Colors.white),
-        Icon(Icons.person, size: 26, color: Colors.white),
-      ],
-      onTap: (index) {
-        // Handle button tap
-      },
-    );
-  }
-}
 
 class FeedItem {
   final User user;

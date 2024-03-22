@@ -3,22 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cooking App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: NewPostPage(),
-    );
-  }
-}
+
+
+
 
 class NewPostPage extends StatefulWidget {
   @override

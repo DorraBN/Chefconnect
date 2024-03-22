@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login.dart'; // Importez la page de connexion
 
 class SignOutPage extends StatelessWidget {
   @override
@@ -19,10 +20,11 @@ class SignOutPage extends StatelessWidget {
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Add logic to sign out the user here
-                // For example, you can clear any saved authentication tokens or navigate to the login screen
-                // After signing out, navigate back to the login screen
-                Navigator.pop(context);
+                // Naviguer vers la page de connexion
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               child: Text('Sign Out'),
             ),

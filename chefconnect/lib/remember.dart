@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:concentric_transition/concentric_transition.dart';
 
-
 final pages = <PageData>[
   const PageData(
-    icon:Icons.lock,
+    icon: Icons.lock,
     title: "Forgot password?",
     text: "Don't worry! it happens. Please enter your email or phone",
     bgColor: Color.fromARGB(255, 23, 144, 47),
@@ -18,7 +17,7 @@ final pages = <PageData>[
     text: "Enter the code received",
   ),
   const PageData(
-    icon: Icons.check, // Utilisation de l'icône existante pour la réinitialisation du mot de passe
+    icon: Icons.check,
     title: "Reset Password",
     bgColor: Color(0xffffffff),
     textColor: Color.fromARGB(255, 23, 144, 47),
@@ -35,7 +34,7 @@ class RememberPage extends StatelessWidget {
         colors: pages.map((p) => p.bgColor).toList(),
         radius: screenWidth * 0.1,
         nextButtonBuilder: (context) => Padding(
-          padding: const EdgeInsets.only(left: 3), // visual center
+          padding: const EdgeInsets.only(left: 3),
           child: Icon(
             Icons.navigate_next,
             size: screenWidth * 0.08,
@@ -105,20 +104,20 @@ class _Page extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        if (page.text != null)
-          _buildTextField(page, screenWidth, context),
+        if (page.text != null) _buildTextField(page, screenWidth, context),
       ],
     );
   }
 
-  Widget _buildTextField(PageData page, double screenWidth, BuildContext context) {
+  Widget _buildTextField(
+      PageData page, double screenWidth, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         children: [
           SizedBox(height: 30.0),
           Text(
-            page.text!, // Affichage du texte
+            page.text!,
             style: TextStyle(
               color: page.textColor,
               fontSize: 14.0,
@@ -148,24 +147,15 @@ class _Page extends StatelessWidget {
             Column(
               children: [
                 SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter the code',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    hintText: 'Enter the code',
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.13),
-                    prefixIcon: Icon(Icons.lock),
-                  ),
-                  obscureText: true,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(4, (index) => _buildCodeSquare()),
                 ),
                 SizedBox(height: 15.0),
                 GestureDetector(
                   onTap: () {
-                    // Navigation vers la première page (Forgot password?)
-                    Navigator.of(context).popUntil((route) => route.settings.name == '/');
+                    Navigator.of(context)
+                        .popUntil((route) => route.settings.name == '/');
                   },
                   child: Text(
                     "No code received?",
@@ -211,19 +201,43 @@ class _Page extends StatelessWidget {
                   obscureText: true,
                 ),
                 SizedBox(height: 20.0),
-                GestureDetector(
-                  onTap: () {
-                    // Navigation vers la page de connexion
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Icon(
-                    Icons.navigate_next,
-                    size: screenWidth * 0.08,
+                if (pageIndex == 2) // Vérifiez si c'est la troisième page
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: Icon(
+                      Icons.navigate_next,
+                      size: screenWidth * 0.08,
+                    ),
                   ),
-                ),
               ],
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCodeSquare() {
+    return Container(
+      width: 30,
+      height: 30,
+      margin: EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      alignment: Alignment.center,
+      child: TextField(
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        keyboardType: TextInputType.number,
+        style: TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          counterText: '',
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide.none),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide.none),
+        ),
       ),
     );
   }
