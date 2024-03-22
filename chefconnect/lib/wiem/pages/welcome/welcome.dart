@@ -1,45 +1,60 @@
+import 'package:chefconnect/register.dart';
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key});
+  const WelcomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: OnboardingPagePresenter(pages: [
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('../../assets/bg1.png'),
-          image: "assets/pngegg1.png",
-          title: "Welcome to ChefConnect!",
-          description:
-              "The ultimate social media platform for food enthusiasts and culinary adventurers.",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('../../assets/bg2.png'),
-          title: 'Discover Recipes.',
-          description:
-              'Explore an extensive collection of recipes spanning various cuisines, dietary preferences, and cooking levels.',
-          image: "assets/9.png",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('../../assets/bg3.png'),
-          title: 'Share Creations',
-          description:
-              'Share your culinary masterpieces with the community through photos, videos, and detailed recipe descriptions.',
-          image: 'assets/share.png',
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('../../assets/bg4.png'),
-          title: 'Connect with Others',
-          description:
-              'Follow your favorite cooks, engage in discussions, and exchange cooking tips and tricks with like-minded individuals.',
-          image: 'assets/6.png',
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-      ]),
+      body: OnboardingPagePresenter(
+        pages: [
+          OnboardingPageModel(
+            backgroundImage: const AssetImage('../../assets/bg1.png'),
+            image: "assets/pngegg1.png",
+            title: "Welcome to ChefConnect!",
+            description:
+                "The ultimate social media platform for food enthusiasts and culinary adventurers.",
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+          ),
+          OnboardingPageModel(
+            backgroundImage: const AssetImage('../../assets/bg2.png'),
+            title: 'Discover Recipes.',
+            description:
+                'Explore an extensive collection of recipes spanning various cuisines, dietary preferences, and cooking levels.',
+            image: "assets/9.png",
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+          ),
+          OnboardingPageModel(
+            backgroundImage: const AssetImage('../../assets/bg3.png'),
+            title: 'Share Creations',
+            description:
+                'Share your culinary masterpieces with the community through photos, videos, and detailed recipe descriptions.',
+            image: 'assets/share.png',
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+          ),
+          OnboardingPageModel(
+            backgroundImage: const AssetImage('../../assets/bg4.png'),
+            title: 'Connect with Others',
+            description:
+                'Follow your favorite cooks, engage in discussions, and exchange cooking tips and tricks with like-minded individuals.',
+            image: 'assets/6.png',
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+          ),
+        ],
+        onSkip: () {
+          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Register()),
+                          );
+        },
+        onFinish: () {
+        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Register()),
+                          );
+        },
+      ),
     );
   }
 }
@@ -50,20 +65,18 @@ class OnboardingPagePresenter extends StatefulWidget {
   final VoidCallback? onFinish;
 
   const OnboardingPagePresenter({
-    super.key,
+    Key? key,
     required this.pages,
     this.onSkip,
     this.onFinish,
-  });
+  }) : super(key: key);
 
   @override
   State<OnboardingPagePresenter> createState() => _OnboardingPageState();
 }
 
 class _OnboardingPageState extends State<OnboardingPagePresenter> {
-  // Store the currently visible page
   int _currentPage = 0;
-  // Define a controller for the pageview
   final PageController _pageController = PageController(initialPage: 0);
 
   @override
@@ -75,12 +88,10 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
           child: Column(
             children: [
               Expanded(
-                // Pageview to render each page
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: widget.pages.length,
                   onPageChanged: (idx) {
-                    // Change current page when pageview changes
                     setState(() {
                       _currentPage = idx;
                     });
@@ -115,7 +126,7 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                                     item.title,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headline6
                                         ?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: item.textColor,
@@ -130,7 +141,7 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyLarge
+                                        .bodyText1
                                         ?.copyWith(
                                           color: item.textColor,
                                         ),
@@ -145,8 +156,6 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                   },
                 ),
               ),
-              
-              // Current page indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: widget.pages.map((item) => AnimatedContainer(
@@ -160,31 +169,16 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                   ),
                 )).toList(),
               ),
-              // Bottom buttons
               SizedBox(
                 height: 100,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.comfortable,
-                        foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                        textStyle: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () {
-                        widget.onSkip?.call();
-                      },
+                      onPressed: widget.onSkip,
                       child: const Text("Skip"),
                     ),
                     TextButton(
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.comfortable,
-                        foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                        textStyle: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
                       onPressed: () {
                         if (_currentPage == widget.pages.length - 1) {
                           widget.onFinish?.call();
@@ -238,5 +232,3 @@ class OnboardingPageModel {
     this.textColor = const Color.fromARGB(255, 0, 0, 0),
   });
 }
-
-
