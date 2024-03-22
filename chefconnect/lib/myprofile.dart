@@ -1,10 +1,10 @@
 import 'package:chefconnect/myposts.dart';
 import 'package:chefconnect/navigation.dart';
-import 'package:chefconnect/profile1.dart';
+
 import 'package:chefconnect/setings.dart';
-import 'package:chefconnect/signout';
+
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 
 class ProfilePage1 extends StatelessWidget {
   const ProfilePage1({Key? key}) : super(key: key);

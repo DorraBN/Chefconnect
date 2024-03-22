@@ -1,6 +1,7 @@
 
+import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/models/food.dart';
+
 
 class FavoritePostScreen extends StatefulWidget {
   const FavoritePostScreen({super.key});

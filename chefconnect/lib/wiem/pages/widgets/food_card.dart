@@ -1,7 +1,8 @@
 
+import 'package:chefconnect/wiem/pages/models/food.dart';
+import 'package:chefconnect/wiem/pages/screens/recipe_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/models/food.dart';
-import 'package:flutter_application_pfa/pages/screens/recipe_screen.dart';
+
 
 class FoodCard extends StatelessWidget {
   final Food food;

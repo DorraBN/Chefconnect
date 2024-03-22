@@ -1,6 +1,7 @@
+import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/models/food.dart';
+
 class RecipeScreen extends StatefulWidget {
   final Food food;
   const RecipeScreen({super.key, required this.food});

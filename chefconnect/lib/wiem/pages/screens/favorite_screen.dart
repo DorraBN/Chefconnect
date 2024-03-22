@@ -1,6 +1,7 @@
+import 'package:chefconnect/wiem/pages/widgets/favorite_api_recipes.dart';
+import 'package:chefconnect/wiem/pages/widgets/favorite_post_recipes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/widgets/favorite_api_recipes.dart';
-import 'package:flutter_application_pfa/pages/widgets/favorite_post_recipes.dart';
+
 
 class FavoriteRecipesScreen extends StatefulWidget {
   const FavoriteRecipesScreen({Key? key}) : super(key: key);

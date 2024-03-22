@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:chefconnect/myprofile.dart';
+
 import 'package:chefconnect/profile.dart';
-import 'package:chefconnect/profile1.dart'; // Importez la page ProfilePage2
+// Importez la page ProfilePage2
 
 class HeroListPage extends StatelessWidget {
   const HeroListPage({Key? key}) : super(key: key);

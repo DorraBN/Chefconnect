@@ -1,4 +1,7 @@
+import 'package:chefconnect/login.dart';
 import 'package:flutter/material.dart';
+import 'package:chefconnect/login.dart';
+ // Assurez-vous d'importer la page de connexion
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -7,38 +10,7 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: OnboardingPagePresenter(pages: [
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('assets/bg1.png'),
-          image: "assets/pngegg1.png",
-          title: "Welcome to ChefConnect!",
-          description:
-              "The ultimate social media platform for food enthusiasts and culinary adventurers.",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('assets/bg2.png'),
-          title: 'Discover Recipes.',
-          description:
-              'Explore an extensive collection of recipes spanning various cuisines, dietary preferences, and cooking levels.',
-          image: "assets/9.png",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('assets/bg3.png'),
-          title: 'Share Creations',
-          description:
-              'Share your culinary masterpieces with the community through photos, videos, and detailed recipe descriptions.',
-          image: 'assets/share.png',
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
-        OnboardingPageModel(
-          backgroundImage: const AssetImage('assets/bg4.png'),
-          title: 'Connect with Others',
-          description:
-              'Follow your favorite cooks, engage in discussions, and exchange cooking tips and tricks with like-minded individuals.',
-          image: 'assets/6.png',
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-        ),
+        // Vos pages onboarding actuelles ici...
       ]),
     );
   }
@@ -61,9 +33,7 @@ class OnboardingPagePresenter extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPagePresenter> {
-  // Store the currently visible page
   int _currentPage = 0;
-  // Define a controller for the pageview
   final PageController _pageController = PageController(initialPage: 0);
 
   @override
@@ -75,12 +45,10 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
           child: Column(
             children: [
               Expanded(
-                // Pageview to render each page
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: widget.pages.length,
                   onPageChanged: (idx) {
-                    // Change current page when pageview changes
                     setState(() {
                       _currentPage = idx;
                     });
@@ -146,7 +114,6 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                 ),
               ),
               
-              // Current page indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: widget.pages.map((item) => AnimatedContainer(
@@ -160,7 +127,6 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                   ),
                 )).toList(),
               ),
-              // Bottom buttons
               SizedBox(
                 height: 100,
                 child: Row(
@@ -187,7 +153,11 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                       ),
                       onPressed: () {
                         if (_currentPage == widget.pages.length - 1) {
-                          widget.onFinish?.call();
+                          // Si c'est la dernière page, rediriger vers la page de connexion
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
                         } else {
                           _pageController.animateToPage(
                             _currentPage + 1,
@@ -238,5 +208,3 @@ class OnboardingPageModel {
     this.textColor = const Color.fromARGB(255, 0, 0, 0),
   });
 }
-
-

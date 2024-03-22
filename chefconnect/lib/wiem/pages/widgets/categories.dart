@@ -1,5 +1,6 @@
+import 'package:chefconnect/wiem/pages/models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/models/category.dart';
+
 
 class Categories extends StatelessWidget {
   const Categories({

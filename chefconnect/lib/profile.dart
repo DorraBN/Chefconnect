@@ -1,7 +1,7 @@
 import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/profile1.dart';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 
 
 class ProfilePage2 extends StatelessWidget {

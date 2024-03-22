@@ -2,7 +2,7 @@ import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:flutter/material.dart';
 import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
-import 'profile.dart'; // Importez la classe ProfilePage1 depuis le fichier profile.dart
+ // Importez la classe ProfilePage1 depuis le fichier profile.dart
 
 void main() {
   runApp(MaterialApp(

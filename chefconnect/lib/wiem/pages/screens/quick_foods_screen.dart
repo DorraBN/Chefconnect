@@ -1,7 +1,7 @@
+import 'package:chefconnect/wiem/pages/models/food.dart';
+import 'package:chefconnect/wiem/pages/widgets/food_card.dart';
+import 'package:chefconnect/wiem/pages/widgets/quick_screen_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/models/food.dart';
-import 'package:flutter_application_pfa/pages/widgets/food_card.dart';
-import 'package:flutter_application_pfa/pages/widgets/quick_screen_appbar.dart';
 
 
 class QuickFoodsScreen extends StatefulWidget {

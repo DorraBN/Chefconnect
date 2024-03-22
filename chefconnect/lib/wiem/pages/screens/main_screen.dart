@@ -1,7 +1,8 @@
+import 'package:chefconnect/wiem/pages/screens/favorite_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_pfa/pages/screens/favorite_screen.dart';
-import 'package:flutter_application_pfa/pages/screens/home_screen.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

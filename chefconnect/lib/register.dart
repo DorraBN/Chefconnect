@@ -1,4 +1,3 @@
-import 'package:chefconnect/success.dart';
 import 'package:flutter/material.dart';
 import 'login.dart'; // Importez la page de connexion
 
@@ -300,46 +299,40 @@ TextFormField(
                             Text('Female', style: TextStyle(fontSize: 14, color: Colors.black)),
                           ],
                         ),
-SizedBox(height: 16.0),
-GestureDetector(
-  onTap: () {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _registerButtonClicked = true;
-      });
-      // Naviguer vers la page de succès après l'inscription
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Processing registration...'),
-        ),
-      );
-    }
-  },
-  child: Container(
-    margin: EdgeInsets.symmetric(horizontal: 20.0),
-    height: 50,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: _registerButtonClicked ? Colors.orange : Colors.green,
-    ),
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    child: Center(
-      child: Text(
-        'Register',
-        style: TextStyle(
-          color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ),
-),
-
+                        SizedBox(height: 16.0),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _registerButtonClicked = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Processing registration...'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _registerButtonClicked ? Colors.orange : Colors.green,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: Text(
+                                'Register',
+                                style: TextStyle(
+                                  color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {

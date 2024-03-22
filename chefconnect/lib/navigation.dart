@@ -3,7 +3,7 @@ import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/newpost.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:chefconnect/profile.dart'; // Importer la page de profil
+ // Importer la page de profil
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({Key? key}) : super(key: key);
