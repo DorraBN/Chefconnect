@@ -1,10 +1,8 @@
-import 'package:chefconnect/login.dart';
 import 'package:flutter/material.dart';
-import 'package:chefconnect/login.dart';
- // Assurez-vous d'importer la page de connexion
+import 'package:chefconnect/register.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key});
+  const WelcomePage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +20,11 @@ class OnboardingPagePresenter extends StatefulWidget {
   final VoidCallback? onFinish;
 
   const OnboardingPagePresenter({
-    super.key,
+    Key? key,
     required this.pages,
     this.onSkip,
     this.onFinish,
-  });
+  }) : super(key: key);
 
   @override
   State<OnboardingPagePresenter> createState() => _OnboardingPageState();
@@ -153,10 +151,10 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                       ),
                       onPressed: () {
                         if (_currentPage == widget.pages.length - 1) {
-                          // Si c'est la dernière page, rediriger vers la page de connexion
+                          // Si c'est la dernière page, rediriger vers la page d'enregistrement
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
+                            MaterialPageRoute(builder: (context) => Register()),
                           );
                         } else {
                           _pageController.animateToPage(

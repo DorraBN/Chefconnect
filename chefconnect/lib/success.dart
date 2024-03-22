@@ -1,4 +1,12 @@
+import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:flutter/material.dart';
+import 'package:concentric_transition/concentric_transition.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: RegistrationSuccessPage(),
+  ));
+}
 
 class RegistrationSuccessPage extends StatelessWidget {
   @override
@@ -53,32 +61,28 @@ class RegistrationSuccessPage extends StatelessWidget {
             ],
           ),
           // Next Button
-         Positioned(
-  bottom: 20,
-  right: 20,
-  child: ElevatedButton.icon(
-    onPressed: () {
-      // Handle next action
-    },
-    
-    label: Text(
-      'Next',
-      style: TextStyle(fontSize: 18),
-    ),icon: Icon(Icons.arrow_forward),
-    style: ElevatedButton.styleFrom(
-      primary: Colors.green,
-    ),
-  ),
-),
-
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ConcentricAnimationOnboarding()),
+                );
+              },
+              label: Text(
+                'Next',
+                style: TextStyle(fontSize: 18),
+              ),
+              icon: Icon(Icons.arrow_forward),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: RegistrationSuccessPage(),
-  ));
 }

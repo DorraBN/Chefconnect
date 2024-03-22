@@ -1,5 +1,6 @@
 import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/remember.dart';
+import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
  // Importez la classe ProfilePage1 depuis le fichier profile.dart
@@ -185,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Add login logic here
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ProfilePage1()),
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
                           );
                         },
                         child: Text(

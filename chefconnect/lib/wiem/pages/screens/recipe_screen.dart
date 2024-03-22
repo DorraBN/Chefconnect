@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class RecipeScreen extends StatefulWidget {
   final Food food;
-  const RecipeScreen({super.key, required this.food});
+  const RecipeScreen({Key? key, required this.food}) : super(key: key);
 
   @override
   State<RecipeScreen> createState() => _RecipeScreenState();
@@ -17,42 +17,25 @@ class _RecipeScreenState extends State<RecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(10),
-        child: Row(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            
-            const SizedBox(width: 10),
-            Expanded(
-              child: IconButton(
-                onPressed: () {},
-                style: IconButton.styleFrom(
-                  shape: CircleBorder(
-                    side: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                icon: Icon(
-                  widget.food.isLiked ? Icons.favorite : Icons.favorite ,
-                  color: widget.food.isLiked ? Colors.red : Colors.black,
-                  size: 20,
-                ),
-              ),
+            Text('Details'),
+            IconButton(
+              icon: Icon(Icons.details),
+              onPressed: () {
+                // Add logic to edit profile
+              },
             ),
           ],
         ),
-      ),
-      
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(CupertinoIcons.chevron_back),
-          ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(CupertinoIcons.chevron_back),
         ),
-      
-
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +53,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     ),
                   ),
                 ),
-                
                 Positioned(
                   left: 0,
                   right: 0,
@@ -195,7 +177,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
                         ],
                       ),
                       Spacer(),
-                      
                     ],
                   ),
                   const SizedBox(height: 20),

@@ -16,8 +16,21 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favorite recipes'),
+     appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
+       title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          
+            Text('Favorite recipes'),
+            
+            IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () {
+                // Add logic to edit profile
+              },
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Column(

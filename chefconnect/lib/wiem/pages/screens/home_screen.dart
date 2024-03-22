@@ -1,3 +1,4 @@
+import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/models/posts_data.dart';
 import 'package:chefconnect/wiem/pages/widgets/categories.dart';
@@ -30,8 +31,21 @@ bool isLiked = false; // Initialize liked state for each list item
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Accueil'),
+      appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
+       title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          
+            Text('Home'),
+            
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                // Add logic to edit profile
+              },
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -190,7 +204,7 @@ bool isLiked = false; // Initialize liked state for each list item
             ),
           ),
         ),
-      ),
+      ), bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 }

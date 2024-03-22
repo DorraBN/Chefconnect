@@ -1,3 +1,6 @@
+import 'package:chefconnect/login.dart';
+import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/quick_foods_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:concentric_transition/concentric_transition.dart';
 
@@ -13,10 +16,10 @@ final pages = [
       "Korean", "Greek", "Mexican",
     ],
     responseBackgroundImages: [
-      "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
-      "assets/british.png", "assets/french.png", "assets/chinese.png",
-      "assets/middleeast.png", "assets/irish.png", "assets/german.png",
-      "assets/korean.png", "assets/greek.png", "assets/mexican.png",
+      "../../assets/tunisian.png", "../../assets/italian.png", "../../assets/asian.png",
+      "../../assets/british.png", "../../assets/french.png", "../../assets/chinese.png",
+      "../../assets/middleeast.png", "../../assets/irish.png", "../../assets/german.png",
+      "../../assets/korean.png", "../../assets/greek.png", "../../assets/mexican.png",
     ],
   ),
   const PageData(
@@ -30,10 +33,10 @@ final pages = [
       "Low FODMAP", "Whole30","Flexitarian",
     ],
     responseBackgroundImages: [
-      "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
-      "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
-      "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
-      "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
+      "../../assets/glutenfree.png","../../assets/ketogenic.png","../../assets/vegetarian.png",
+      "../../assets/lactovegetarian.png","../../assets/ovovegetarian.png","../../assets/vegan.png",
+      "../../assets/pescetarian.png","../../assets/paleo.png","../../assets/primal.png",
+      "../../assets/lowfoodmaps.png","../../assets/whole30.png","../../assets/flexitarien.png",
     ],
   ),
   const PageData(
@@ -47,19 +50,18 @@ final pages = [
       "Mustard" , "Lupin" , "Sulfites" ,
     ],
     responseBackgroundImages: [
-      "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
-      "assets/seafood.png", "assets/egg.png", "assets/soy.png",
-      "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
-      "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
+      "../../assets/gluten.png", "../../assets/diary.png", "../../assets/sesame.png",
+      "../../assets/seafood.png", "../../assets/egg.png", "../../assets/soy.png",
+      "../../assets/wheat.png", "../../assets/peanut.png","../../assets/treenuts.png",
+      "../../assets/mustard.png", "../../assets/lupin.png","../../assets/sulfites.png",
     ],
   ),
 ];
 
 class ConcentricAnimationOnboarding extends StatefulWidget {
-  const ConcentricAnimationOnboarding({super.key});
+  const ConcentricAnimationOnboarding({Key? key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ConcentricAnimationOnboardingState createState() => _ConcentricAnimationOnboardingState();
 }
 
@@ -69,34 +71,46 @@ class _ConcentricAnimationOnboardingState extends State<ConcentricAnimationOnboa
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: ConcentricPageView(
-        colors: pages.map((p) => p.bgColor).toList(),
-        nextButtonBuilder: (context) => Padding(
-          padding: const EdgeInsets.only(left: 3), // visual center
-          child: ElevatedButton(
-            onPressed: isCardSelected ? () {} : null,
-            child: Icon(
-              Icons.navigate_next,
-              size: screenWidth * 0.08,
-            ),
-          ),
+return Scaffold(
+  body: ConcentricPageView(
+    colors: pages.map((p) => p.bgColor).toList(),
+    nextButtonBuilder: (context) => Padding(
+      padding: const EdgeInsets.only(left: 3), // visual center
+      child: ElevatedButton(
+        onPressed: isCardSelected ? () {} : null,
+        child: Icon(
+          Icons.navigate_next,
+          size: screenWidth * 0.08,
         ),
-        itemBuilder: (index) {
-          final page = pages[index % pages.length];
-          return SafeArea(
-            child: _Page(
-              page: page,
-              onCardSelected: () {
-                setState(() {
-                  isCardSelected = true;
-                });
-              },
-            ),
-          );
-        },
       ),
-    );
+    ),
+    itemBuilder: (index) {
+      final page = pages[index % pages.length];
+      return SafeArea(
+        child: _Page(
+          page: page,
+          onCardSelected: () {
+            setState(() {
+              isCardSelected = true;
+            });
+          },
+        ),
+      );
+    },
+  ),
+  floatingActionButton: FloatingActionButton.extended(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>LoginPage()),
+      );
+    },
+    backgroundColor: Colors.green,
+    icon: Icon(Icons.navigate_next),
+    label: Text('Skip'),
+  ),
+  floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+);
   }
 }
 
@@ -172,6 +186,9 @@ class _Page extends StatelessWidget {
     );
   }
 }
+
+
+
 
 class _ResponseCard extends StatefulWidget {
   final String response;

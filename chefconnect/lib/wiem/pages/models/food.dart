@@ -21,7 +21,7 @@ class Food {
 final List<Food> foods = [
   Food(
     name: "Spicy Ramen Noodles",
-    image: "assets/french.png",
+    image: "../../assets/french.png",
     cal: 120,
     time: 15,
     rate: 4.4,
@@ -30,7 +30,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Beef Steak",
-    image: "assets/italian.png",
+    image: "../../assets/italian.png",
     cal: 140,
     time: 25,
     rate: 4.4,
@@ -39,7 +39,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Butter Chicken",
-    image: "assets/german.png",
+    image: "../../assets/german.png",
     cal: 130,
     time: 18,
     rate: 4.2,
@@ -48,7 +48,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "French Toast",
-    image: "assets/korean.png",
+    image: "../../assets/korean.png",
     cal: 110,
     time: 16,
     rate: 4.6,
@@ -57,7 +57,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Dumplings",
-    image: "assets/mexican.png",
+    image: "../../assets/mexican.png",
     cal: 150,
     time: 30,
     rate: 4.0,
@@ -66,7 +66,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Mexican Pizza",
-    image: "assets/french.png",
+    image: "../../assets/french.png",
     cal: 140,
     time: 25,
     rate: 4.4,
@@ -75,7 +75,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Butter Chicken",
-    image: "assets/german.png",
+    image: "../../assets/german.png",
     cal: 130,
     time: 18,
     rate: 4.2,
@@ -84,7 +84,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "French Toast",
-    image: "assets/korean.png",
+    image: "../../assets/korean.png",
     cal: 110,
     time: 16,
     rate: 4.6,
@@ -93,7 +93,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Dumplings",
-    image: "assets/mexican.png",
+    image: "../../assets/mexican.png",
     cal: 150,
     time: 30,
     rate: 4.0,
@@ -102,7 +102,7 @@ final List<Food> foods = [
   ),
   Food(
     name: "Mexican Pizza",
-    image: "assets/french.png",
+    image: "../../assets/french.png",
     cal: 140,
     time: 25,
     rate: 4.4,
