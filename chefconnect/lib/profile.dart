@@ -1,3 +1,4 @@
+import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/profile1.dart';
 import 'package:flutter/material.dart';
@@ -44,14 +45,20 @@ class ProfilePage2 extends StatelessWidget {
                         icon: const Icon(Icons.person_add_alt_1),
                       ),
                       const SizedBox(width: 16.0),
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'message',
-                        elevation: 0,
-                        backgroundColor: const Color.fromARGB(255, 244, 184, 54),
-                        label: const Text("Message"),
-                        icon: const Icon(Icons.message_rounded),
-                      ),
+                     FloatingActionButton.extended(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatScreen()),
+    );
+  },
+  heroTag: 'message',
+  elevation: 0,
+  backgroundColor: const Color.fromARGB(255, 244, 184, 54),
+  label: const Text("Message"),
+  icon: const Icon(Icons.message_rounded),
+),
+
                     ],
                   ),
                   const SizedBox(height: 16),

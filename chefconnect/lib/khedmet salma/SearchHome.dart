@@ -1,12 +1,14 @@
+import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
+import 'package:chefconnect/khedmet%20salma/CustomField.dart';
+import 'package:chefconnect/khedmet%20salma/CustomSlider.dart';
+import 'package:chefconnect/khedmet%20salma/Food.dart';
+import 'package:chefconnect/khedmet%20salma/Post.dart';
+import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
+import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/CustomCategoriesList.dart';
-import 'package:flutter_application_1/CustomField.dart';
-import 'package:flutter_application_1/CustomSlider.dart';
-import 'package:flutter_application_1/Food.dart';
-import 'package:flutter_application_1/Post.dart';
-import 'package:flutter_application_1/RecipeDetails.dart';
-import 'package:flutter_application_1/styles/app_colors.dart';
 import 'package:iconly/iconly.dart';
+
+
 
 import 'CustomButton.dart';
 
@@ -26,11 +28,11 @@ class _SearchHome extends State<SearchHome> {
     Post(
       username: "James Elden",
       caption: "Caption for post 1",
-      imageUrl: "assets/images/pancakes.jpeg",
+      imageUrl: "../../assets/pancakes.jpeg",
       likes: 123,
       comments: 20,
       date: DateTime.now(),
-      userProfileImageUrl: "assets/images/chat777.png",
+      userProfileImageUrl: "../../assets/chat777.png",
     ),
     // Add more posts as needed
   ];
@@ -368,7 +370,7 @@ class _SearchHome extends State<SearchHome> {
                           leading: CircleAvatar(
                             radius: 30,
                             backgroundImage:
-                                AssetImage('assets/images/chat777.png'),
+                                AssetImage('../../assets/chat777.png'),
                           ),
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

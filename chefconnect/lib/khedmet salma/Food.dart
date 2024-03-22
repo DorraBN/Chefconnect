@@ -18,7 +18,7 @@ class Food {
     required this.rate,
     required this.reviews,
     required this.isLiked,
-    required this.intolerances, // Update constructor
+    required this.intolerances,
     required this.description,
     required this.ingredients,
   });
@@ -28,7 +28,7 @@ class FoodList {
   static final List<Food> foods = [
     Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -41,17 +41,17 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/Rectangle 219.png",
-        "4 cups milkr": "assets/images/Rectangle 219.png",
-        "1 tbsp sugar": "assets/images/Rectangle 219.png",
-        "1 tbsp": "assets/images/Rectangle 219.png",
-        "1 tsp": "assets/images/Rectangle 219.png",
-        "1": "assets/images/Rectangle 219.png",
+        "2 cups  olive oil": "../../assets/Rectangle 219.png",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/Rectangle 219.png",
       },
     ),
-     Food(
+    Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -64,17 +64,17 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/Rectangle 219.png",
-        "4 cups milkr": "assets/images/Rectangle 219.png",
-        "1 tbsp sugar": "assets/images/Rectangle 219.png",
-        "1 tbsp": "assets/images/Rectangle 219.png",
-        "1 tsp": "assets/images/rectangle 219.png",
-        "1": "assets/images/rectangle 219.png",
+        "2 cups  olive oil": "../../assets/Rectangle 219.png",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/Rectangle 219.png",
       },
     ),
-     Food(
+    Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -87,17 +87,17 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/rectangle 219.png",
-        "4 cups milkr": "assets/images/rectangle 219.png",
-        "1 tbsp sugar": "assets/images/rectangle 219.png",
-        "1 tbsp": "assets/images/rectangle 219.png",
-        "1 tsp": "assets/images/rectangle 219.png",
-        "1": "assets/images/rectangle 219.png",
+        "2 cups  olive oil": "../../assets/Rectangle 219.png",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/Rectangle 219.png",
       },
     ),
-     Food(
+    Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -110,17 +110,17 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/rectangle 219.png",
-        "4 cups milkr": "assets/images/rectangle 219.png",
-        "1 tbsp sugar": "assets/images/rectangle 219.png",
-        "1 tbsp": "assets/images/rectangle 219.png",
-        "1 tsp": "assets/images/rectangle 219.png",
-        "1": "assets/images/rectangle 219.png",
+        "2 cups  olive oil": "../../assets/Rectangle 219.png",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/Rectangle 219.png",
       },
     ),
-     Food(
+    Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -133,17 +133,17 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/rectangle 219.png",
-        "4 cups milkr": "assets/images/rectangle 219.png",
-        "1 tbsp sugar": "assets/images/rectangle 219.png",
-        "1 tbsp": "assets/images/rectangle 219.png",
-        "1 tsp": "assets/images/rectangle 219.png",
-        "1": "assets/images/rectangle 219.png",
+        "2 cups  olive oil": "../../assets/Rectangle 219.png",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/Rectangle 219.png",
       },
     ),
-   Food(
+    Food(
       name: "Spicy Ramen Noodles",
-      image: "assets/images/food/spicyramen.jpg",
+      image: "../../assets/spicyramen.jpg",
       cal: 120,
       time: 15,
       rate: 4.4,
@@ -156,12 +156,12 @@ class FoodList {
       description:
           "Spicy Ramen is a flavorful and hearty noodle soup that originates from Japan. It's known for its rich broth, chewy noodles, and a variety of toppings.",
       ingredients: {
-        "2 cups  olive oil": "assets/images/rectangle 219.png",
-        "4 cups milkr": "assets/images/rectangle 219.png",
-        "1 tbsp sugar": "assets/images/rectangle 219.png",
-        "1 tbsp": "assets/images/rectangle 219.png",
-        "1 tsp": "assets/images/rectangle 219.png",
-        "1": "assets/images/rectangle 219.png",
+        "2 cups  olive oil": "../../assets/spicyramen.jpg",
+        "4 cups milk": "../../assets/Rectangle 219.png",
+        "1 tbsp sugar": "../../assets/Rectangle 219.png",
+        "1 tbsp": "../../assets/Rectangle 219.png",
+        "1 tsp": "../../assets/Rectangle 219.png",
+        "1": "../../assets/R.jpeg",
       },
     ),
   ];

@@ -67,7 +67,7 @@ class ChatHome extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          Image.asset('assets/images/image1.png').image,
+                          Image.asset('../../assets/image1.png').image,
                     ),
                     SizedBox(
                       height: 10,
@@ -88,7 +88,7 @@ class ChatHome extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          Image.asset('assets/images/image22.png').image,
+                          Image.asset('../../assets/image22.png').image,
                     ),
                     SizedBox(
                       height: 10,
@@ -109,7 +109,7 @@ class ChatHome extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          Image.asset('assets/images/image33.png').image,
+                          Image.asset('../../assets/image33.png').image,
                     ),
                     SizedBox(
                       height: 10,
@@ -130,7 +130,7 @@ class ChatHome extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          Image.asset('assets/images/image44.png').image,
+                          Image.asset('../../assets/image44.png').image,
                     ),
                     SizedBox(
                       height: 10,
@@ -151,7 +151,7 @@ class ChatHome extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          Image.asset('assets/images/image55.png').image,
+                          Image.asset('../../assets/image55.png').image,
                     ),
                     SizedBox(
                       height: 10,
@@ -196,7 +196,7 @@ class ChatHome extends StatelessWidget {
                           CircleAvatar(
                             radius: 30,
                             backgroundImage:
-                                Image.asset('assets/images/chat111.png').image,
+                                Image.asset('../../assets/chat111.png').image,
                           ),
                           SizedBox(
                             width: 10,
@@ -247,7 +247,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat222.png').image,
+                              Image.asset('../../assets/chat222.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -296,7 +296,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat333.png').image,
+                              Image.asset('../../assets/chat333.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -345,7 +345,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat555.png').image,
+                              Image.asset('../../assets/chat555.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -395,7 +395,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat666.png').image,
+                              Image.asset('../../assets/chat666.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -444,7 +444,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat777.png').image,
+                              Image.asset('../../assets/chat777.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -493,7 +493,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat777.png').image,
+                              Image.asset('../../assets/chat777.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -542,7 +542,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat777.png').image,
+                              Image.asset('../../assets/chat777.png').image,
                         ),
                         SizedBox(
                           width: 10,
@@ -591,7 +591,7 @@ class ChatHome extends StatelessWidget {
                         CircleAvatar(
                           radius: 30,
                           backgroundImage:
-                              Image.asset('assets/images/chat777.png').image,
+                              Image.asset('../../assets/chat777.png').image,
                         ),
                         SizedBox(
                           width: 10,

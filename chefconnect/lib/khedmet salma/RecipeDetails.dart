@@ -1,8 +1,9 @@
 import 'dart:ui';
 
+import 'package:chefconnect/khedmet%20salma/Food.dart';
+import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Food.dart';
-import 'package:flutter_application_1/styles/app_colors.dart';
+
 
 class RecipeDetails extends StatelessWidget {
   final Food food;
@@ -181,7 +182,7 @@ class RecipeDetails extends StatelessWidget {
                     Column(
                       children: [
                         Image.asset(
-                          "assets/images/allergies/peanuts.png",
+                          "../../assets/peanuts.png",
                           height: 40,
                         ),
                       ],
@@ -190,7 +191,7 @@ class RecipeDetails extends StatelessWidget {
                     Column(
                       children: [
                         Image.asset(
-                          "assets/images/allergies/nuts.png",
+                          "../../assets/nuts.png",
                           height: 40,
                         ),
                       ],
@@ -383,7 +384,7 @@ Widget ingredientRow(BuildContext context, String ingredientName, String ingredi
                 height: 10,
               ),
               Image.asset(
-                "assets/images/Rectangle 219.png",
+                "../../assets/Rectangle 188.png",
                 height: 155,
                 width: 270,
               )

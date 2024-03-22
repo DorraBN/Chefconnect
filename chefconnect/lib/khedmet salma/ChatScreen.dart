@@ -24,7 +24,7 @@ class ChatScreen extends StatelessWidget {
                   ),
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: Image.asset('assets/images/chat111.png').image,
+                    backgroundImage: Image.asset('../../assets/chat111.png').image,
                   ),
                   const SizedBox(width: 15,),
                   const Text('Danny Hopkins',style: TextStyle(

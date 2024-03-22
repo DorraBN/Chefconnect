@@ -1,6 +1,8 @@
 import 'package:chefconnect/about.dart';
 import 'package:chefconnect/calendar.dart';
 import 'package:chefconnect/help.dart';
+import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
+import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/notification.dart';
 import 'package:chefconnect/signout';
 
@@ -16,6 +18,7 @@ class SettingsPage2 extends StatefulWidget {
   @override
   State<SettingsPage2> createState() => _SettingsPage2State();
 }
+
 
 class _SettingsPage2State extends State<SettingsPage2> {
   bool _isDark = false;
@@ -95,6 +98,13 @@ class _SettingsPage2State extends State<SettingsPage2> {
                     _CustomListTile(
                       title: "Messaging",
                       icon: Icons.message_outlined,
+                       onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChatHome()),
+                        );
+                      },
+
                     ),
                     _CustomListTile(
                       title: "Calling",

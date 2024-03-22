@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:chefconnect/khedmet%20salma/SearchHome.dart';
 
 class HomeSearchBar extends StatelessWidget {
   const HomeSearchBar({
@@ -17,9 +18,17 @@ class HomeSearchBar extends StatelessWidget {
         horizontal: 20,
         vertical: 5,
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.search),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchHome()),
+              );
+            },
+            child: Icon(Icons.search),
+          ),
           SizedBox(width: 10),
           Expanded(
             child: TextField(

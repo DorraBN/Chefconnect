@@ -1,3 +1,4 @@
+import 'package:chefconnect/login.dart';
 import 'package:chefconnect/register.dart';
 import 'package:flutter/material.dart';
 
@@ -45,13 +46,13 @@ class WelcomePage extends StatelessWidget {
         onSkip: () {
           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Register()),
+                            MaterialPageRoute(builder: (context) => LoginPage()),
                           );
         },
         onFinish: () {
         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Register()),
+                            MaterialPageRoute(builder: (context) => LoginPage()),
                           );
         },
       ),

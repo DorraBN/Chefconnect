@@ -1,10 +1,12 @@
+import 'package:chefconnect/khedmet%20salma/CustomButton.dart';
+import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
+import 'package:chefconnect/khedmet%20salma/CustomField.dart';
+import 'package:chefconnect/khedmet%20salma/CustomSlider.dart';
+import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/CustomButton.dart';
-import 'package:flutter_application_1/CustomCategoriesList.dart';
-import 'package:flutter_application_1/CustomField.dart';
-import 'package:flutter_application_1/CustomSlider.dart';
-import 'package:flutter_application_1/styles/app_colors.dart';
 import 'package:iconly/iconly.dart';
+
+
 
 
 class SearchPage extends StatefulWidget {

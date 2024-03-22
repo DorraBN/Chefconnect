@@ -37,7 +37,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   table_calendar: ^3.1.0
   concentric_transition: ^1.0.3
-  iconly:
+  iconly: ^1.0.0
   pin_code_fields:
   dotted_border:
 dev_dependencies:

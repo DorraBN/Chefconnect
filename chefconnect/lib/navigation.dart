@@ -1,9 +1,13 @@
-import 'package:chefconnect/main.dart';
-import 'package:chefconnect/myprofile.dart';
-import 'package:chefconnect/newpost.dart';
+import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
+import 'package:chefconnect/wiem/pages/widgets/favorite_api_recipes.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
- // Importer la page de profil
+
+
+import 'myprofile.dart';
+import 'newpost.dart';
+import 'wiem/pages/screens/home_screen.dart';
+import 'wiem/pages/widgets/favorite_post_recipes.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({Key? key}) : super(key: key);
@@ -15,7 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       buttonBackgroundColor: Colors.green,
       color: Colors.green,
       animationDuration: Duration(milliseconds: 300),
-      animationCurve: Curves.easeInOut, // Ajouter une animation
+      animationCurve: Curves.easeInOut,
       items: const <Widget>[
         Icon(Icons.home, size: 26, color: Colors.white),
         Icon(Icons.message, size: 26, color: Colors.white),
@@ -25,26 +29,36 @@ class CustomBottomNavigationBar extends StatelessWidget {
         Icon(Icons.person, size: 26, color: Colors.white),
       ],
       onTap: (index) {
-        // Vérifier si l'icône de profil est cliquée (index 5)
-        if (index == 5) {
-          // Naviguer vers la page de profil
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage1()),
-          );
-        }
         if (index == 0) {
-          // Naviguer vers la page de profil
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MyApp()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
-        }
-         if (index == 2) {
-          // Naviguer vers la page de profil
+        } else if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatHome()),
+          );
+        } else if (index == 2) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => NewPostPage()),
+          );
+        } else if (index == 3) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FavoriteApiScreen()),
+          );
+        } else if (index == 4) {
+          // Remplacez NewPostPage() par la page de notification souhaitée
+          // Exemple: Navigator.push(
+          //            context,
+          //            MaterialPageRoute(builder: (context) => NotificationPage()),
+          //          );
+        } else if (index == 5) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage1()),
           );
         }
       },
