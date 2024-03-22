@@ -1,4 +1,3 @@
-import 'package:chefconnect/success.dart';
 import 'package:flutter/material.dart';
 import 'login.dart'; // Importez la page de connexion
 
@@ -15,7 +14,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
-   bool _isPasswordVisible1 = false;
 
   final _formKey = GlobalKey<FormState>();
   String _selectedGender = '';
@@ -39,19 +37,16 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       body: Stack(
         children: [
           // Image de fond
-        DecoratedBox(
-  position: DecorationPosition.background,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
-     colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-   
-  ),
-  child: Container(),
-),
-
+          DecoratedBox(
+            position: DecorationPosition.background,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("../assets/R5.png"), // Remplacez "assets/background_image.jpg" par le chemin de votre image
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Container(),
+          ),
           Positioned(
             left: 20,
             bottom: 20,
@@ -253,10 +248,10 @@ TextFormField(
                             prefixIcon: Icon(Icons.lock, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                             suffixIcon: IconButton(
-                              icon: Icon(_isPasswordVisible1 ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
                               onPressed: () {
                                 setState(() {
-                                  _isPasswordVisible1 = !_isPasswordVisible1;
+                                  _isPasswordVisible = !_isPasswordVisible;
                                 });
                               },
                             ),
@@ -300,46 +295,40 @@ TextFormField(
                             Text('Female', style: TextStyle(fontSize: 14, color: Colors.black)),
                           ],
                         ),
-SizedBox(height: 16.0),
-GestureDetector(
-  onTap: () {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _registerButtonClicked = true;
-      });
-      // Naviguer vers la page de succès après l'inscription
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Processing registration...'),
-        ),
-      );
-    }
-  },
-  child: Container(
-    margin: EdgeInsets.symmetric(horizontal: 20.0),
-    height: 50,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: _registerButtonClicked ? Colors.orange : Colors.green,
-    ),
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    child: Center(
-      child: Text(
-        'Register',
-        style: TextStyle(
-          color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ),
-),
-
+                        SizedBox(height: 16.0),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _registerButtonClicked = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Processing registration...'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _registerButtonClicked ? Colors.orange : Colors.green,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: Text(
+                                'Register',
+                                style: TextStyle(
+                                  color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {

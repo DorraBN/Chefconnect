@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+
+class SignOutPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Out'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Are you sure you want to sign out?',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                // Add logic to sign out the user here
+                // For example, you can clear any saved authentication tokens or navigate to the login screen
+                // After signing out, navigate back to the login screen
+                Navigator.pop(context);
+              },
+              child: Text('Sign Out'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: SignOutPage(),
+  ));
+}
