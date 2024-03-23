@@ -1,6 +1,7 @@
-import 'package:chefconnect/success.dart';
 import 'package:flutter/material.dart';
-import 'login.dart'; // Importez la page de connexion
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'success.dart';
+import 'login.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,7 +16,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
-   bool _isPasswordVisible1 = false;
+  bool _isPasswordVisible1 = false;
 
   final _formKey = GlobalKey<FormState>();
   String _selectedGender = '';
@@ -27,11 +28,8 @@ class _RegisterState extends State<Register> {
   TextEditingController _confirmPasswordController = TextEditingController();
   bool _registerButtonClicked = false; // Etat du bouton "Register" 
   // Expression régulière exigeant une longueur minimale de 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
-RegExp passwordPattern = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
-
-
-RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
+  RegExp passwordPattern = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
+  RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +37,17 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       body: Stack(
         children: [
           // Image de fond
-        DecoratedBox(
-  position: DecorationPosition.background,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
-     colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-   
-  ),
-  child: Container(),
-),
+          DecoratedBox(
+            position: DecorationPosition.background,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
+              ),
+            ),
+            child: Container(),
+          ),
 
           Positioned(
             left: 20,
@@ -85,7 +82,7 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           ),
           Positioned.fill(
             child: Container(
-              alignment: Alignment.center, 
+              alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
                 child: Container(
@@ -155,28 +152,25 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _emailController,
-  decoration: InputDecoration(
-    labelText: 'Email',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your email',
-    filled: true,
-    fillColor: _emailController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.email, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-  ),
-  style: TextStyle(color: Colors.black), // form *
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!emailPattern.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your email',
+                            filled: true,
+                            fillColor: _emailController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                          ),
+                          style: TextStyle(color: Colors.black), // form *
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
     return null;
   },
 ),
@@ -312,10 +306,37 @@ GestureDetector(
           content: Text('Processing registration...'),
         ),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-      ); // Redirection vers la page de succès d'inscription
+
+      // Enregistrement des données dans la collection Firestore
+      FirebaseFirestore.instance.collection('registration').add({
+        'username': _usernameController.text,
+        'pseudo': _pseudoController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+        'password': _passwordController.text,
+        'confirm': _confirmPasswordController.text,
+        'gender': _selectedGender,
+      }).then((value) {
+        // Enregistrement réussi
+        print('User registered successfully');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
+        );
+      }).catchError((error) {
+        // Erreur lors de l'enregistrement
+        print('Failed to register user: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to register user'),
+          ),
+        );
+      }).whenComplete(() {
+        // Réinitialisation de l'état du bouton après l'enregistrement
+        setState(() {
+          _registerButtonClicked = false;
+        });
+      });
     }
   },
   child: Container(

@@ -11,9 +11,9 @@ void main() async {
     await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: "your key",
-        appId: "your key",
+        appId: "1:54968741572:android:02d1e53c680040c7ece391",
         messagingSenderId: "your key",
-        projectId: "your key",
+        projectId: "chefconnect-2ac02",
       ),
     );
   } else {
