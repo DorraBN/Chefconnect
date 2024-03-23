@@ -7,7 +7,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'myprofile.dart';
 import 'newpost.dart';
 import 'wiem/pages/screens/home_screen.dart';
-import 'wiem/pages/widgets/favorite_post_recipes.dart';
+
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({Key? key}) : super(key: key);

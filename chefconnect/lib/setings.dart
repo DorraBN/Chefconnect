@@ -2,8 +2,7 @@ import 'package:chefconnect/about.dart';
 import 'package:chefconnect/calendar.dart';
 import 'package:chefconnect/help.dart';
 import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
-import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
-import 'package:chefconnect/notification.dart';
+
 import 'package:chefconnect/signout';
 
 import 'package:flutter/material.dart';
@@ -62,12 +61,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                      _CustomListTile(
                       title: "Notifications",
                       icon: Icons.notifications_none_rounded,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => NotificationsPage()),
-                        );
-                      },
+                      
                     ),
                     _CustomListTile(
                       title: "Security Status",

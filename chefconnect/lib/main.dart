@@ -1,27 +1,41 @@
-import 'package:chefconnect/register.dart';
-import 'package:chefconnect/wiem/pages/questions/questions.dart';
-import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
-import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // Importez kIsWeb pour détecter si l'application est web
 
+import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    // Initialisation de Firebase pour les applications web
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "your key",
+        appId: "your key",
+        messagingSenderId: "your key",
+        projectId: "your key",
+      ),
+    );
+  } else {
+    // Initialisation de Firebase pour les applications non web
+    await Firebase.initializeApp();
+  }
+
+  // Lancez l'application Flutter
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-   home:  WelcomePage(), // Remplacez ceci par une instance de Register
-
-
-     // home: ConcentricAnimationOnboarding() ,
-      //home: MainScreen(),
+      home: WelcomePage(), // Remplacez ceci par une instance de Register
+      // home: ConcentricAnimationOnboarding() ,
+      // home: MainScreen(),
     );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "54968741572",
+    "project_id": "chefconnect-2ac02",
+    "storage_bucket": "chefconnect-2ac02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54968741572:android:02d1e53c680040c7ece391",
+        "android_client_info": {
+          "package_name": "com.example.chefconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDScAg-Rj4X63Sgs8RJCRxgZPsDeIc7fKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
