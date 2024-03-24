@@ -49,8 +49,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true //ena salma
     }
-
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -66,3 +66,4 @@ flutter {
 
 dependencies {}
 apply plugin: 'com.google.gms.google-services'
+

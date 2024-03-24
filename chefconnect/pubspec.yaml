@@ -36,10 +36,11 @@ dependencies:
 
   firebase_core: ^2.24.2
   cloud_firestore: ^4.14.0
-
+  firebase_auth: ^4.6.3
   curved_navigation_bar: ^1.0.3
   table_calendar: ^3.1.0
   concentric_transition: ^1.0.3
+  google_sign_in: ^6.1.6
   iconly: ^1.0.0
   pin_code_fields:
   dotted_border:

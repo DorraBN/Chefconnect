@@ -10,7 +10,7 @@ void main() async {
     // Initialisation de Firebase pour les applications web
     await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: "your key",
+        apiKey: "AIzaSyDScAg-Rj4X63Sgs8RJCRxgZPsDeIc7fKE",
         appId: "1:54968741572:android:02d1e53c680040c7ece391",
         messagingSenderId: "your key",
         projectId: "chefconnect-2ac02",

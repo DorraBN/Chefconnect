@@ -3,7 +3,7 @@ import 'package:chefconnect/calendar.dart';
 import 'package:chefconnect/help.dart';
 import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
 
-import 'package:chefconnect/signout';
+import 'package:chefconnect/signout.dart';
 
 import 'package:flutter/material.dart';
 import 'people.dart'; // Import the necessary pages

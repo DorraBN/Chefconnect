@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'login.dart'; // Importez la page de connexion
 
@@ -20,6 +21,7 @@ class SignOutPage extends StatelessWidget {
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
+             FirebaseAuth.instance.signOut();
                 // Naviguer vers la page de connexion
                 Navigator.push(
                   context,
