@@ -43,6 +43,7 @@ dependencies:
   iconly: ^1.0.0
   pin_code_fields:
   dotted_border:
+  firebase_storage: ^11.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

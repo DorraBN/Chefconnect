@@ -1,5 +1,5 @@
 import 'package:chefconnect/login.dart';
-import 'package:chefconnect/register.dart';
+
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatelessWidget {

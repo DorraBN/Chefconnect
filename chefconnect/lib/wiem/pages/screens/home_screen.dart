@@ -38,12 +38,7 @@ bool isLiked = false; // Initialize liked state for each list item
           
             Text('Home'),
             
-            IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                // Add logic to edit profile
-              },
-            ),
+            
           ],
         ),
       ),

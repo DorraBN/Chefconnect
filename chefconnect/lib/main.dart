@@ -1,8 +1,8 @@
+import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Importez kIsWeb pour détecter si l'application est web
 
-import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,10 +30,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(), // Remplacez ceci par une instance de Register
+    //  home: ProfilePage(), 
+      home:WelcomePage()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
       // home: MainScreen(),
     );

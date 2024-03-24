@@ -171,10 +171,12 @@ class _RegisterState extends State<Register> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-    return null;
-  },
-),
-
+                            if (!emailPattern.hasMatch(value)) {
+                              return 'Please enter a valid email';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _phoneController,
@@ -197,45 +199,45 @@ class _RegisterState extends State<Register> {
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _passwordController,
-  obscureText: !_isPasswordVisible,
-  decoration: InputDecoration(
-    labelText: 'Password',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your password',
-    filled: true,
-    fillColor: _passwordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.lock, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-    suffixIcon: IconButton(
-      icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-      onPressed: () {
-        setState(() {
-          _isPasswordVisible = !_isPasswordVisible;
-        });
-      },
-    ),
-  ),
-  style: TextStyle(color: Colors.black),
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (!passwordPattern.hasMatch(value)) {
-      return 'Password must contain at least one uppercase and one special character';
-    }
-    return null;
-  },
-),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible
+,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your password',
+                            filled: true,
+                            fillColor: _passwordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                            suffixIcon: IconButton(
+                              icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          style: TextStyle(color: Colors.black),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            if (!passwordPattern.hasMatch(value)) {
+                              return 'Password must contain at least one uppercase and one special character';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _confirmPasswordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible1,
                           decoration: InputDecoration(
                             labelText: 'Confirm Password',
                             border: OutlineInputBorder(
@@ -294,76 +296,68 @@ TextFormField(
                             Text('Female', style: TextStyle(fontSize: 14, color: Colors.black)),
                           ],
                         ),
-                       SizedBox(height: 16.0),
-GestureDetector(
-  onTap: () {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _registerButtonClicked = true;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Processing registration...'),
-        ),
-      );
+                        SizedBox(height: 16.0),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _registerButtonClicked = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Processing registration...'),
+                                ),
+                              );
 
-      // Enregistrement des données dans la collection Firestore
-      FirebaseFirestore.instance.collection('registration').add({
-        'username': _usernameController.text,
-        'pseudo': _pseudoController.text,
-        'email': _emailController.text,
-        'phone': _phoneController.text,
-        'password': _passwordController.text,
-        'confirm': _confirmPasswordController.text,
-        'gender': _selectedGender,
-      }).then((value) {
-        // Enregistrement réussi
-        print('User registered successfully');
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-        );
-      }).catchError((error) {
-        // Erreur lors de l'enregistrement
-        print('Failed to register user: $error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to register user'),
-          ),
-        );
-      }).whenComplete(() {
-        // Réinitialisation de l'état du bouton après l'enregistrement
-        setState(() {
-          _registerButtonClicked = false;
-        });
-      });
-    }
-  },
-  child: Container(
-    margin: EdgeInsets.symmetric(horizontal: 20.0),
-    height: 50,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: _registerButtonClicked ? Colors.orange : Colors.green,
-    ),
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    child: Center(
-      child: Text(
-        'Register',
-        style: TextStyle(
-          color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ),
-),
-
+                              // Enregistrer les données dans Firestore
+                              try {
+                                await FirebaseFirestore.instance.collection('registration').add({
+                                  'username': _usernameController.text,
+                                  'pseudo': _pseudoController.text,
+                                  'email': _emailController.text,
+                                  'phone': _phoneController.text,
+                                  'password': _passwordController.text,
+                                  'gender': _selectedGender,
+                                });
+                                print('User registered successfully');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
+                                );
+                              } catch (error) {
+                                print('Failed to register user: $error');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Failed to register user'),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _registerButtonClicked ? Colors.orange : Colors.green,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: Text(
+                                'Register',
+                                style: TextStyle(
+                                  color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
-                            // Naviguer vers la page de connexion
+                           
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => LoginPage()),
@@ -400,6 +394,3 @@ GestureDetector(
     );
   }
 }
-
-
-
