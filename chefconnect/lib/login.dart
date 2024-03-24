@@ -1,9 +1,11 @@
-
+import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
- // Importez la classe ProfilePage1 depuis le fichier profile.dart
+// Importez la classe ProfilePage1 depuis le fichier profile.dart
 
 void main() {
   runApp(MaterialApp(
@@ -19,28 +21,34 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
-
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           // Image de fond
-         DecoratedBox(
-  position: DecorationPosition.background,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
-      colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-    image: DecorationImage(
-      image: AssetImage("assets/R5.png"), // Chemin de votre image
-      fit: BoxFit.cover,
-    ),
-  ),
-  child: Container(),
-),
+          DecoratedBox(
+            position: DecorationPosition.background,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Color.fromARGB(255, 114, 242, 108),
+                  Color.fromARGB(255, 244, 207, 84)
+                ],
+              ),
+              image: DecorationImage(
+                image: AssetImage("assets/R5.png"), // Chemin de votre image
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Container(),
+          ),
 
           Positioned(
             left: 20,
@@ -54,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.black,
             ),
           ),
-          Center( // Centrer le container verticalement et horizontalement
+          Center(
+            // Centrer le container verticalement et horizontalement
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
@@ -70,9 +79,10 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.restaurant,
-                              size: 30, color: Colors.black), // Icône de restaurant
+                              size: 30,
+                              color: Colors.black), // Icône de restaurant
                           SizedBox(width: 10),
-                          
+
                           Text(
                             'Login In',
                             style: TextStyle(
@@ -86,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 20.0),
                       TextFormField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           border: OutlineInputBorder(
@@ -93,8 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your email',
                           filled: true,
-                          fillColor:
-                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor: Colors.white.withOpacity(
+                              0.13), // background-color: rgba(255,255,255,0.13);
                           prefixIcon: Icon(Icons.email, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                         ),
@@ -109,6 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -117,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your password',
                           filled: true,
-                          fillColor:
-                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor: Colors.white.withOpacity(
+                              0.13), // background-color: rgba(255,255,255,0.13);
                           prefixIcon: Icon(Icons.lock, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           suffixIcon: IconButton(
@@ -167,7 +179,8 @@ class _LoginPageState extends State<LoginPage> {
                               // Navigate to the password reset page (RememberPage)
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => RememberPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => RememberPage()),
                               );
                             },
                             child: Text(
@@ -183,10 +196,13 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(height: 16.0),
                       ElevatedButton(
                         onPressed: () {
+                          print("ena login ");
+                          _signIn();
                           // Add login logic here
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
                           );
                         },
                         child: Text(
@@ -202,16 +218,19 @@ class _LoginPageState extends State<LoginPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 20,
-                          vertical: 25.0), // Espacement interne du bouton
-                    // Taille minimale du bouton
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 25.0), // Espacement interne du bouton
+                          // Taille minimale du bouton
                         ),
                       ),
                       SizedBox(height: 16.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('--or--', style: TextStyle(color: Colors.black, fontSize: 16.0)),
+                          Text('--or--',
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.0)),
                         ],
                       ),
                       SizedBox(height: 16.0),
@@ -224,14 +243,15 @@ class _LoginPageState extends State<LoginPage> {
                             label: Text('Login with Facebook'),
                           ),
                           ElevatedButton.icon(
-                            onPressed: () {},
+                             onPressed: _signInWithGoogle, 
                             icon: Icon(Icons.email),
-  label: Text('Login with Google'),
-  style: ElevatedButton.styleFrom(
-    primary: Colors.red, // Change la couleur du fond du bouton
-    onPrimary: Colors.white, // Change la couleur du texte du bouton
-  ),
- 
+                            label: Text('Login with Google'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors
+                                  .red, // Change la couleur du fond du bouton
+                              onPrimary: Colors
+                                  .white, // Change la couleur du texte du bouton
+                            ),
                           ),
                         ],
                       ),
@@ -240,10 +260,10 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onTap: () {
-                            // Navigate to the registration page (RegisterPage)
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Register()),
+                              MaterialPageRoute(
+                                  builder: (context) => Register()),
                             );
                           },
                           child: Row(
@@ -251,7 +271,8 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Text(
                                 "already have an account? ",
-                                style: TextStyle(fontSize: 12, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
@@ -276,4 +297,49 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      User? user = await _auth.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        print("User was successfully logged In");
+      } else {
+        print("User creation failed: User object is null");
+      }
+    } catch (e) {
+      print("Error occurred during user login: $e");
+    }
+  }
+
+  _signInWithGoogle() async {
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+
+        await _firebaseAuth.signInWithCredential(credential);
+      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          );
+      }
+    } catch (e) {
+      print("some error occured $e");
+    }
+  }
+
 }
