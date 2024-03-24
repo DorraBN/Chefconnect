@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "chefconnect",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "chefconnect (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "chefconnect (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "pubspec_wiem",
+            "cwd": "pubspec_wiem",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "pubspec_wiem (profile mode)",
+            "cwd": "pubspec_wiem",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "pubspec_wiem (release mode)",
+            "cwd": "pubspec_wiem",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

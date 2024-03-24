@@ -387,30 +387,29 @@ class _RegisterState extends State<Register> {
                               });
                             }
                           },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 20.0),
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: _registerButtonClicked
-                                  ? Colors.orange
-                                  : Colors.green,
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                  color: _registerButtonClicked
-                                      ? Colors.white
-                                      : Color(0xFF080710),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                           child: Container(
+    margin: EdgeInsets.symmetric(horizontal: 20.0),
+    height: 50,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: _registerButtonClicked ? Colors.orange : Colors.green,
+    ),
+    padding: EdgeInsets.symmetric(horizontal: 20),
+    child: Center(
+      child: _registerButtonClicked
+          ? CircularProgressIndicator() // Affichage du CircularProgressIndicator lors du chargement
+          : Text(
+              'Register',
+              style: TextStyle(
+                color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+    ),
+  ),
+),
+
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
@@ -465,6 +464,10 @@ class _RegisterState extends State<Register> {
       User? user = await _auth.signUpWithEmailAndPassword(email, password);
       if (user != null) {
         print("User was successfully created");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
+        );
       } else {
         print("User creation failed: User object is null");
       }

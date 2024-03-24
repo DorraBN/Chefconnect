@@ -2,7 +2,7 @@ import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:flutter/material.dart';
 import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
-// Importez la classe ProfilePage1 depuis le fichier profile.dart
+ // Importez la classe ProfilePage1 depuis le fichier profile.dart
 
 void main() {
   runApp(MaterialApp(
@@ -27,10 +27,10 @@ class _LoginPageState extends State<LoginPage> {
           // Image de fond
           DecoratedBox(
             position: DecorationPosition.background,
+            
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
+                image: AssetImage("../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
                 fit: BoxFit.cover,
               ),
             ),
@@ -48,8 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.black,
             ),
           ),
-          Center(
-            // Centrer le container verticalement et horizontalement
+          Center( // Centrer le container verticalement et horizontalement
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
@@ -65,8 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.restaurant,
-                              size: 30,
-                              color: Colors.black), // Icône de restaurant
+                              size: 30, color: Colors.black), // Icône de restaurant
                           SizedBox(width: 10),
                           Text(
                             'Login In',
@@ -88,8 +86,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your email',
                           filled: true,
-                          fillColor: Colors.white.withOpacity(
-                              0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor:
+                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
                           prefixIcon: Icon(Icons.email, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                         ),
@@ -112,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your password',
                           filled: true,
-                          fillColor: Colors.white.withOpacity(
-                              0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor:
+                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
                           prefixIcon: Icon(Icons.lock, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           suffixIcon: IconButton(
@@ -159,12 +157,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                            
                               // Navigate to the password reset page (RememberPage)
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => RememberPage()),
+                                MaterialPageRoute(builder: (context) => RememberPage()),
                               );
                             },
                             child: Text(
@@ -183,8 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Add login logic here
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePage1()),
+                            MaterialPageRoute(builder: (context) => ProfilePage1()),
                           );
                         },
                         child: Text(
@@ -200,19 +195,16 @@ class _LoginPageState extends State<LoginPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 25.0), // Espacement interne du bouton
-                          // Taille minimale du bouton
+                          padding: EdgeInsets.symmetric(horizontal: 20,
+                          vertical: 25.0), // Espacement interne du bouton
+                    // Taille minimale du bouton
                         ),
                       ),
                       SizedBox(height: 16.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('--or--',
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 16.0)),
+                          Text('--or--', style: TextStyle(color: Colors.black, fontSize: 16.0)),
                         ],
                       ),
                       SizedBox(height: 16.0),
@@ -227,13 +219,12 @@ class _LoginPageState extends State<LoginPage> {
                           ElevatedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.email),
-                            label: Text('Login with Google'),
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors
-                                  .red, // Change la couleur du fond du bouton
-                              onPrimary: Colors
-                                  .white, // Change la couleur du texte du bouton
-                            ),
+  label: Text('Login with Google'),
+  style: ElevatedButton.styleFrom(
+    primary: Colors.red, // Change la couleur du fond du bouton
+    onPrimary: Colors.white, // Change la couleur du texte du bouton
+  ),
+ 
                           ),
                         ],
                       ),
@@ -245,8 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                             // Navigate to the registration page (RegisterPage)
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => Register()),
+                              MaterialPageRoute(builder: (context) => Register()),
                             );
                           },
                           child: Row(
@@ -254,8 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Text(
                                 "already have an account? ",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.black),
+                                style: TextStyle(fontSize: 12, color: Colors.black),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
