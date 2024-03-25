@@ -127,7 +127,7 @@ class ProfilePage1 extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      
     );
   }
 }

@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -221,8 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                             icon: Icon(Icons.email),
   label: Text('Login with Google'),
   style: ElevatedButton.styleFrom(
-    primary: Colors.red, // Change la couleur du fond du bouton
-    onPrimary: Colors.white, // Change la couleur du texte du bouton
+    foregroundColor: Colors.white, backgroundColor: Colors.red, // Change la couleur du texte du bouton
   ),
  
                           ),

@@ -41,7 +41,7 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
             position: DecorationPosition.background,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("../assets/R5.png"), // Remplacez "assets/background_image.jpg" par le chemin de votre image
+                image: AssetImage("assets/1.png"), // Remplacez "assets/background_image.jpg" par le chemin de votre image
                 fit: BoxFit.cover,
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
  // Importez la classe ProfilePage1 depuis le fichier profile.dart
@@ -186,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Add login logic here
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                            MaterialPageRoute(builder: (context) => MainScreen()),
                           );
                         },
                         child: Text(
@@ -198,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -228,8 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                             icon: Icon(Icons.email),
   label: Text('Login with Google'),
   style: ElevatedButton.styleFrom(
-    primary: Colors.red, // Change la couleur du fond du bouton
-    onPrimary: Colors.white, // Change la couleur du texte du bouton
+    foregroundColor: Colors.white, backgroundColor: Colors.red, // Change la couleur du texte du bouton
   ),
  
                           ),

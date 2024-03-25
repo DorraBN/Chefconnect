@@ -77,7 +77,7 @@ class RegistrationSuccessPage extends StatelessWidget {
               ),
               icon: Icon(Icons.arrow_forward),
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+                backgroundColor: Colors.green,
               ),
             ),
           ),

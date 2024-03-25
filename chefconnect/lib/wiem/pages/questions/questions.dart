@@ -16,10 +16,10 @@ final pages = [
       "Korean", "Greek", "Mexican",
     ],
     responseBackgroundImages: [
-      "../../assets/tunisian.png", "../../assets/italian.png", "../../assets/asian.png",
-      "../../assets/british.png", "../../assets/french.png", "../../assets/chinese.png",
-      "../../assets/middleeast.png", "../../assets/irish.png", "../../assets/german.png",
-      "../../assets/korean.png", "../../assets/greek.png", "../../assets/mexican.png",
+      "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
+      "assets/british.png", "assets/french.png", "assets/chinese.png",
+      "assets/middleeast.png", "assets/irish.png", "assets/german.png",
+      "assets/korean.png", "assets/greek.png", "assets/mexican.png",
     ],
   ),
   const PageData(
@@ -33,10 +33,10 @@ final pages = [
       "Low FODMAP", "Whole30","Flexitarian",
     ],
     responseBackgroundImages: [
-      "../../assets/glutenfree.png","../../assets/ketogenic.png","../../assets/vegetarian.png",
-      "../../assets/lactovegetarian.png","../../assets/ovovegetarian.png","../../assets/vegan.png",
-      "../../assets/pescetarian.png","../../assets/paleo.png","../../assets/primal.png",
-      "../../assets/lowfoodmaps.png","../../assets/whole30.png","../../assets/flexitarien.png",
+      "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
+      "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
+      "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
+      "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
     ],
   ),
   const PageData(
@@ -50,10 +50,10 @@ final pages = [
       "Mustard" , "Lupin" , "Sulfites" ,
     ],
     responseBackgroundImages: [
-      "../../assets/gluten.png", "../../assets/diary.png", "../../assets/sesame.png",
-      "../../assets/seafood.png", "../../assets/egg.png", "../../assets/soy.png",
-      "../../assets/wheat.png", "../../assets/peanut.png","../../assets/treenuts.png",
-      "../../assets/mustard.png", "../../assets/lupin.png","../../assets/sulfites.png",
+      "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
+      "assets/seafood.png", "assets/egg.png", "assets/soy.png",
+      "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
+      "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
     ],
   ),
 ];

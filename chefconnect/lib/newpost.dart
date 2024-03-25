@@ -9,28 +9,31 @@ import 'package:image_picker/image_picker.dart';
 
 
 class NewPostPage extends StatefulWidget {
+  const NewPostPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _NewPostPageState createState() => _NewPostPageState();
 }
 
 class _NewPostPageState extends State<NewPostPage> {
-  TextEditingController _recipeTitleController = TextEditingController();
-  TextEditingController _ingredientsController = TextEditingController();
-  TextEditingController _instructionsController = TextEditingController();
+  final TextEditingController _recipeTitleController = TextEditingController();
+  final TextEditingController _ingredientsController = TextEditingController();
+  final TextEditingController _instructionsController = TextEditingController();
   XFile? _image;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
+      appBar: AppBar(backgroundColor: const Color.fromARGB(255, 244, 206, 54),
        title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
           
-            Text('New post'),
+            const Text('New post'),
             
             IconButton(
-              icon: Icon(Icons.post_add_outlined),
+              icon: const Icon(Icons.post_add_outlined),
               onPressed: () {
                 // Add logic to edit profile
               },
@@ -39,43 +42,43 @@ class _NewPostPageState extends State<NewPostPage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.asset(
-              '../assets/ch.jpg', // Assurez-vous que le chemin d'accès est correct
+              'assets/1.png', // Assurez-vous que le chemin d'accès est correct
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _recipeTitleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Recipe Title',
                 prefixIcon: Icon(Icons.restaurant_menu),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _ingredientsController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Ingredients',
                 prefixIcon: Icon(Icons.shopping_basket),
               ),
               maxLines: null, // Allow multiple lines
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _instructionsController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Instructions',
                 prefixIcon: Icon(Icons.description),
               ),
               maxLines: null, // Allow multiple lines
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton.icon(
               onPressed: () {
                 // Save the post logic goes here
@@ -96,33 +99,33 @@ class _NewPostPageState extends State<NewPostPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Post Created'),
+                      title: const Text('Post Created'),
                       content: Text('Your recipe "$title" has been posted!'),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context); // Close dialog
                           },
-                          child: Text('OK'),
+                          child: const Text('OK'),
                         ),
                       ],
                     );
                   },
                 );
               },
-              icon: Icon(Icons.post_add),
-              label: Text('Post Recipe'),
+              icon: const Icon(Icons.post_add),
+              label: const Text('Post Recipe'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton.icon(
               onPressed: () {
                 // Afficher la boîte de dialogue pour sélectionner une image
                 _showImageSourceSelectionDialog();
               },
-              icon: Icon(Icons.add_a_photo),
-              label: Text('Add Image'),
+              icon: const Icon(Icons.add_a_photo),
+              label: const Text('Add Image'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             if (_image != null)
               Image.file(
                 File(_image!.path),
@@ -141,22 +144,22 @@ class _NewPostPageState extends State<NewPostPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Image Source'),
+          title: const Text('Select Image Source'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 ListTile(
-                  leading: Icon(Icons.photo_library),
-                  title: Text('Gallery'),
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('Gallery'),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImage(ImageSource.gallery);
                   },
                 ),
-                Padding(padding: EdgeInsets.all(8.0)),
+                const Padding(padding: EdgeInsets.all(8.0)),
                 ListTile(
-                  leading: Icon(Icons.camera_alt),
-                  title: Text('Camera'),
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text('Camera'),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImage(ImageSource.camera);

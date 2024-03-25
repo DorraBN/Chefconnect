@@ -1,3 +1,5 @@
+import 'package:chefconnect/myprofile.dart';
+import 'package:chefconnect/newpost.dart';
 import 'package:chefconnect/wiem/pages/screens/favorite_screen.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -17,10 +19,10 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> screens = [
     const HomeScreen(),
     const Scaffold(),
-    const Scaffold(),
+    const NewPostPage(),
     const FavoriteRecipesScreen(),
     const Scaffold(),
-    const Scaffold(),
+    const ProfilePage1(),
   ];
 
   void _onTabTapped(int index) {

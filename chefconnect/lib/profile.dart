@@ -75,7 +75,7 @@ class ProfilePage2 extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      
     );
   }
 }
