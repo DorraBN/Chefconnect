@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
-=======
->>>>>>> eb34d7681e5dc6cc46bc4f88e2f59525a20e2525
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,11 +19,7 @@ void main() async {
     );
   } else {
     // Initialisation de Firebase pour les applications non web
-try {
-  await Firebase.initializeApp();
-} catch (e) {
-  print('Error initializing Firebase: $e');
-}
+    await Firebase.initializeApp();
   }
 
   // Lancez l'application Flutter
@@ -43,7 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
     //  home: ProfilePage(), 
-    home:ChatScreen()// Remplacez ceci par une instance de Register
+    home:WelcomePage()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
      // home: MainScreen(),
     );

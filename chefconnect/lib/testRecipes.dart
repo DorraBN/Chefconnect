@@ -21,7 +21,7 @@ class _TestRecipesState extends State<TestRecipes> {
   Future<void> fetchRecipesData() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=26defb92453348b3ae5252d8c8ea9206'));
+          'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=436c43ec025b43ecaff23cd2915e586e'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
         final List<dynamic> results = jsonData['results'];
@@ -30,7 +30,7 @@ class _TestRecipesState extends State<TestRecipes> {
         for (var result in results) {
           final int id = result['id'];
           final recipeInfoResponse = await http.get(Uri.parse(
-              'https://api.spoonacular.com/recipes/$id/information?apiKey=26defb92453348b3ae5252d8c8ea9206'));
+              'https://api.spoonacular.com/recipes/$id/information?apiKey=436c43ec025b43ecaff23cd2915e586e'));
           if (recipeInfoResponse.statusCode == 200) {
             final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
             final recipe = Recipe.fromJson(recipeInfoJson);

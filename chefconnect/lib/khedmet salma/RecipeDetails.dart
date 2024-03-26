@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,38 +12,37 @@ class RecipeDetails extends StatelessWidget {
 
   const RecipeDetails({Key? key, required this.recipe}) : super(key: key);
 
-@override
-Widget build(BuildContext context) {
-  return SafeArea(
-    child: Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Container(
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: recipe.image != null
-                  ? Container(
-                      width: 150, // Specify the desired width
-                      height: 150, // Specify the desired height
-                      child: Image.network(
-                        recipe.image!,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : Placeholder(),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: recipe.image != null
+                    ? Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: Image.network(
+                          recipe.image!,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Placeholder(),
+              ),
             ),
-          ),
-          _buildBackButton(context),
-          _buildScrollContent(context),
-        ],
+            _buildBackButton(context),
+            _buildScrollContent(context),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
@@ -90,8 +90,8 @@ Widget build(BuildContext context) {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(20),
-              topRight: const Radius.circular(20),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
           ),
           child: SingleChildScrollView(
@@ -121,30 +121,30 @@ Widget build(BuildContext context) {
                 ),
                 SizedBox(height: 10),
                 Row(
-                children: [
-                  Icon(Icons.access_time),
-                  SizedBox(width: 5),
-                  Text(
-                    '${recipe.readyInMinutes} min',
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
+                  children: [
+                    Icon(Icons.access_time),
+                    SizedBox(width: 5),
+                    Text(
+                      '${recipe.readyInMinutes} min',
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.people),
-                  SizedBox(width: 5),
-                  Text(
-                    '${recipe.servings} servings',
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.people),
+                    SizedBox(width: 5),
+                    Text(
+                      '${recipe.servings} servings',
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
                 SizedBox(height: 10),
                 SizedBox(width: 70),
                 IconButton(
@@ -194,7 +194,7 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildIngredientImage(int recipeId) {
-    return FutureBuilder<String>(
+    return FutureBuilder<Uint8List>(
       future: fetchIngredientImage(recipeId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -202,7 +202,12 @@ Widget build(BuildContext context) {
         } else if (snapshot.hasError) {
           return Text('Error loading ingredient image');
         } else if (snapshot.hasData) {
-          return _buildImageWidget(snapshot.data!);
+          return Column(
+            children: [
+              _buildImageWidget(snapshot.data!),
+              SizedBox(height: 20), // Increase the height between ingredients
+            ],
+          );
         } else {
           return SizedBox();
         }
@@ -210,36 +215,35 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildImageWidget(String imageUrl) {
+  Widget _buildImageWidget(Uint8List imageData) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: SizedBox(
-        height: 150,
-        width: 150,
-        child: Image.network(
-          imageUrl,
-          height: 150,
-          width: 150,
+        height: 800, // Increase the height of the ingredient image
+        width: 800, // Increase the width of the ingredient image
+        child: Image.memory(
+          imageData,
+          height: 800, // Increase the height of the ingredient image
+          width: 800, // Increase the width of the ingredient image
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  Future<String> fetchIngredientImage(int recipeId) async {
+  Future<Uint8List> fetchIngredientImage(int recipeId) async {
     String apiKey = APIkey.apikey;
-    final response = await http.get(
-      Uri.parse(
-        'https://api.spoonacular.com/recipes/$recipeId/ingredientWidget.png?apiKey=$apiKey',
-      ),
-    );
+    String apiUrl = 'https://api.spoonacular.com/recipes/$recipeId/ingredientWidget.png';
+
+    // Construct the URL with the API key as a query parameter
+    Uri uri = Uri.parse(apiUrl).replace(queryParameters: {'apiKey': apiKey});
+
+    final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      return response.body;
+      return response.bodyBytes;
     } else {
       throw Exception('Failed to fetch ingredient image');
     }
   }
 }
-
-
