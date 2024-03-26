@@ -15,6 +15,7 @@ class NewsFeedPage2 extends StatefulWidget {
 class _NewsFeedPage2State extends State<NewsFeedPage2> {
   String? fullName;
   String? email;
+   String? imageUrl;
 
   @override
   void initState() {
@@ -27,6 +28,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
     String? useremail = currentUser?.email;
     if (useremail != null) {
       String? username = await FirebaseAuthService().getUsername(useremail);
+       String? imageUrl = await FirebaseAuthService().getCollectionImageUrl(useremail);
       setState(() {
         fullName = username;
         email = currentUser?.email;
@@ -140,8 +142,8 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
 
 
 class _AvatarImage extends StatelessWidget {
-  final String url;
-  const _AvatarImage(this.url, {Key? key}) : super(key: key);
+  final String? imageUrl;
+  const _AvatarImage(this.imageUrl, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,11 +151,18 @@ class _AvatarImage extends StatelessWidget {
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(url))),
+        shape: BoxShape.circle,
+        image: imageUrl != null
+            ? DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(imageUrl!),
+              )
+            : null, // Mettez l'image à null si imageUrl est null
+      ),
     );
   }
 }
+
 
 class _ActionsRow extends StatelessWidget {
   final FeedItem item;

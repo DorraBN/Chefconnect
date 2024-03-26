@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController messageController = TextEditingController();
+
+    void sendMessage() {
+      String message = messageController.text.trim();
+      if (message.isNotEmpty) {
+        FirebaseFirestore.instance.collection('chat_messages').add({
+          'text': message,
+          'timestamp': DateTime.now(),
+          'senderId': 'user_id', // Remplacez 'user_id' par l'ID de l'utilisateur authentifié
+        });
+        messageController.clear(); // Effacer le champ de texte après l'envoi du message
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.green,
       body: Padding(
-        padding: EdgeInsets.only(left: 14.0,right: 14),
+        padding: EdgeInsets.only(left: 14.0, right: 14),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,106 +42,48 @@ class ChatScreen extends StatelessWidget {
                     backgroundImage: Image.asset('../../assets/chat111.png').image,
                   ),
                   const SizedBox(width: 15,),
-                  const Text('Danny Hopkins',style: TextStyle(
+                  const Text('Danny Hopkins', style: TextStyle(
                     fontSize: 18,
-                    fontFamily: ('Quicksand'),
+                    fontFamily: 'Quicksand',
                     color: Colors.white
                   ),),
                   Spacer(),
-                  const Icon(Icons.search_rounded,
+                  Icon(Icons.search_rounded,
                     color: Colors.white70,
-                  size: 40,
+                    size: 40,
                   )
                 ],
               ),
               SizedBox(height: 30,),
-              const Center(
-                child: Text('1 FEB 12:00',style: TextStyle(
-                  color: Colors.white70
-                ),),
-              ),
-              SizedBox(height: 8,),
-              Container(
-                decoration:BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color(0xff373E4E)
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text('I commented on Figma, I want to add\n sjdiw weosjwy cys sow woois ijwdwd wysxta\njsd',style: TextStyle(
-                    color: Colors.white,
-                  ),),
-                ),
-              ),
-              SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.only(left: 70.0),
-                child: Container(
-                  decoration:BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color(0xff7A8194)
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text('I commented on Figma, I want to add\n sjdiw weosjwy',style: TextStyle(
-                      color: Colors.white,
-                    ),),
-                  ),
+              // Utilisez un StreamBuilder pour afficher les messages en temps réel
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('chat_messages').orderBy('timestamp', descending: true).snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Erreur: ${snapshot.error}');
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+
+                    // Affichez les messages à partir de Firestore
+                    return ListView.builder(
+                      reverse: true,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot message = snapshot.data!.docs[index];
+                        return ListTile(
+                          title: Text(message['text']),
+                          subtitle: Text(message['timestamp'].toString()),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
-              SizedBox(height: 10,),
-              Container(
-                decoration:BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Color(0xff373E4E)
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text('Next Month',style: TextStyle(
-                    color: Colors.white,
-                  ),),
-                ),
-              ),
-              SizedBox(height: 10,),
-              SizedBox(height: 10,),
-              const Center(
-                child: Text('08:12',style: TextStyle(
-                    color: Colors.white70
-                ),),
-              ),
-              SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.only(left: 70.0),
-                child: Container(
-                  decoration:BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color(0xff7A8194)
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text('I commented on Figma, I want to add\n sjdiw weosjwy',style: TextStyle(
-                      color: Colors.white,
-                    ),),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.only(left: 300.0),
-                child: Container(
-                  decoration:BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color(0xff7A8194)
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text('?',style: TextStyle(
-                      color: Colors.white,
-                    ),),
-                  ),
-                ),
-              ),
-              const Spacer(),
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Container(
@@ -134,7 +91,7 @@ class ChatScreen extends StatelessWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Color(0xff3D4354)
+                    color: const Color(0xff3D4354)
                   ),
                   child: Row(
                     children: [
@@ -143,7 +100,6 @@ class ChatScreen extends StatelessWidget {
                         child: Container(
                           height:40,
                           width: 40,
-
                           decoration: BoxDecoration(
                             color: Colors.white30,
                             borderRadius: BorderRadius.circular(50)
@@ -152,15 +108,24 @@ class ChatScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 15,),
-                      const Text('Message',style: TextStyle(
-                        color: Colors.white54
-                      ),),
-                      Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Icon(Icons.send,color:  Colors.white54,),
+                      Expanded(
+                        child: TextField(
+                          controller: messageController,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Message',
+                            hintStyle: TextStyle(color: Colors.white54),
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
-                    ],///thankyou alll of youuuuuu se you next tutorial
+                      IconButton(
+                        onPressed: sendMessage,
+                        icon: Icon(Icons.send,color: Colors.white54,),
+                      ),
+                    ],
                   ),
                 ),
               )

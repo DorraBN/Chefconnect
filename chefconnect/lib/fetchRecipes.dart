@@ -3,7 +3,7 @@ import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Recipe>> fetchRecipes(String query) async {
-  final apiKey = 'cdf1a5fc5dbb4d3c883962891245f760';
+  final apiKey = '95b3ba20d66b4f64bf067d0d213551ee';
   final client = http.Client();
   try {
     final response = await client.get(Uri.parse('https://api.spoonacular.com/recipes/search?apiKey=$apiKey&query=$query'));
