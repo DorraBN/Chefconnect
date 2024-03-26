@@ -1,37 +1,57 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        print("succes in sig up");
+        print("Email is already in use.");
       } else {
-        print("there is an $e");
+        print("An error occurred: $e");
       }
+      return null;
     }
-    return null;
   }
 
-  Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
-   
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        print("succes in sing in!!!!");
+        print("Invalid email or password.");
       } else {
-        print("there is an $e");
+        print("An error occurred: $e");
       }
+      return null;
     }
-    return null;
+  }
+
+  Future<String?> getUsername(String userEmail) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('registration')
+          .where('email', isEqualTo: userEmail)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        // Utilize the first document if there are multiple (which should not happen)
+        return querySnapshot.docs.first.get('username');
+      } else {
+        print('User not found in the registration collection.');
+        return null;
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+      return null;
+    }
   }
 }

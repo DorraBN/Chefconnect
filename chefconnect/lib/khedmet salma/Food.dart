@@ -33,7 +33,7 @@ class FoodList {
       time: 15,
       rate: 4.4,
       reviews: 23,
-      isLiked: false,
+      isLiked: true,
       intolerances: {
         "Gluten": "https://example.com/gluten.jpg",
         "Lactose": "https://example.com/lactose.jpg",
@@ -102,7 +102,7 @@ class FoodList {
       time: 15,
       rate: 4.4,
       reviews: 23,
-      isLiked: false,
+      isLiked: true,
       intolerances: {
         "Gluten": "https://example.com/gluten.jpg",
         "Lactose": "https://example.com/lactose.jpg",

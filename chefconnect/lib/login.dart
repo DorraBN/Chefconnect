@@ -1,3 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
@@ -30,6 +35,10 @@ class _LoginPageState extends State<LoginPage> {
   String? _passwordErrorText;
   bool _rememberMe = false;
   bool _isLoading = false;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: '54968741572-hd129o6g7v8lov654nbuadclq973rsk5.apps.googleusercontent.com',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -211,11 +220,12 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton.icon(
-                            onPressed: () {},
+                         /* ElevatedButton.icon(
+                            onPressed: _signInWithFacebook,
                             icon: Icon(Icons.facebook),
                             label: Text('Login with Facebook'),
-                          ),
+                          ),*/
+                         
                           ElevatedButton.icon(
                             onPressed: _signInWithGoogle,
                             icon: Icon(Icons.email),
@@ -271,7 +281,7 @@ class _LoginPageState extends State<LoginPage> {
     String password = _passwordController.text;
 
     setState(() {
-      _emailErrorText = null;
+      _emailErrorText = 'Please enter your email';
       _passwordErrorText = null;
       _isLoading = true; // Set loading state to true
     });
@@ -298,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
         print("User was successfully logged In");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
         setState(() {
@@ -317,28 +327,49 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _signInWithGoogle() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  void _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
-
         final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken,
         );
-
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       }
     } catch (e) {
       print("Some error occurred: $e");
     }
   }
+
+ /* void _signInWithFacebook() async {
+  try {
+    // Déclencher le flux de connexion
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    if (result.status == LoginStatus.success) {
+      // Créer un jeton d'authentification à partir du jeton d'accès
+      final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken!.token);
+
+      // Une fois connecté, retourner le UserCredential
+      await _firebaseAuth.signInWithCredential(facebookAuthCredential);
+
+      // Naviguer vers l'écran d'accueil
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } else {
+      print("La connexion Facebook a échoué");
+    }
+  } catch (e) {
+    print("Une erreur s'est produite lors de la connexion Facebook: $e");
+  }
+}
+*/
 }

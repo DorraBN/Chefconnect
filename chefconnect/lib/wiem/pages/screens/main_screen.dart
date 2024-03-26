@@ -1,3 +1,4 @@
+import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
 import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/newpost.dart';
 import 'package:chefconnect/wiem/pages/screens/favorite_screen.dart';
@@ -18,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentTab = 0;
   List<Widget> screens = [
     const HomeScreen(),
-    const Scaffold(),
+    const ChatHome(),
     const NewPostPage(),
     const FavoriteRecipesScreen(),
     const Scaffold(),

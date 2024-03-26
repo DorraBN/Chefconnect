@@ -2,11 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-
-
-
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
@@ -35,7 +32,7 @@ class _NewPostPageState extends State<NewPostPage> {
             IconButton(
               icon: const Icon(Icons.post_add_outlined),
               onPressed: () {
-                // Add logic to edit profile
+                _postRecipe();
               },
             ),
           ],
@@ -119,7 +116,6 @@ class _NewPostPageState extends State<NewPostPage> {
             const SizedBox(height: 16.0),
             ElevatedButton.icon(
               onPressed: () {
-                // Afficher la boîte de dialogue pour sélectionner une image
                 _showImageSourceSelectionDialog();
               },
               icon: const Icon(Icons.add_a_photo),
@@ -127,12 +123,13 @@ class _NewPostPageState extends State<NewPostPage> {
             ),
             const SizedBox(height: 16.0),
             if (_image != null)
-              Image.file(
-                File(_image!.path),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+  Image.network(
+    _image!.path,
+    height: 200,
+    width: double.infinity,
+    fit: BoxFit.cover,
+  ),
+
           ],
         ),
       ),
@@ -181,5 +178,72 @@ class _NewPostPageState extends State<NewPostPage> {
         _image = pickedFile;
       });
     }
+  }
+
+  Future<void> _postRecipe() async {
+    // Save the post logic goes here
+    String title = _recipeTitleController.text;
+    String ingredients = _ingredientsController.text;
+    String instructions = _instructionsController.text;
+
+    // Perform validation if needed
+    // Save the post to database or perform other actions
+
+    // Upload image to Firebase Storage
+    if (_image != null) {
+      await _uploadImageToFirebaseStorage();
+    }
+
+    // Reset controllers
+    _recipeTitleController.clear();
+    _ingredientsController.clear();
+    _instructionsController.clear();
+
+    // Show a confirmation dialog or navigate to another screen
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Post Created'),
+          content: Text('Your recipe "$title" has been posted!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _uploadImageToFirebaseStorage() async {
+    Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('images/${DateTime.now().millisecondsSinceEpoch}.png');
+    UploadTask uploadTask = storageReference.putFile(File(_image!.path));
+    await uploadTask.whenComplete(() => print('Image uploaded'));
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        // Save the image URL to Firestore
+        _saveImageUrlToFirestore(fileURL);
+      });
+    });
+  }
+
+  Future<void> _saveImageUrlToFirestore(String imageUrl) async {
+    // Add the document with an automatically generated ID by Firestore
+    await FirebaseFirestore.instance.collection('images').add({
+      'imageUrl': imageUrl,
+    }).then((value) {
+      print('Document ID: ${value.id}');
+    }).catchError((error) {
+      print('Failed to add document: $error');
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Image saved to Firestore')),
+    );
   }
 }

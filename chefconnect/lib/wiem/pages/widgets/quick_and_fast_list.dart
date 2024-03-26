@@ -1,10 +1,12 @@
-import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/screens/quick_foods_screen.dart';
-import 'package:chefconnect/wiem/pages/screens/recipe_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../../khedmet salma/Food.dart';
+import '../../../khedmet salma/RecipeDetails.dart';
+
 class QuickAndFastList extends StatefulWidget {
-  const QuickAndFastList({super.key, required this.foods});
+  const QuickAndFastList({Key? key, required this.foods}) : super(key: key);
+  
   final List<Food> foods;
 
   @override
@@ -28,12 +30,14 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
               ),
             ),
             TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QuickFoodsScreen(),
-                ),
-              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const QuickFoodsScreen(),
+                  ),
+                );
+              },
               child: const Text("View all"),
             ),
           ],
@@ -45,12 +49,15 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
             children: List.generate(
               widget.foods.length,
               (index) => GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RecipeScreen(food: widget.foods[index]),
-                  ),
-                ),
+                onTap: () {
+                  final recipe = widget.foods[index];
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecipeDetails(food: recipe),
+                    ),
+                  );
+                },
                 child: Container(
                   margin: const EdgeInsets.only(right: 10),
                   width: 200,

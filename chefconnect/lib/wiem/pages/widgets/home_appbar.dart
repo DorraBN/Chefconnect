@@ -1,3 +1,4 @@
+import 'package:chefconnect/khedmet%20salma/SearchHome.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppbar extends StatelessWidget {
@@ -7,7 +8,7 @@ class HomeAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         Text(
           "What are you\ncooking today?",
@@ -18,7 +19,17 @@ class HomeAppbar extends StatelessWidget {
           ),
         ),
         Spacer(),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SearchHome()),
+            );
+          },
+          child: Icon(Icons.search),
+        ),
       ],
     );
   }
 }
+
