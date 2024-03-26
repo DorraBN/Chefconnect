@@ -1,8 +1,7 @@
 import 'package:chefconnect/navigation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:chefconnect/wiem/pages/models/food.dart';
-import 'package:chefconnect/wiem/pages/screens/recipe_screen.dart';
+import 'package:chefconnect/khedmet salma/Food.dart'; // Adjusted import statement
 
 class FavoriteApiScreen extends StatefulWidget {
   const FavoriteApiScreen({Key? key}) : super(key: key);
@@ -12,29 +11,13 @@ class FavoriteApiScreen extends StatefulWidget {
 }
 
 class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
-  List<Food> likedFoods = foods.where((food) => food.isLiked).toList();
+  List<Food> likedFoods = FoodList.foods.where((food) => food.isLiked).toList(); // Using FoodList from the salma package
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Ajout du Scaffold
-     appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 244, 206, 54),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Favorites recipes'),
-            IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {
-                // Add logic to edit profile
-              },
-            ),
-          ],
-        ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(CupertinoIcons.chevron_back),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Favorite Recipes'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -49,12 +32,7 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
                 Food food = likedFoods[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RecipeScreen(food: food),
-                      ),
-                    );
+                    // Handle onTap
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +143,7 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
           ],
         ),
       ),
-    bottomNavigationBar: CustomBottomNavigationBar(),
+    
   );
 }
 }

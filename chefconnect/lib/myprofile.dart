@@ -161,7 +161,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      
     );
   }
 }

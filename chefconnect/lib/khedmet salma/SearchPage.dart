@@ -3,6 +3,7 @@ import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
 import 'package:chefconnect/khedmet%20salma/CustomField.dart';
 import 'package:chefconnect/khedmet%20salma/CustomSlider.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
@@ -10,12 +11,12 @@ import 'package:iconly/iconly.dart';
 
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  
 
   @override
   State<SearchPage> createState() => _SearchScreenState();
 }
-
+ 
 class _SearchScreenState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
   static List previousSearchs = [];

@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 
 import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
+=======
+>>>>>>> eb34d7681e5dc6cc46bc4f88e2f59525a20e2525
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +23,11 @@ void main() async {
     );
   } else {
     // Initialisation de Firebase pour les applications non web
-    await Firebase.initializeApp();
+try {
+  await Firebase.initializeApp();
+} catch (e) {
+  print('Error initializing Firebase: $e');
+}
   }
 
   // Lancez l'application Flutter

@@ -79,7 +79,6 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
           ],
         ),
       ),
-    bottomNavigationBar: CustomBottomNavigationBar(),
   );
 }
 }

@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
 import 'register.dart';
 
 void main() {
@@ -193,6 +196,8 @@ Container(
                       ),
                       SizedBox(height: 16.0),
                       ElevatedButton(
+
+
                         onPressed: _isLoading ? null : _signIn,
                         child: _isLoading
                             ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
@@ -204,8 +209,9 @@ Container(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -227,24 +233,21 @@ Container(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: _signInWithFacebook,
+                          onPressed: null ,
                             icon: Icon(Icons.facebook),
                             label: Text('Login with Facebook'),
                           ),
                          
-                         ElevatedButton.icon(
-  onPressed: _signInWithGoogle,
-  icon: CircleAvatar(
-    radius: 10,
-    backgroundImage: AssetImage('../../assets/google.png'),
-  ),
-  label: Text('Login with Google'),
-  style: ElevatedButton.styleFrom(
-    primary: Colors.red, // Couleur du bouton
-    onPrimary: Colors.white, // Couleur du texte
-  ),
-)
+                          ElevatedButton.icon(
+                            onPressed: _signInWithGoogle,
+                            icon: Icon(Icons.email),
 
+                            label: Text('Login with Google'),
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.red,
+                            ),
+
+                          ),
                         ],
                       ),
                       SizedBox(height: 16.0),
@@ -317,7 +320,7 @@ Container(
         print("User was successfully logged In");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
         setState(() {
@@ -348,7 +351,7 @@ Container(
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       }
     } catch (e) {
@@ -356,7 +359,7 @@ Container(
     }
   }
 
-  void _signInWithFacebook() async {
+  /* void _signInWithFacebook() async {
   try {
     // Déclencher le flux de connexion
     final LoginResult result = await FacebookAuth.instance.login();
@@ -371,7 +374,7 @@ Container(
       // Naviguer vers l'écran d'accueil
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } else {
       print("La connexion Facebook a échoué");
@@ -379,6 +382,6 @@ Container(
   } catch (e) {
     print("Une erreur s'est produite lors de la connexion Facebook: $e");
   }
-}
+}*/
 
 }

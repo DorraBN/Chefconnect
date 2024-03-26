@@ -118,7 +118,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   },
                   child: Text('Save'),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // Couleur verte
+                    backgroundColor: Colors.green, // Couleur verte
                     minimumSize: Size(200, 50), // Taille du bouton plus large
                   ),
                 ),
