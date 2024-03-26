@@ -1,14 +1,38 @@
-import 'package:chefconnect/myposts.dart';
-import 'package:chefconnect/navigation.dart';
-
-import 'package:chefconnect/setings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chefconnect/myposts.dart';
+import 'package:chefconnect/setings.dart';
+ // Remplacez par le chemin de votre fichier FirebaseAuthService
 
-
-class ProfilePage1 extends StatelessWidget {
+class ProfilePage1 extends StatefulWidget {
   const ProfilePage1({Key? key}) : super(key: key);
+
+  @override
+  _ProfilePage1State createState() => _ProfilePage1State();
+}
+
+class _ProfilePage1State extends State<ProfilePage1> {
+  String? fullName;
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? useremail = currentUser?.email;
+    if (useremail != null) {
+      String? username = await FirebaseAuthService().getUsername(useremail);
+      setState(() {
+        fullName = username;
+        email = currentUser?.email;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,70 +40,62 @@ class ProfilePage1 extends StatelessWidget {
       appBar: AppBar(
         title: Text('Profile'),
         backgroundColor: Color.fromARGB(255, 244, 206, 54),
-        
         actions: [
-        
           PopupMenuButton<String>(
-            offset: Offset(0, 40), // Décalage vers le bas pour placer le menu sous l'icône
+            offset: Offset(0, 40),
             onSelected: (value) {
               if (value == 'settings') {
-            
-                          // Add login logic here
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SettingsPage2()),
-                          );
-                        
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage2()),
+                );
               } else if (value == 'logout') {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to logout?'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Fermer la boîte de dialogue
-            },
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-               FirebaseAuth.instance.signOut();
-              // Add logout logic here
-              // Rediriger vers la page d'accueil après la déconnexion
-              Navigator.pushReplacementNamed(context, '/');
-            },
-            child: Text('Logout'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Confirm Logout'),
+                      content: Text('Are you sure you want to logout?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          child: Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
             itemBuilder: (BuildContext context) => [
               PopupMenuItem<String>(
                 value: 'settings',
                 child: Container(
-                  width: 120, // Largeur du PopupMenuItem
+                  width: 120,
                   child: ListTile(
                     leading: Icon(Icons.settings),
                     title: Text('Settings'),
-                    contentPadding: EdgeInsets.zero, // Aucun padding interne
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
               ),
               PopupMenuItem<String>(
                 value: 'logout',
                 child: Container(
-                  width: 120, // Largeur du PopupMenuItem
+                  width: 120,
                   child: ListTile(
                     leading: Icon(Icons.logout),
                     title: Text('Log out'),
-                    contentPadding: EdgeInsets.zero, // Aucun padding interne
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
               ),
@@ -89,7 +105,10 @@ class ProfilePage1 extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Expanded(flex: 2, child: _TopPortion()),
+          Expanded(
+            flex: 2,
+            child: _TopPortion(),
+          ),
           Expanded(
             flex: 3,
             child: Padding(
@@ -97,32 +116,36 @@ class ProfilePage1 extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    "Joe Doe",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    fullName ?? 'Full Name',
+                    style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    email ?? 'Email',
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                   
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _ProfileInfoItem(title: 'Posts', value: 10),
+                      _ProfileInfoItem(title: 'Followers', value: 100),
+                      _ProfileInfoItem(title: 'Following', value: 50),
+                    ],
                   ),
                   const SizedBox(height: 16),
-                  const _ProfileInfoRow(),
-                  const SizedBox(height: 16),
-                  GestureDetector( // Ajouter GestureDetector pour gérer le clic
+                  GestureDetector(
                     onTap: () {
-                      Navigator.push( // Naviguer vers la page NewsFeedPage1
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => NewsFeedPage2()),
                       );
                     },
-                    child: Text( // Texte "Publications" enveloppé dans GestureDetector
+                    child: Text(
                       "Posts",
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                  ),               
+                  ),
                 ],
               ),
             ),
@@ -133,6 +156,7 @@ class ProfilePage1 extends StatelessWidget {
     );
   }
 }
+
 class _AvatarImage extends StatelessWidget {
   final String url;
   const _AvatarImage(this.url, {Key? key}) : super(key: key);
@@ -149,6 +173,7 @@ class _AvatarImage extends StatelessWidget {
   }
 }
 
+
 class _ProfileInfoRow extends StatelessWidget {
   const _ProfileInfoRow({Key? key}) : super(key: key);
 
@@ -162,7 +187,8 @@ class _ProfileInfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 80,
-      constraints: const BoxConstraints(maxWidth: 400),
+      constraints: const
+ BoxConstraints(maxWidth: 400),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: _items
@@ -272,33 +298,46 @@ class _TopPortion extends StatelessWidget {
   }
 }
 
+class CustomBottomNavigationBar extends StatelessWidget {
+  const CustomBottomNavigationBar({Key? key}) : super(key: key);
 
-class FeedItem {
-  final User user;
-  final String? content;
-
-  FeedItem(this.user, this.content);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      height: 50,
+      child: Center(
+        child: Text(
+          'Custom Bottom Navigation Bar',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
 }
 
-class User {
-  final String fullName;
-  final String imageUrl;
+class _ProfileInfoItem extends StatelessWidget {
+  final String title;
+  final int value;
 
-  User(this.fullName, this.imageUrl);
+  const _ProfileInfoItem({Key? key, required this.title, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(title),
+      ],
+    );
+  }
 }
 
-final List<FeedItem> _feedItems = [
-  FeedItem(
-    User('John Doe', 'https://www.example.com/johndoe.jpg'),
-    'Hello, world!',
-  ),
-  FeedItem(
-    User('Jane Smith', 'https://www.example.com/janesmith.jpg'),
-    'Flutter is awesome!',
-  ),
-  FeedItem(
-    User('James Brown', 'https://www.example.com/jamesbrown.jpg'),
-    null,
-  ),
-];
-
+void main() {
+  runApp(MaterialApp(
+    home: ProfilePage1(),
+  ));
+}

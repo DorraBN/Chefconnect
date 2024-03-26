@@ -1,9 +1,38 @@
 import 'package:chefconnect/newpost.dart';
+import 'package:chefconnect/firebaseAuthImp.dart'; // Importez votre service FirebaseAuth ici
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NewsFeedPage2 extends StatelessWidget {
+class NewsFeedPage2 extends StatefulWidget {
   const NewsFeedPage2({Key? key}) : super(key: key);
+
+  @override
+  _NewsFeedPage2State createState() => _NewsFeedPage2State();
+}
+
+class _NewsFeedPage2State extends State<NewsFeedPage2> {
+  String? fullName;
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? useremail = currentUser?.email;
+    if (useremail != null) {
+      String? username = await FirebaseAuthService().getUsername(useremail);
+      setState(() {
+        fullName = username;
+        email = currentUser?.email;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +46,7 @@ class NewsFeedPage2 extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-         actions: [
+        actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -60,14 +89,14 @@ class NewsFeedPage2 extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 text: TextSpan(children: [
                                   TextSpan(
-                                    text: item.user.fullName,
+                                    text: fullName ?? '',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                         color: Colors.black),
                                   ),
                                   TextSpan(
-                                    text: " @${item.user.userName}",
+                                     text: fullName != null ? " @$fullName" : '',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -107,7 +136,6 @@ class NewsFeedPage2 extends StatelessWidget {
     );
   }
 }
-
 // Le reste de votre code reste inchangé
 
 
@@ -173,7 +201,7 @@ class _ActionsRow extends StatelessWidget {
 class FeedItem {
   final String? content;
   final String? imageUrl;
-  final User user;
+  final User1 user;
   final int commentsCount;
   final int likesCount;
   final int retweetsCount;
@@ -187,35 +215,35 @@ class FeedItem {
       this.retweetsCount = 0});
 }
 
-class User {
+class User1 {
   final String fullName;
   final String imageUrl;
   final String userName;
 
-  User(
+  User1(
     this.fullName,
     this.userName,
     this.imageUrl,
   );
 }
 
-final List<User> _users = [
-User(
+final List<User1> _users = [
+User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
   ),
- User(
+ User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
   ),
- User(
+ User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
   ),
-  User(
+  User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
