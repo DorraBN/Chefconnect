@@ -1,3 +1,5 @@
+import 'package:chefconnect/navigation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/screens/recipe_screen.dart';
@@ -15,8 +17,24 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold( // Ajout du Scaffold
-      appBar: AppBar(
-        title: Text('Favorite Recipes'), // Titre de l'AppBar
+     appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Favorites recipes'),
+            IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () {
+                // Add logic to edit profile
+              },
+            ),
+          ],
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(CupertinoIcons.chevron_back),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -147,6 +165,7 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
           ],
         ),
       ),
-    );
-  }
+    bottomNavigationBar: CustomBottomNavigationBar(),
+  );
+}
 }
