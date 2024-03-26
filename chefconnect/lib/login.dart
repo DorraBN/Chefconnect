@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
@@ -212,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: _signInWithFacebook,
+                          onPressed: null ,
                             icon: Icon(Icons.facebook),
                             label: Text('Login with Facebook'),
                           ),
@@ -337,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _signInWithFacebook() async {
+  /* void _signInWithFacebook() async {
   try {
     // Déclencher le flux de connexion
     final LoginResult result = await FacebookAuth.instance.login();
@@ -360,6 +358,6 @@ class _LoginPageState extends State<LoginPage> {
   } catch (e) {
     print("Une erreur s'est produite lors de la connexion Facebook: $e");
   }
-}
+}*/
 
 }

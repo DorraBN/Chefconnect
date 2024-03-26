@@ -1,10 +1,16 @@
+import 'dart:convert';
+
+import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
 import 'package:chefconnect/khedmet%20salma/CustomField.dart';
 import 'package:chefconnect/khedmet%20salma/CustomSlider.dart';
 import 'package:chefconnect/khedmet%20salma/Food.dart';
 import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
+import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
+import 'package:http/http.dart' as http;
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:chefconnect/testRecipes.dart';
@@ -33,12 +39,13 @@ class _SearchHome extends State<SearchHome> {
       date: DateTime.now(),
       userProfileImageUrl: "../../assets/chat777.png",
     ),
-    // Add more posts as needed
+  
   ];
   @override
   void initState() {
     super.initState();
-// Initialize comment visibility state
+     fetchRecipesData();
+
   }
 
   @override
@@ -196,65 +203,67 @@ class _SearchHome extends State<SearchHome> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    ListView.separated(
-                      padding: EdgeInsets.all(15),
-                      itemCount: FoodList.foods.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(),
-                      itemBuilder: (context, index) {
-                        final recipe = FoodList.foods[index];
-                        return ListTile(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TestRecipes()),
-                            );
-                          },
-                          title: Text((recipe.name),
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          leading: Image.asset(
-                            recipe.image,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                          subtitle: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.access_time),
-                                  Text('${recipe.time} min',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.normal)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.local_fire_department,
-                                    weight: 5,
-                                  ),
-                                  Text('${recipe.cal} Calories',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.normal)),
-                                ],
-                              ),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.star, color: Colors.yellow),
-                              Text(
-                                  '${recipe.rate} (${recipe.reviews} reviews)'),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                     recipes.isEmpty
+          ? Center(child: CircularProgressIndicator())
+                 :  ListView.separated(
+              padding: EdgeInsets.all(15),
+              itemCount: recipes.length,
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return ListTile(
+                  onTap: () {
+                  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecipeDetails(recipe: recipes[index]),
+      ),
+    );
+                  },
+                  title: Text(recipe.title,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  leading: recipe.image != null
+                      ? Image.network(
+                          recipe.image!,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Placeholder(),
+                        ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.access_time),
+                          Text('${recipe.readyInMinutes} min',
+                              style: TextStyle(fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.local_fire_department),
+                          Text('${recipe.servings} Servings',
+                              style: TextStyle(fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow),
+                      Text('${recipe.rating}'), // Adjust as per your requirement
+                    ],
+                  ),
+                );
+              },
+            ),
                     ListView.builder(
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
@@ -500,4 +509,39 @@ class _SearchHome extends State<SearchHome> {
 
     return newNumber;
   }
+   late List<Recipe> recipes = [];
+
+
+Future<void> fetchRecipesData() async {
+  try {
+    final apiKey = APIkey.apikey;
+    final response = await http.get(Uri.parse(
+        'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=$apiKey'));
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      final List<dynamic> results = jsonData['results'];
+
+      // Fetch details for each recipe
+      for (var result in results) {
+        final int id = result['id'];
+        final recipeInfoResponse = await http.get(Uri.parse(
+            'https://api.spoonacular.com/recipes/$id/information?apiKey=$apiKey'));
+        if (recipeInfoResponse.statusCode == 200) {
+          final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
+          final recipe = Recipe.fromJson(recipeInfoJson);
+          setState(() {
+            recipes.add(recipe);
+          });
+        }
+      }
+    } else {
+      throw Exception('Failed to load recipes');
+    }
+  } catch (error) {
+    // Handle errors if any
+    print('Error fetching recipes: $error');
+  }
+}
+
+
 }
