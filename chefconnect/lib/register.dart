@@ -23,6 +23,7 @@ class _RegisterState extends State<Register> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   String _selectedGender = '';
+   TextEditingController _imageUrlController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _pseudoController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -37,6 +38,7 @@ class _RegisterState extends State<Register> {
 
   @override
   void dispose() {
+    _imageUrlController.dispose();
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -337,6 +339,25 @@ class _RegisterState extends State<Register> {
                                     fontSize: 14, color: Colors.black)),
                           ],
                         ),
+                         TextFormField(
+            controller: _imageUrlController,
+            decoration: InputDecoration(
+              labelText: 'Image URL',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+              hintText: 'Enter image URL',
+              filled: true,
+              fillColor: _imageUrlController.text.isEmpty
+                  ? Colors.white.withOpacity(0.13)
+                  : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+              prefixIcon: Icon(Icons.image, color: Colors.black),
+              hintStyle: TextStyle(color: Colors.black),
+            ),
+            style: TextStyle(color: Colors.black),
+            // Vous pouvez ajouter une validation si nécessaire
+          ),
+
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
@@ -362,7 +383,9 @@ class _RegisterState extends State<Register> {
                                 'password': _passwordController.text,
                                 'confirm': _confirmPasswordController.text,
                                 'gender': _selectedGender,
+                                 'imageUrl':  _imageUrlController.text
                               }).then((value) {
+                                
                                 // Enregistrement réussi
                                 print('User registered successfully');
                                 Navigator.push(
@@ -387,29 +410,30 @@ class _RegisterState extends State<Register> {
                               });
                             }
                           },
-                           child: Container(
-    margin: EdgeInsets.symmetric(horizontal: 20.0),
-    height: 50,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: _registerButtonClicked ? Colors.orange : Colors.green,
-    ),
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    child: Center(
-      child: _registerButtonClicked
-          ? CircularProgressIndicator() // Affichage du CircularProgressIndicator lors du chargement
-          : Text(
-              'Register',
-              style: TextStyle(
-                color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-    ),
-  ),
-),
-
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _registerButtonClicked
+                                  ? Colors.orange
+                                  : Colors.green,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: Text(
+                                'Register',
+                                style: TextStyle(
+                                  color: _registerButtonClicked
+                                      ? Colors.white
+                                      : Color(0xFF080710),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
@@ -459,15 +483,11 @@ class _RegisterState extends State<Register> {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
-
+     String imageUrl = _imageUrlController.text;
     try {
       User? user = await _auth.signUpWithEmailAndPassword(email, password);
       if (user != null) {
         print("User was successfully created");
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-        );
       } else {
         print("User creation failed: User object is null");
       }

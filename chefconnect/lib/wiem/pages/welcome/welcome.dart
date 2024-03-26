@@ -11,7 +11,7 @@ class WelcomePage extends StatelessWidget {
       body: OnboardingPagePresenter(
         pages: [
           OnboardingPageModel(
-            backgroundImage: const AssetImage('../../assets/bg1.png'),
+            backgroundImage: const AssetImage('assets/bg1.png'),
             image: "assets/pngegg1.png",
             title: "Welcome to ChefConnect!",
             description:
@@ -19,7 +19,7 @@ class WelcomePage extends StatelessWidget {
             textColor: const Color.fromARGB(255, 0, 0, 0),
           ),
           OnboardingPageModel(
-            backgroundImage: const AssetImage('../../assets/bg2.png'),
+            backgroundImage: const AssetImage('assets/bg2.png'),
             title: 'Discover Recipes.',
             description:
                 'Explore an extensive collection of recipes spanning various cuisines, dietary preferences, and cooking levels.',
@@ -27,7 +27,7 @@ class WelcomePage extends StatelessWidget {
             textColor: const Color.fromARGB(255, 0, 0, 0),
           ),
           OnboardingPageModel(
-            backgroundImage: const AssetImage('../../assets/bg3.png'),
+            backgroundImage: const AssetImage('assets/bg3.png'),
             title: 'Share Creations',
             description:
                 'Share your culinary masterpieces with the community through photos, videos, and detailed recipe descriptions.',
@@ -35,7 +35,7 @@ class WelcomePage extends StatelessWidget {
             textColor: const Color.fromARGB(255, 0, 0, 0),
           ),
           OnboardingPageModel(
-            backgroundImage: const AssetImage('../../assets/bg4.png'),
+            backgroundImage: const AssetImage('assets/bg4.png'),
             title: 'Connect with Others',
             description:
                 'Follow your favorite cooks, engage in discussions, and exchange cooking tips and tricks with like-minded individuals.',

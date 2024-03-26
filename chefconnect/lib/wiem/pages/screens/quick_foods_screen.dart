@@ -1,11 +1,10 @@
-import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/widgets/food_card.dart';
 import 'package:chefconnect/wiem/pages/widgets/quick_screen_appbar.dart';
 import 'package:flutter/material.dart';
-
+import 'package:chefconnect/khedmet salma/Food.dart';
 
 class QuickFoodsScreen extends StatefulWidget {
-  const QuickFoodsScreen({super.key});
+  const QuickFoodsScreen({Key? key}) : super(key: key);
 
   @override
   State<QuickFoodsScreen> createState() => _QuickFoodsScreenState();
@@ -33,9 +32,9 @@ class _QuickFoodsScreenState extends State<QuickFoodsScreen> {
                     mainAxisSpacing: 20,
                   ),
                   itemBuilder: (context, index) => FoodCard(
-                    food: foods[index],
+                    food: FoodList.foods[index],
                   ),
-                  itemCount: foods.length,
+                  itemCount: FoodList.foods.length,
                 )
               ],
             ),

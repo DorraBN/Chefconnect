@@ -21,8 +21,8 @@ class Post {
 List<Post> posts = [
     Post(
       authorName: "James Elden",
-      authorImageUrl: "../../assets/james.png",
-      postImageUrl: "../../assets/tunisian.png",
+      authorImageUrl: "assets/james.png",
+      postImageUrl: "assets/tunisian.png",
       caption: "Caption for post",
       likes: 123,
       comments: 20,
@@ -30,8 +30,8 @@ List<Post> posts = [
     // Add more posts here if needed
     Post(
       authorName: "James Elden",
-      authorImageUrl: "../../assets/james.png",
-      postImageUrl: "../../assets/french.png",
+      authorImageUrl: "assets/james.png",
+      postImageUrl: "assets/french.png",
       caption: "Caption for post",
       likes: 123,
       comments: 20,
@@ -39,8 +39,8 @@ List<Post> posts = [
 
     Post(
       authorName: "James Elden",
-      authorImageUrl: "../../assets/james.png",
-      postImageUrl: "../../assets/mexican.png",
+      authorImageUrl: "assets/james.png",
+      postImageUrl: "assets/mexican.png",
       caption: "Caption for post",
       likes: 123,
       comments: 20,
@@ -48,8 +48,8 @@ List<Post> posts = [
 
     Post(
       authorName: "James Elden",
-      authorImageUrl: "../../assets/james.png",
-      postImageUrl: "../../assets/irish.png",
+      authorImageUrl: "assets/james.png",
+      postImageUrl: "assets/irish.png",
       caption: "Caption for post",
       likes: 123,
       comments: 20,

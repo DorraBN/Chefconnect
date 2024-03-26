@@ -66,7 +66,7 @@ class _RememberPageState extends State<RememberPage> {
                       },
                       child: Text('Send Reset Code'),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.green, // Couleur verte
+                        backgroundColor: Colors.green, // Couleur verte
                       ),
                     ),
                   ],

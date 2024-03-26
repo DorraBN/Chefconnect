@@ -1,4 +1,3 @@
-import 'package:chefconnect/fetchRecipes.dart';
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,7 +18,11 @@ void main() async {
     );
   } else {
     // Initialisation de Firebase pour les applications non web
-    await Firebase.initializeApp();
+try {
+  await Firebase.initializeApp();
+} catch (e) {
+  print('Error initializing Firebase: $e');
+}
   }
 
   // Lancez l'application Flutter
@@ -35,9 +38,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
     //  home: ProfilePage(), 
-      home:WelcomePage()// Remplacez ceci par une instance de Register
+    home:WelcomePage()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
-      // home: MainScreen(),
+     // home: MainScreen(),
     );
   }
 }

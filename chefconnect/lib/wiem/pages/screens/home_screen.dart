@@ -1,15 +1,13 @@
 import 'package:chefconnect/navigation.dart';
-import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/models/posts_data.dart';
 import 'package:chefconnect/wiem/pages/widgets/categories.dart';
 import 'package:chefconnect/wiem/pages/widgets/home_appbar.dart';
-import 'package:chefconnect/wiem/pages/widgets/home_searchbar.dart';
 import 'package:chefconnect/wiem/pages/widgets/quick_and_fast_list.dart';
 import 'package:flutter/material.dart';
-// Importez QuickAndFastList
+import 'package:chefconnect/khedmet salma/Food.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -17,11 +15,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String currentCat = "All";
-bool isLiked = false; // Initialize liked state for each list item
+  bool isLiked = false; // Initialize liked state for each list item
   bool isCommentVisible = true;
 
- // Sample post data
-  
   void _onCategorySelected(String category) {
     setState(() {
       currentCat = category;
@@ -31,14 +27,12 @@ bool isLiked = false; // Initialize liked state for each list item
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
-       title: Row(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          
             Text('Home'),
-            
-            
           ],
         ),
       ),
@@ -50,8 +44,6 @@ bool isLiked = false; // Initialize liked state for each list item
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HomeAppbar(),
-                const SizedBox(height: 20),
-                const HomeSearchBar(),
                 const SizedBox(height: 20),
                 const Text(
                   "Categories",
@@ -66,7 +58,7 @@ bool isLiked = false; // Initialize liked state for each list item
                   onCategorySelected: _onCategorySelected,
                 ),
                 const SizedBox(height: 20),
-                QuickAndFastList(foods: foods), // Pass the list of foods to QuickAndFastList
+                QuickAndFastList(foods: FoodList.foods),
                 const SizedBox(height: 20),
                 const Text(
                   "Posts",
@@ -76,8 +68,6 @@ bool isLiked = false; // Initialize liked state for each list item
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Add the rest of your code for displaying posts
-                // Display posts using ListView.builder
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -199,7 +189,7 @@ bool isLiked = false; // Initialize liked state for each list item
             ),
           ),
         ),
-      ), bottomNavigationBar: CustomBottomNavigationBar(),
+      ), 
     );
   }
 }

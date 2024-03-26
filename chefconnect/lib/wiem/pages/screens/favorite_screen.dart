@@ -1,5 +1,7 @@
+import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/wiem/pages/widgets/favorite_api_recipes.dart';
 import 'package:chefconnect/wiem/pages/widgets/favorite_post_recipes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -16,13 +18,12 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
-       title: Row(
+     appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          
-            Text('Favorite recipes'),
-            
+            Text('Favorites recipes'),
             IconButton(
               icon: Icon(Icons.favorite),
               onPressed: () {
@@ -30,6 +31,10 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
               },
             ),
           ],
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(CupertinoIcons.chevron_back),
         ),
       ),
       body: SafeArea(
@@ -74,6 +79,6 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
           ],
         ),
       ),
-    );
-  }
+  );
+}
 }

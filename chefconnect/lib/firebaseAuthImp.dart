@@ -5,7 +5,8 @@ class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<User?> signUpWithEmailAndPassword(String email, String password) async {
+  Future<User?> signUpWithEmailAndPassword(
+      String email, String password) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
@@ -19,6 +20,25 @@ class FirebaseAuthService {
       return null;
     }
   }
+Future<String?> getCollectionImageUrl(String userEmail) async {
+  try {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('registration')
+        .where('email', isEqualTo: userEmail)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      // Utilisez le premier document correspondant s'il y en a plusieurs (ce qui ne devrait pas arriver)
+      return querySnapshot.docs.first.get('imageUrl');
+    } else {
+      print('User not found in the registration collection.');
+      return null;
+    }
+  } catch (e) {
+    print("An error occurred: $e");
+    return null;
+  }
+}
+
 
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
@@ -36,21 +56,21 @@ class FirebaseAuthService {
   }
 
   Future<String?> getUsername(String userEmail) async {
-  try {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('registration')
-        .where('email', isEqualTo: userEmail)
-        .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      // Utilisez le premier document correspondant s'il y en a plusieurs (ce qui ne devrait pas arriver)
-      return querySnapshot.docs.first.get('username');
-    } else {
-      print('User not found in the registration collection.');
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('registration')
+          .where('email', isEqualTo: userEmail)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        // Utilize the first document if there are multiple (which should not happen)
+        return querySnapshot.docs.first.get('username');
+      } else {
+        print('User not found in the registration collection.');
+        return null;
+      }
+    } catch (e) {
+      print("An error occurred: $e");
       return null;
     }
-  } catch (e) {
-    print("An error occurred: $e");
-    return null;
   }
-}
 }

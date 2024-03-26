@@ -76,7 +76,7 @@ class SecurityPage extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // Définir la couleur de fond du bouton
+                    backgroundColor: Colors.green, // Définir la couleur de fond du bouton
                   ),
                 ),
               ),

@@ -4,6 +4,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
 import 'register.dart';
 
 void main() {
@@ -91,23 +96,38 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20.0),
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          hintText: 'Enter your email',
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.13),
-                          prefixIcon: Icon(Icons.email, color: Colors.black),
-                          hintStyle: TextStyle(color: Colors.black),
-                          errorText: _emailErrorText,
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
+                    SizedBox(height: 20.0),
+Container(
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(50.0),
+    color: Colors.white.withOpacity(0.13), // Couleur de fond avec opacité
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.2), // Couleur de l'ombre avec opacité
+        spreadRadius: 1,
+        blurRadius: 5,
+        offset: Offset(0, 3), // Décalage de l'ombre
+      ),
+    ],
+  ),
+  child: TextFormField(
+    controller: _emailController,
+    decoration: InputDecoration(
+      labelText: 'Email',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+      ),
+      hintText: 'Enter your email',
+      filled: true,
+      fillColor: Colors.white, // Fond transparent pour permettre à l'ombre de se voir
+      prefixIcon: Icon(Icons.email, color: Colors.black),
+      hintStyle: TextStyle(color: Colors.black),
+      errorText: _emailErrorText,
+    ),
+    style: TextStyle(color: Colors.black),
+  ),
+),
+
                       SizedBox(height: 10.0),
                       TextFormField(
                         controller: _passwordController,
@@ -176,6 +196,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 16.0),
                       ElevatedButton(
+
+
                         onPressed: _isLoading ? null : _signIn,
                         child: _isLoading
                             ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
@@ -187,8 +209,9 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -218,11 +241,12 @@ class _LoginPageState extends State<LoginPage> {
                           ElevatedButton.icon(
                             onPressed: _signInWithGoogle,
                             icon: Icon(Icons.email),
+
                             label: Text('Login with Google'),
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
-                              onPrimary: Colors.white,
+                              foregroundColor: Colors.white, backgroundColor: Colors.red,
                             ),
+
                           ),
                         ],
                       ),
@@ -296,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
         print("User was successfully logged In");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
         setState(() {
@@ -327,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       }
     } catch (e) {
@@ -350,7 +374,7 @@ class _LoginPageState extends State<LoginPage> {
       // Naviguer vers l'écran d'accueil
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } else {
       print("La connexion Facebook a échoué");

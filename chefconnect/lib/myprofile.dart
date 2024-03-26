@@ -1,9 +1,11 @@
-import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chefconnect/firebaseAuthImp.dart';
+import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
+import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/myposts.dart';
 import 'package:chefconnect/setings.dart';
- // Remplacez par le chemin de votre fichier FirebaseAuthService
 
 class ProfilePage1 extends StatefulWidget {
   const ProfilePage1({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class ProfilePage1 extends StatefulWidget {
 class _ProfilePage1State extends State<ProfilePage1> {
   String? fullName;
   String? email;
+  String? imageUrl; // Add imageUrl variable
 
   @override
   void initState() {
@@ -27,9 +30,12 @@ class _ProfilePage1State extends State<ProfilePage1> {
     String? useremail = currentUser?.email;
     if (useremail != null) {
       String? username = await FirebaseAuthService().getUsername(useremail);
+      String? userImageUrl =
+          await FirebaseAuthService().getCollectionImageUrl(useremail); // Get user image URL
       setState(() {
         fullName = username;
         email = currentUser?.email;
+        imageUrl = userImageUrl; // Set user image URL
       });
     }
   }
@@ -107,7 +113,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
         children: [
           Expanded(
             flex: 2,
-            child: _TopPortion(),
+            child: _TopPortion(imageUrl: imageUrl), // Pass imageUrl to _TopPortion
           ),
           Expanded(
             flex: 3,
@@ -117,7 +123,10 @@ class _ProfilePage1State extends State<ProfilePage1> {
                 children: [
                   Text(
                     fullName ?? 'Full Name',
-                    style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -152,88 +161,14 @@ class _ProfilePage1State extends State<ProfilePage1> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      
     );
   }
-}
-
-class _AvatarImage extends StatelessWidget {
-  final String url;
-  const _AvatarImage(this.url, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(url))),
-    );
-  }
-}
-
-
-class _ProfileInfoRow extends StatelessWidget {
-  const _ProfileInfoRow({Key? key}) : super(key: key);
-
-  final List<ProfileInfoItem> _items = const [
-    ProfileInfoItem("Likes", 900),
-    ProfileInfoItem("Followers", 120),
-    ProfileInfoItem("Following", 200),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      constraints: const
- BoxConstraints(maxWidth: 400),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _items
-            .map((item) => Expanded(
-                  child: Row(
-                    children: [
-                      if (_items.indexOf(item) != 0) const VerticalDivider(),
-                      Expanded(child: _singleItem(context, item)),
-                    ],
-                  ),
-                ))
-            .toList(),
-      ),
-    );
-  }
-
-  Widget _singleItem(BuildContext context, ProfileInfoItem item) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              item.value.toString(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ),
-          Text(
-            item.title,
-            style: Theme.of(context).textTheme.caption,
-          )
-        ],
-      );
-}
-
-class ProfileInfoItem {
-  final String title;
-  final int value;
-  const ProfileInfoItem(this.title, this.value);
 }
 
 class _TopPortion extends StatelessWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+  final String? imageUrl;
+  const _TopPortion({Key? key, this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -266,13 +201,13 @@ class _TopPortion extends StatelessWidget {
                   decoration: const BoxDecoration(
                     color: Colors.black,
                     shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        'https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain',
-                      ),
-                    ),
                   ),
+                  child: imageUrl != null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl!),
+                        )
+                      : null,
                 ),
                 Positioned(
                   bottom: 0,
@@ -294,24 +229,6 @@ class _TopPortion extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class CustomBottomNavigationBar extends StatelessWidget {
-  const CustomBottomNavigationBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      height: 50,
-      child: Center(
-        child: Text(
-          'Custom Bottom Navigation Bar',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
     );
   }
 }
