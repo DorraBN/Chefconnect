@@ -134,7 +134,6 @@ class _NewPostPageState extends State<NewPostPage> {
           ],
         ),
       ),
-    bottomNavigationBar: CustomBottomNavigationBar(),
   );
 }
 

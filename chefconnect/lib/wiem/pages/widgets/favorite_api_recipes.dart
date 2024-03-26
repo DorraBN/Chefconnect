@@ -143,7 +143,7 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
           ],
         ),
       ),
-    bottomNavigationBar: CustomBottomNavigationBar(),
+    
   );
 }
 }
