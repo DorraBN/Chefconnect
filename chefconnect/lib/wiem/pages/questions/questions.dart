@@ -1,8 +1,9 @@
-import 'package:chefconnect/login.dart';
-import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
-import 'package:chefconnect/wiem/pages/screens/quick_foods_screen.dart';
+import 'package:chefconnect/image.dart';
 import 'package:flutter/material.dart';
-import 'package:concentric_transition/concentric_transition.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:concentric_transition/page_view.dart';
+ // Ajout de l'import pour l'image.dart
 
 final pages = [
   const PageData(
@@ -58,9 +59,26 @@ final pages = [
   ),
 ];
 
-class ConcentricAnimationOnboarding extends StatefulWidget {
-  const ConcentricAnimationOnboarding({Key? key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Concentric Onboarding',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ConcentricAnimationOnboarding(),
+    );
+  }
+}
+
+class ConcentricAnimationOnboarding extends StatefulWidget {
   @override
   _ConcentricAnimationOnboardingState createState() => _ConcentricAnimationOnboardingState();
 }
@@ -71,46 +89,46 @@ class _ConcentricAnimationOnboardingState extends State<ConcentricAnimationOnboa
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-return Scaffold(
-  body: ConcentricPageView(
-    colors: pages.map((p) => p.bgColor).toList(),
-    nextButtonBuilder: (context) => Padding(
-      padding: const EdgeInsets.only(left: 3), // visual center
-      child: ElevatedButton(
-        onPressed: isCardSelected ? () {} : null,
-        child: Icon(
-          Icons.navigate_next,
-          size: screenWidth * 0.08,
+    return Scaffold(
+      body: ConcentricPageView(
+        colors: pages.map((p) => p.bgColor).toList(),
+        nextButtonBuilder: (context) => Padding(
+          padding: const EdgeInsets.only(left: 3),
+          child: ElevatedButton(
+            onPressed: isCardSelected ? () {} : null,
+            child: Icon(
+              Icons.navigate_next,
+              size: screenWidth * 0.08,
+            ),
+          ),
         ),
+        itemBuilder: (index) {
+          final page = pages[index % pages.length];
+          return SafeArea(
+            child: _Page(
+              page: page,
+              onCardSelected: () {
+                setState(() {
+                  isCardSelected = true;
+                });
+              },
+            ),
+          );
+        },
       ),
-    ),
-    itemBuilder: (index) {
-      final page = pages[index % pages.length];
-      return SafeArea(
-        child: _Page(
-          page: page,
-          onCardSelected: () {
-            setState(() {
-              isCardSelected = true;
-            });
-          },
-        ),
-      );
-    },
-  ),
-  floatingActionButton: FloatingActionButton.extended(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>LoginPage()),
-      );
-    },
-    backgroundColor: Colors.green,
-    icon: Icon(Icons.navigate_next),
-    label: Text('Skip'),
-  ),
-  floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-);
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+          );
+        },
+        backgroundColor: Colors.green,
+        icon: Icon(Icons.navigate_next),
+        label: Text('Skip'),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+    );
   }
 }
 
@@ -151,7 +169,8 @@ class _Page extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          if (page.responses != null && page.responseBackgroundImages != null)
+      
+        if (page.responses != null && page.responseBackgroundImages != null)
             _buildResponseRows(context, page.responses!, page.responseBackgroundImages!),
         ],
         const Spacer(),
@@ -176,19 +195,30 @@ class _Page extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             onCardSelected();
+            _saveResponseToFirestore(responses[index]); // Enregistrer la réponse dans Firestore
           },
           child: _ResponseCard(
             response: responses[index],
-            backgroundImage: backgroundImages[index],
+            backgroundImage: backgroundImages[index
+],
           ),
         );
       }),
     );
   }
+
+  Future<void> _saveResponseToFirestore(String response) async {
+    try {
+      await FirebaseFirestore.instance.collection('registration').add({
+        'response': response,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      print('Response saved to Firestore: $response');
+    } catch (error) {
+      print('Failed to save response to Firestore: $error');
+    }
+  }
 }
-
-
-
 
 class _ResponseCard extends StatefulWidget {
   final String response;

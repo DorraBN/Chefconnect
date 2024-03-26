@@ -1,10 +1,13 @@
-import 'package:chefconnect/myprofile.dart';
+import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/remember.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+
 import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'register.dart'; // Importez la classe RegisterPage depuis le fichier register.dart
- // Importez la classe ProfilePage1 depuis le fichier profile.dart
+
+import 'package:google_sign_in/google_sign_in.dart';
+import 'register.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -19,30 +22,34 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false;
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  String? _emailErrorText;
+  String? _passwordErrorText;
   bool _rememberMe = false;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Image de fond
-         DecoratedBox(
-  position: DecorationPosition.background,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
-      colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-    image: DecorationImage(
-      image: AssetImage("assets/R5.png"), // Chemin de votre image
-      fit: BoxFit.cover,
-    ),
-  ),
-  child: Container(),
-),
-
+          DecoratedBox(
+            position: DecorationPosition.background,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Color.fromARGB(255, 114, 242, 108),
+                  Color.fromARGB(255, 244, 207, 84),
+                ],
+              ),
+            ),
+            child: Container(),
+          ),
           Positioned(
             left: 20,
             bottom: 20,
@@ -50,12 +57,12 @@ class _LoginPageState extends State<LoginPage> {
             child: IconButton(
               icon: Icon(Icons.home),
               onPressed: () {
-                Navigator.pop(context); // Retour à la page initiale
+                Navigator.pop(context);
               },
               color: Colors.black,
             ),
           ),
-          Center( // Centrer le container verticalement et horizontalement
+          Center(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
@@ -70,10 +77,8 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.restaurant,
-                              size: 30, color: Colors.black), // Icône de restaurant
+                          Icon(Icons.restaurant, size: 30, color: Colors.black),
                           SizedBox(width: 10),
-                          
                           Text(
                             'Login In',
                             style: TextStyle(
@@ -82,11 +87,12 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.black,
                             ),
                             textAlign: TextAlign.center,
-                          ), // form h3
+                          ),
                         ],
                       ),
                       SizedBox(height: 20.0),
                       TextFormField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           border: OutlineInputBorder(
@@ -94,22 +100,16 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your email',
                           filled: true,
-                          fillColor:
-                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor: Colors.white.withOpacity(0.13),
                           prefixIcon: Icon(Icons.email, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
+                          errorText: _emailErrorText,
                         ),
-                        style: TextStyle(color: Colors.black), // form *
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          // Add email validation logic if needed
-                          return null;
-                        },
+                        style: TextStyle(color: Colors.black),
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -118,28 +118,20 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           hintText: 'Enter your password',
                           filled: true,
-                          fillColor:
-                              Colors.white.withOpacity(0.13), // background-color: rgba(255,255,255,0.13);
+                          fillColor: Colors.white.withOpacity(0.13),
                           prefixIcon: Icon(Icons.lock, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           suffixIcon: IconButton(
-                            icon: Icon(_isPasswordVisible
-                                ? Icons.visibility_off
-                                : Icons.visibility),
+                            icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
                             onPressed: () {
                               setState(() {
                                 _isPasswordVisible = !_isPasswordVisible;
                               });
                             },
                           ),
+                          errorText: _passwordErrorText,
                         ),
-                        style: TextStyle(color: Colors.black), // form *
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
+                        style: TextStyle(color: Colors.black),
                       ),
                       SizedBox(height: 16.0),
                       Row(
@@ -175,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                               'Forgot Password?',
                               style: TextStyle(
                                 color: Colors.blue,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
@@ -183,36 +175,36 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 16.0),
                       ElevatedButton(
-                        onPressed: () {
-                          // Add login logic here
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainScreen()),
-                          );
-                        },
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+
+
+                        onPressed: _isLoading ? null : _signIn,
+                        child: _isLoading
+                            ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                            : Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 20,
-                          vertical: 25.0), // Espacement interne du bouton
-                    // Taille minimale du bouton
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25.0),
                         ),
                       ),
                       SizedBox(height: 16.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('--or--', style: TextStyle(color: Colors.black, fontSize: 16.0)),
+                          Text(
+                            '--or--',
+                            style: TextStyle(color: Colors.black, fontSize: 16.0),
+                          ),
                         ],
                       ),
                       SizedBox(height: 16.0),
@@ -225,13 +217,14 @@ class _LoginPageState extends State<LoginPage> {
                             label: Text('Login with Facebook'),
                           ),
                           ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: _signInWithGoogle,
                             icon: Icon(Icons.email),
-  label: Text('Login with Google'),
-  style: ElevatedButton.styleFrom(
-    foregroundColor: Colors.white, backgroundColor: Colors.red, // Change la couleur du texte du bouton
-  ),
- 
+
+                            label: Text('Login with Google'),
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.red,
+                            ),
+
                           ),
                         ],
                       ),
@@ -240,7 +233,6 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onTap: () {
-                            // Navigate to the registration page (RegisterPage)
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => Register()),
@@ -256,10 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Text(
                                 "Register",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue),
                               ),
                               Icon(Icons.arrow_forward, color: Colors.blue),
                             ],
@@ -275,5 +264,81 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    setState(() {
+      _emailErrorText = null;
+      _passwordErrorText = null;
+      _isLoading = true; // Set loading state to true
+    });
+
+    if (email.isEmpty) {
+      setState(() {
+        _emailErrorText = 'Please enter your email';
+        _isLoading = false; // Set loading state to false
+      });
+      return;
+    }
+
+    if (password.isEmpty) {
+      setState(() {
+        _passwordErrorText = 'Please enter your password';
+        _isLoading = false; // Set loading state to false
+      });
+      return;
+    }
+
+    try {
+      User? user = await _auth.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        print("User was successfully logged In");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } else {
+        setState(() {
+          _emailErrorText = 'Email or password is incorrect';
+          _passwordErrorText = 'Email or password is incorrect';
+          _isLoading = false; // Set loading state to false
+        });
+      }
+    } catch (e) {
+      print("Error occurred during user login: $e");
+      setState(() {
+        _emailErrorText = 'An error occurred. Please try again later';
+        _passwordErrorText = 'An error occurred. Please try again later';
+        _isLoading = false; // Set loading state to false
+      });
+    }
+  }
+
+  _signInWithGoogle() async {
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+
+        await _firebaseAuth.signInWithCredential(credential);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
+    } catch (e) {
+      print("Some error occurred: $e");
+    }
   }
 }

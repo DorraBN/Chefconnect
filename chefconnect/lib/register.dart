@@ -1,6 +1,9 @@
-import 'package:chefconnect/success.dart';
+import 'package:chefconnect/firebaseAuthImp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'login.dart'; // Importez la page de connexion
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'success.dart';
+import 'login.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,8 +18,9 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
-   bool _isPasswordVisible1 = false;
-
+  bool _isPasswordVisible1 = false;
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   String _selectedGender = '';
   TextEditingController _usernameController = TextEditingController();
@@ -25,13 +29,19 @@ class _RegisterState extends State<Register> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  bool _registerButtonClicked = false; // Etat du bouton "Register" 
+  bool _registerButtonClicked = false; // Etat du bouton "Register"
   // Expression régulière exigeant une longueur minimale de 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
-RegExp passwordPattern = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
+  RegExp passwordPattern =
+      RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
+  RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-
-RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +49,20 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       body: Stack(
         children: [
           // Image de fond
-        DecoratedBox(
-  position: DecorationPosition.background,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
-     colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-   
-  ),
-  child: Container(),
-),
+          DecoratedBox(
+            position: DecorationPosition.background,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Color.fromARGB(255, 114, 242, 108),
+                  Color.fromARGB(255, 244, 207, 84)
+                ],
+              ),
+            ),
+            child: Container(),
+          ),
 
           Positioned(
             left: 20,
@@ -85,7 +97,7 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           ),
           Positioned.fill(
             child: Container(
-              alignment: Alignment.center, 
+              alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
                 child: Container(
@@ -98,7 +110,9 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.restaurant, size: 30, color: Colors.black), // Icône de restaurant
+                            Icon(Icons.restaurant,
+                                size: 30,
+                                color: Colors.black), // Icône de restaurant
                             SizedBox(width: 10),
                             Text(
                               'Sign Up',
@@ -121,7 +135,10 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             ),
                             hintText: 'Enter your username',
                             filled: true,
-                            fillColor: _usernameController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 37, 188, 10).withOpacity(0.13),
+                            fillColor: _usernameController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 37, 188, 10)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.person, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -143,7 +160,10 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             ),
                             hintText: 'Enter your pseudo name',
                             filled: true,
-                            fillColor: _pseudoController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _pseudoController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.person, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -155,32 +175,31 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _emailController,
-  decoration: InputDecoration(
-    labelText: 'Email',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your email',
-    filled: true,
-    fillColor: _emailController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.email, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-  ),
-  style: TextStyle(color: Colors.black), // form *
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!emailPattern.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  },
-),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your email',
+                            filled: true,
+                            fillColor: _emailController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
+                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                          ),
+                          style: TextStyle(color: Colors.black), // form *
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _phoneController,
@@ -191,7 +210,10 @@ TextFormField(
                             ),
                             hintText: 'Enter your phone number',
                             filled: true,
-                            fillColor: _phoneController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _phoneController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.phone, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -203,41 +225,45 @@ TextFormField(
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _passwordController,
-  obscureText: !_isPasswordVisible,
-  decoration: InputDecoration(
-    labelText: 'Password',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your password',
-    filled: true,
-    fillColor: _passwordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.lock, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-    suffixIcon: IconButton(
-      icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-      onPressed: () {
-        setState(() {
-          _isPasswordVisible = !_isPasswordVisible;
-        });
-      },
-    ),
-  ),
-  style: TextStyle(color: Colors.black),
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (!passwordPattern.hasMatch(value)) {
-      return 'Password must contain at least one uppercase and one special character';
-    }
-    return null;
-  },
-),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your password',
+                            filled: true,
+                            fillColor: _passwordController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
+                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                            suffixIcon: IconButton(
+                              icon: Icon(_isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          style: TextStyle(color: Colors.black),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            if (!passwordPattern.hasMatch(value)) {
+                              return 'Password must contain at least one uppercase and one special character';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _confirmPasswordController,
@@ -249,11 +275,16 @@ TextFormField(
                             ),
                             hintText: 'Re-enter your password',
                             filled: true,
-                            fillColor: _confirmPasswordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _confirmPasswordController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.lock, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                             suffixIcon: IconButton(
-                              icon: Icon(_isPasswordVisible1 ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(_isPasswordVisible1
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible1 = !_isPasswordVisible1;
@@ -275,7 +306,9 @@ TextFormField(
                         SizedBox(height: 10.0),
                         Row(
                           children: <Widget>[
-                            Text('Gender:', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Gender:',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                             SizedBox(width: 10),
                             Radio(
                               value: 'Male',
@@ -286,7 +319,9 @@ TextFormField(
                                 });
                               },
                             ),
-                            Text('Male', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Male',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                             SizedBox(width: 10),
                             Radio(
                               value: 'Female',
@@ -297,28 +332,62 @@ TextFormField(
                                 });
                               },
                             ),
-                            Text('Female', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Female',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                           ],
                         ),
-                       SizedBox(height: 16.0),
-GestureDetector(
-  onTap: () {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _registerButtonClicked = true;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Processing registration...'),
-        ),
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-      ); // Redirection vers la page de succès d'inscription
-    }
-  },
-  child: Container(
+                        SizedBox(height: 16.0),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                          
+                              setState(() {
+                                _registerButtonClicked = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Processing registration...'),
+                                ),
+                              );
+    _signup();
+                              // Enregistrement des données dans la collection Firestore
+                              FirebaseFirestore.instance
+                                  .collection('registration')
+                                  .add({
+                                'username': _usernameController.text,
+                                'pseudo': _pseudoController.text,
+                                'email': _emailController.text,
+                                'phone': _phoneController.text,
+                                'password': _passwordController.text,
+                                'confirm': _confirmPasswordController.text,
+                                'gender': _selectedGender,
+                              }).then((value) {
+                                // Enregistrement réussi
+                                print('User registered successfully');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RegistrationSuccessPage()),
+                                );
+                              }).catchError((error) {
+                                // Erreur lors de l'enregistrement
+                                print('Failed to register user: $error');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Failed to register user'),
+                                  ),
+                                );
+                              }).whenComplete(() {
+                                // Réinitialisation de l'état du bouton après l'enregistrement
+                                setState(() {
+                                  _registerButtonClicked = false;
+                                });
+                              });
+                            }
+                          },
+                           child: Container(
     margin: EdgeInsets.symmetric(horizontal: 20.0),
     height: 50,
     decoration: BoxDecoration(
@@ -327,14 +396,16 @@ GestureDetector(
     ),
     padding: EdgeInsets.symmetric(horizontal: 20),
     child: Center(
-      child: Text(
-        'Register',
-        style: TextStyle(
-          color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: _registerButtonClicked
+          ? CircularProgressIndicator() // Affichage du CircularProgressIndicator lors du chargement
+          : Text(
+              'Register',
+              style: TextStyle(
+                color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
     ),
   ),
 ),
@@ -345,7 +416,8 @@ GestureDetector(
                             // Naviguer vers la page de connexion
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => LoginPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
                             );
                           },
                           child: Container(
@@ -355,12 +427,16 @@ GestureDetector(
                               children: [
                                 Text(
                                   "Already have an account? ",
-                                  style: TextStyle(fontSize: 12, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.black),
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   "Login",
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue),
                                 ),
                                 Icon(Icons.arrow_forward, color: Colors.blue),
                               ],
@@ -378,7 +454,25 @@ GestureDetector(
       ),
     );
   }
+
+  void _signup() async {
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      User? user = await _auth.signUpWithEmailAndPassword(email, password);
+      if (user != null) {
+        print("User was successfully created");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
+        );
+      } else {
+        print("User creation failed: User object is null");
+      }
+    } catch (e) {
+      print("Error occurred during user creation: $e");
+    }
+  }
 }
-
-
-

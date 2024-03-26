@@ -1,3 +1,5 @@
+import 'package:chefconnect/firebaseAuthImp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'login.dart'; // Importez la page de connexion
 
@@ -14,7 +16,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
-
+  final FirebaseAuthService _auth = FirebaseAuthService();
   final _formKey = GlobalKey<FormState>();
   String _selectedGender = '';
   TextEditingController _usernameController = TextEditingController();
@@ -23,13 +25,12 @@ class _RegisterState extends State<Register> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  bool _registerButtonClicked = false; // Etat du bouton "Register" 
+  bool _registerButtonClicked = false; // Etat du bouton "Register"
   // Expression régulière exigeant une longueur minimale de 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
-RegExp passwordPattern = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
+  RegExp passwordPattern =
+      RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
 
-
-RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
+  RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,11 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           DecoratedBox(
             position: DecorationPosition.background,
             decoration: BoxDecoration(
-              image: DecorationImage(
+              image: const DecorationImage(
+
                 image: AssetImage("assets/1.png"), // Remplacez "assets/background_image.jpg" par le chemin de votre image
+                /*image: AssetImage(
+                    "../assets/R5.png"),*/ // Remplacez "assets/background_image.jpg" par le chemin de votre image
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,7 +84,7 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
           ),
           Positioned.fill(
             child: Container(
-              alignment: Alignment.center, 
+              alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
               child: SingleChildScrollView(
                 child: Container(
@@ -93,7 +97,9 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.restaurant, size: 30, color: Colors.black), // Icône de restaurant
+                            Icon(Icons.restaurant,
+                                size: 30,
+                                color: Colors.black), // Icône de restaurant
                             SizedBox(width: 10),
                             Text(
                               'Sign Up',
@@ -116,7 +122,10 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             ),
                             hintText: 'Enter your username',
                             filled: true,
-                            fillColor: _usernameController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 37, 188, 10).withOpacity(0.13),
+                            fillColor: _usernameController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 37, 188, 10)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.person, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -138,7 +147,10 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             ),
                             hintText: 'Enter your pseudo name',
                             filled: true,
-                            fillColor: _pseudoController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _pseudoController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.person, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -150,32 +162,34 @@ RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _emailController,
-  decoration: InputDecoration(
-    labelText: 'Email',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your email',
-    filled: true,
-    fillColor: _emailController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.email, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-  ),
-  style: TextStyle(color: Colors.black), // form *
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!emailPattern.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  },
-),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your email',
+                            filled: true,
+                            fillColor: _emailController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
+                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                          ),
+                          style: TextStyle(color: Colors.black), // form *
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            if (!emailPattern.hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _phoneController,
@@ -186,7 +200,10 @@ TextFormField(
                             ),
                             hintText: 'Enter your phone number',
                             filled: true,
-                            fillColor: _phoneController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _phoneController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.phone, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -198,41 +215,45 @@ TextFormField(
                             return null;
                           },
                         ),
-                       SizedBox(height: 10.0),
-TextFormField(
-  controller: _passwordController,
-  obscureText: !_isPasswordVisible,
-  decoration: InputDecoration(
-    labelText: 'Password',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50.0),
-    ),
-    hintText: 'Enter your password',
-    filled: true,
-    fillColor: _passwordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-    prefixIcon: Icon(Icons.lock, color: Colors.black),
-    hintStyle: TextStyle(color: Colors.black),
-    suffixIcon: IconButton(
-      icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-      onPressed: () {
-        setState(() {
-          _isPasswordVisible = !_isPasswordVisible;
-        });
-      },
-    ),
-  ),
-  style: TextStyle(color: Colors.black),
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (!passwordPattern.hasMatch(value)) {
-      return 'Password must contain at least one uppercase and one special character';
-    }
-    return null;
-  },
-),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter your password',
+                            filled: true,
+                            fillColor: _passwordController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
+                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                            suffixIcon: IconButton(
+                              icon: Icon(_isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          style: TextStyle(color: Colors.black),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            if (!passwordPattern.hasMatch(value)) {
+                              return 'Password must contain at least one uppercase and one special character';
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _confirmPasswordController,
@@ -244,11 +265,16 @@ TextFormField(
                             ),
                             hintText: 'Re-enter your password',
                             filled: true,
-                            fillColor: _confirmPasswordController.text.isEmpty ? Colors.white.withOpacity(0.13) : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                            fillColor: _confirmPasswordController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
                             prefixIcon: Icon(Icons.lock, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                             suffixIcon: IconButton(
-                              icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(_isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible = !_isPasswordVisible;
@@ -270,7 +296,9 @@ TextFormField(
                         SizedBox(height: 10.0),
                         Row(
                           children: <Widget>[
-                            Text('Gender:', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Gender:',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                             SizedBox(width: 10),
                             Radio(
                               value: 'Male',
@@ -281,7 +309,9 @@ TextFormField(
                                 });
                               },
                             ),
-                            Text('Male', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Male',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                             SizedBox(width: 10),
                             Radio(
                               value: 'Female',
@@ -292,13 +322,16 @@ TextFormField(
                                 });
                               },
                             ),
-                            Text('Female', style: TextStyle(fontSize: 14, color: Colors.black)),
+                            Text('Female',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
                           ],
                         ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
+                              _signup();
                               setState(() {
                                 _registerButtonClicked = true;
                               });
@@ -314,14 +347,18 @@ TextFormField(
                             height: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: _registerButtonClicked ? Colors.orange : Colors.green,
+                              color: _registerButtonClicked
+                                  ? Colors.orange
+                                  : Colors.green,
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Center(
                               child: Text(
                                 'Register',
                                 style: TextStyle(
-                                  color: _registerButtonClicked ? Colors.white : Color(0xFF080710),
+                                  color: _registerButtonClicked
+                                      ? Colors.white
+                                      : Color(0xFF080710),
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -335,7 +372,8 @@ TextFormField(
                             // Naviguer vers la page de connexion
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => LoginPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
                             );
                           },
                           child: Container(
@@ -345,12 +383,16 @@ TextFormField(
                               children: [
                                 Text(
                                   "Already have an account? ",
-                                  style: TextStyle(fontSize: 12, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.black),
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   "Login",
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue),
                                 ),
                                 Icon(Icons.arrow_forward, color: Colors.blue),
                               ],
@@ -368,7 +410,17 @@ TextFormField(
       ),
     );
   }
+
+  void _signup() async {
+    print("rani wselt");
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    if (user != null) {
+      print("user is sucessfully created");
+      // Navigator.pushNamed(context, );
+    } else
+      print("some error occured");
+  }
 }
-
-
-

@@ -1,27 +1,47 @@
-import 'package:chefconnect/register.dart';
-import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // Importez kIsWeb pour détecter si l'application est web
 
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    // Initialisation de Firebase pour les applications web
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyDScAg-Rj4X63Sgs8RJCRxgZPsDeIc7fKE",
+        appId: "1:54968741572:android:02d1e53c680040c7ece391",
+        messagingSenderId: "your key",
+        projectId: "chefconnect-2ac02",
+      ),
+    );
+  } else {
+    // Initialisation de Firebase pour les applications non web
+try {
+  await Firebase.initializeApp();
+} catch (e) {
+  print('Error initializing Firebase: $e');
+}
+  }
+
+  // Lancez l'application Flutter
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-   home:  WelcomePage(), // Remplacez ceci par une instance de Register
-
-
-     // home: ConcentricAnimationOnboarding() ,
-      //home: MainScreen(),
+    //  home: ProfilePage(), 
+      home:MainScreen()// Remplacez ceci par une instance de Register
+      // home: ConcentricAnimationOnboarding() ,
+      // home: MainScreen(),
     );
   }
 }

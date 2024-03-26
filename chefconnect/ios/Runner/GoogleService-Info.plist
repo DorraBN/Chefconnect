@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyABGSNQGtRE6b07eMRpSe5gVkO-yarui5Y</string>
+	<key>GCM_SENDER_ID</key>
+	<string>54968741572</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.chefconnect</string>
+	<key>PROJECT_ID</key>
+	<string>chefconnect-2ac02</string>
+	<key>STORAGE_BUCKET</key>
+	<string>chefconnect-2ac02.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:54968741572:ios:7a3de9255bfcb0ecece391</string>
+</dict>
+</plist>

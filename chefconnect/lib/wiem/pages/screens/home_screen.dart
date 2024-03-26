@@ -1,10 +1,12 @@
+import 'package:chefconnect/navigation.dart';
 import 'package:chefconnect/wiem/pages/models/food.dart';
 import 'package:chefconnect/wiem/pages/models/posts_data.dart';
 import 'package:chefconnect/wiem/pages/widgets/categories.dart';
 import 'package:chefconnect/wiem/pages/widgets/home_appbar.dart';
 import 'package:chefconnect/wiem/pages/widgets/home_searchbar.dart';
 import 'package:chefconnect/wiem/pages/widgets/quick_and_fast_list.dart';
-import 'package:flutter/material.dart';// Importez QuickAndFastList
+import 'package:flutter/material.dart';
+// Importez QuickAndFastList
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,8 +31,16 @@ bool isLiked = false; // Initialize liked state for each list item
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+      appBar: AppBar(backgroundColor: Color.fromARGB(255, 244, 206, 54),
+       title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          
+            Text('Home'),
+            
+            
+          ],
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -189,7 +199,7 @@ bool isLiked = false; // Initialize liked state for each list item
             ),
           ),
         ),
-      ),
+      ), bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 }

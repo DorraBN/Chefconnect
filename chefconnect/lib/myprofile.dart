@@ -2,6 +2,7 @@ import 'package:chefconnect/myposts.dart';
 import 'package:chefconnect/navigation.dart';
 
 import 'package:chefconnect/setings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,7 @@ class ProfilePage1 extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
+               FirebaseAuth.instance.signOut();
               // Add logout logic here
               // Rediriger vers la page d'accueil après la déconnexion
               Navigator.pushReplacementNamed(context, '/');
