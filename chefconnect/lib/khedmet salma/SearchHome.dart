@@ -7,8 +7,7 @@ import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-
-
+import 'package:chefconnect/testRecipes.dart';
 
 import 'CustomButton.dart';
 
@@ -23,7 +22,7 @@ class _SearchHome extends State<SearchHome> {
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
-  Icon favorite_icon = new Icon(IconlyLight.heart); 
+  Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
     Post(
       username: "James Elden",
@@ -209,7 +208,7 @@ class _SearchHome extends State<SearchHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RecipeDetails(food: recipe)),
+                                  builder: (context) => TestRecipes()),
                             );
                           },
                           title: Text((recipe.name),
@@ -337,23 +336,23 @@ class _SearchHome extends State<SearchHome> {
                                   ),
                                 ],
                               ),
-                                 Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Add a comment...',
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  // Add send comment functionality here
-                },
-              ),
-            ],
-          ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        hintText: 'Add a comment...',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.send),
+                                    onPressed: () {
+                                      // Add send comment functionality here
+                                    },
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         );
@@ -486,21 +485,19 @@ class _SearchHome extends State<SearchHome> {
     );
   }
 
-int ChangeColorToRed(int number) {
-  int newNumber = number;
+  int ChangeColorToRed(int number) {
+    int newNumber = number;
 
-  if (isLiked) {
-    favorite_icon = Icon(Icons.favorite, color: Colors.red);
-    newNumber++;
-  } else {
-   favorite_icon = Icon(IconlyLight.heart);
-    if (newNumber > 0) {
-      newNumber--; 
+    if (isLiked) {
+      favorite_icon = Icon(Icons.favorite, color: Colors.red);
+      newNumber++;
+    } else {
+      favorite_icon = Icon(IconlyLight.heart);
+      if (newNumber > 0) {
+        newNumber--;
+      }
     }
+
+    return newNumber;
   }
-
-  return newNumber;
-}
-
-
 }

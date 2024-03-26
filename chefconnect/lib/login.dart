@@ -99,23 +99,38 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20.0),
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          hintText: 'Enter your email',
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.13),
-                          prefixIcon: Icon(Icons.email, color: Colors.black),
-                          hintStyle: TextStyle(color: Colors.black),
-                          errorText: _emailErrorText,
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
+                    SizedBox(height: 20.0),
+Container(
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(50.0),
+    color: Colors.white.withOpacity(0.13), // Couleur de fond avec opacité
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.2), // Couleur de l'ombre avec opacité
+        spreadRadius: 1,
+        blurRadius: 5,
+        offset: Offset(0, 3), // Décalage de l'ombre
+      ),
+    ],
+  ),
+  child: TextFormField(
+    controller: _emailController,
+    decoration: InputDecoration(
+      labelText: 'Email',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+      ),
+      hintText: 'Enter your email',
+      filled: true,
+      fillColor: Colors.white, // Fond transparent pour permettre à l'ombre de se voir
+      prefixIcon: Icon(Icons.email, color: Colors.black),
+      hintStyle: TextStyle(color: Colors.black),
+      errorText: _emailErrorText,
+    ),
+    style: TextStyle(color: Colors.black),
+  ),
+),
+
                       SizedBox(height: 10.0),
                       TextFormField(
                         controller: _passwordController,

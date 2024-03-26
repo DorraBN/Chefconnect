@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chefconnect/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -133,8 +134,10 @@ class _NewPostPageState extends State<NewPostPage> {
           ],
         ),
       ),
-    );
-  }
+    bottomNavigationBar: CustomBottomNavigationBar(),
+  );
+}
+
 
   Future<void> _showImageSourceSelectionDialog() async {
     return showDialog<void>(

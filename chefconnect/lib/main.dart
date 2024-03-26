@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
     //  home: ProfilePage(), 
-      home:WelcomePage()// Remplacez ceci par une instance de Register
+    home:WelcomePage()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
-      // home: MainScreen(),
+     // home: MainScreen(),
     );
   }
 }

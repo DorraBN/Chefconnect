@@ -393,7 +393,7 @@ packages:
     source: hosted
     version: "0.12.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "761a297c042deedc1ffbb156d6e2af13886bb305c2a343a4d972504cd67dd938"
@@ -548,10 +548,17 @@ packages:
     dependency: transitive
     description:
       name: meta
+<<<<<<< HEAD
       sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+=======
+      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.0"
+>>>>>>> fe1672774a224cdd8359a357180e9173d791e52f
   mime:
     dependency: transitive
     description:
@@ -769,10 +776,20 @@ packages:
     dependency: transitive
     description:
       name: web
+<<<<<<< HEAD
       sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+=======
+      sha256: afe077240a270dcfd2aafe77602b4113645af95d0ad31128cc02bce5ac5d5152
+      url: "https://pub.dev"
+    source: hosted
+<<<<<<< HEAD
+    version: "0.3.0"
+=======
+    version: "0.1.4-beta"
+>>>>>>> fe1672774a224cdd8359a357180e9173d791e52f
   win32:
     dependency: transitive
     description:
@@ -789,6 +806,21 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+<<<<<<< HEAD
 sdks:
   dart: ">=3.3.0 <4.0.0"
   flutter: ">=3.19.0"
+=======
+>>>>>>> e3f87ac1beb86dc7dd45c1ea4fbbe5175adf48d7
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
+sdks:
+  dart: ">=3.2.0-194.0.dev <4.0.0"
+  flutter: ">=3.13.0"
+>>>>>>> fe1672774a224cdd8359a357180e9173d791e52f

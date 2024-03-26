@@ -1,3 +1,5 @@
+import 'package:chefconnect/navigation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chefconnect/khedmet salma/Food.dart'; // Adjusted import statement
 
@@ -141,6 +143,7 @@ class _FavoriteApiScreenState extends State<FavoriteApiScreen> {
           ],
         ),
       ),
-    );
-  }
+    bottomNavigationBar: CustomBottomNavigationBar(),
+  );
+}
 }

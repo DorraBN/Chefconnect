@@ -20,6 +20,25 @@ class FirebaseAuthService {
       return null;
     }
   }
+Future<String?> getCollectionImageUrl(String userEmail) async {
+  try {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('registration')
+        .where('email', isEqualTo: userEmail)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      // Utilisez le premier document correspondant s'il y en a plusieurs (ce qui ne devrait pas arriver)
+      return querySnapshot.docs.first.get('imageUrl');
+    } else {
+      print('User not found in the registration collection.');
+      return null;
+    }
+  } catch (e) {
+    print("An error occurred: $e");
+    return null;
+  }
+}
+
 
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
