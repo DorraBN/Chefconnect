@@ -385,6 +385,7 @@ class _RegisterState extends State<Register> {
                                 'gender': _selectedGender,
                                  'imageUrl':  _imageUrlController.text
                               }).then((value) {
+                                
                                 // Enregistrement réussi
                                 print('User registered successfully');
                                 Navigator.push(

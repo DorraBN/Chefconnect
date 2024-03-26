@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 
+=======
+import 'package:chefconnect/fetchRecipes.dart';
+>>>>>>> 281cfd53636aaaa2588e54449bde2532402f78df
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
