@@ -73,4 +73,5 @@ Future<String?> getCollectionImageUrl(String userEmail) async {
       return null;
     }
   }
+  
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
 import 'package:chefconnect/khedmet%20salma/CustomField.dart';
@@ -8,13 +7,15 @@ import 'package:chefconnect/khedmet%20salma/Food.dart';
 import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:chefconnect/testRecipes.dart';
-
+import 'dart:ui' as ui;
 import 'CustomButton.dart';
 
 class SearchHome extends StatefulWidget {
@@ -28,6 +29,7 @@ class _SearchHome extends State<SearchHome> {
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
+
   Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
     Post(
@@ -39,13 +41,10 @@ class _SearchHome extends State<SearchHome> {
       date: DateTime.now(),
       userProfileImageUrl: "../../assets/chat777.png",
     ),
-  
   ];
   @override
   void initState() {
     super.initState();
-     fetchRecipesData();
-
   }
 
   @override
@@ -94,11 +93,7 @@ class _SearchHome extends State<SearchHome> {
                           },
                           onEditingComplete: () {
                             previousSearchs.add(searchController.text);
-                            /*  Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()));
-                       */
+                            fetchRecipesData(searchController.text, 2);
                           },
                         ),
                       ),
@@ -203,67 +198,96 @@ class _SearchHome extends State<SearchHome> {
               Expanded(
                 child: TabBarView(
                   children: [
-                     recipes.isEmpty
-          ? Center(child: CircularProgressIndicator())
-                 :  ListView.separated(
-              padding: EdgeInsets.all(15),
-              itemCount: recipes.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                return ListTile(
-                  onTap: () {
-                  Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecipeDetails(recipe: recipes[index]),
-      ),
-    );
-                  },
-                  title: Text(recipe.title,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  leading: recipe.image != null
-                      ? Image.network(
-                          recipe.image!,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        )
-                      : SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Placeholder(),
-                        ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.access_time),
-                          Text('${recipe.readyInMinutes} min',
-                              style: TextStyle(fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.local_fire_department),
-                          Text('${recipe.servings} Servings',
-                              style: TextStyle(fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.star, color: Colors.yellow),
-                      Text('${recipe.rating}'), // Adjust as per your requirement
-                    ],
-                  ),
-                );
-              },
-            ),
+                    recipes.isEmpty
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.separated(
+                            padding: EdgeInsets.all(15),
+                            itemCount: recipes.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Divider(),
+                            itemBuilder: (context, index) {
+                              final recipe = recipes[index];
+                    
+                              return ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          RecipeDetails(recipe: recipes[index]),
+                                    ),
+                                  );
+                                },
+                                title: Text(recipe.title,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                leading: recipe.image != null
+                                    ? Image.network(
+                                        recipe.image!,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Placeholder(),
+                                      ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.access_time),
+                                        Text('${recipe.readyInMinutes} min',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal)),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.local_fire_department),
+                                        Text('${recipe.servings} Servings',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                trailing: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        // Toggle the isLiked property of the recipe
+                                        recipe.isLiked = !recipe.isLiked;
+                                        if (recipe.isLiked) {
+                                          // If the recipe is liked, set the icon color to red
+                                          // and save the like info to Firestore
+                                          saveLikeInfo(recipe.id);
+                                        }
+                                      });
+                                    },
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      fixedSize: const ui.Size(30, 30),
+                                    ),
+                                    iconSize: 20,
+                                    icon: recipe.isLiked
+                                        ? const Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                          )
+                                        : const Icon(Icons.favorite),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                     ListView.builder(
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
@@ -509,39 +533,107 @@ class _SearchHome extends State<SearchHome> {
 
     return newNumber;
   }
-   late List<Recipe> recipes = [];
 
+  late List<Recipe> recipes = [];
 
-Future<void> fetchRecipesData() async {
-  try {
-    final apiKey = APIkey.apikey;
-    final response = await http.get(Uri.parse(
-        'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=$apiKey'));
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      final List<dynamic> results = jsonData['results'];
+  Future<void> fetchRecipesData(String query, int number) async {
+    try {
+      setState(() {
+        recipes.clear();
+      });
 
-      // Fetch details for each recipe
-      for (var result in results) {
-        final int id = result['id'];
-        final recipeInfoResponse = await http.get(Uri.parse(
-            'https://api.spoonacular.com/recipes/$id/information?apiKey=$apiKey'));
-        if (recipeInfoResponse.statusCode == 200) {
-          final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
-          final recipe = Recipe.fromJson(recipeInfoJson);
-          setState(() {
-            recipes.add(recipe);
-          });
+      final apiKey = APIkey.apikey;
+      final response = await http.get(Uri.parse(
+          'https://api.spoonacular.com/recipes/complexSearch?query=$query&number=$number&apiKey=$apiKey'));
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final List<dynamic> results = jsonData['results'];
+
+        // Fetch details for each recipe
+        for (var result in results) {
+          final int id = result['id'];
+          final recipeInfoResponse = await http.get(Uri.parse(
+              'https://api.spoonacular.com/recipes/$id/information?apiKey=$apiKey'));
+          if (recipeInfoResponse.statusCode == 200) {
+            final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
+            final recipe = Recipe.fromJson(recipeInfoJson);
+              recipe.isLiked = await isRecipeLikedByUser(recipe.id);
+            setState(() {
+              recipes.add(recipe);
+               
+            });
+          }
         }
+      } else {
+        throw Exception('Failed to load recipes');
       }
+    } catch (error) {
+      // Handle errors if any
+      print('Error fetching recipes: $error');
+    }
+  }
+
+  Future<String?> getUserEmail() async {
+    String? userEmail;
+    try {
+      // Récupérer l'utilisateur actuellement authentifié
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Si l'utilisateur est authentifié, récupérer son adresse e-mail
+        userEmail = user.email;
+      }
+    } catch (e) {
+      print('Error getting user email: $e');
+    }
+    return userEmail;
+  }
+
+  Future<void> saveLikeInfo(int recipeId) async {
+    try {
+      // Get the user's email
+      String? userEmail = await getUserEmail();
+
+      // Check if the user email is not null
+      if (userEmail != null) {
+        // If not null, save the like info to Firestore
+        await FirebaseFirestore.instance.collection("favorites").add({
+          'recipeId': recipeId,
+          'userEmail': userEmail,
+        });
+        print('Like saved successfully!');
+      } else {
+        print('User email is null');
+      }
+    } catch (error) {
+      print('Failed to save like: $error');
+    }
+  }
+   Future<bool> isRecipeLikedByUser(int recipeId) async {
+  try {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+    
+    if (user != null) {
+      // Check if a document exists in the Firestore collection
+      // where both the recipeId and the user's ID match
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection("favorites")
+          .where('recipeId', isEqualTo: recipeId)
+          .where('userEmail', isEqualTo: user.email)
+          .get();
+
+      // If the document exists, the recipe is liked by the user
+      return querySnapshot.docs.isNotEmpty;
     } else {
-      throw Exception('Failed to load recipes');
+      // User is not authenticated
+      return false;
     }
   } catch (error) {
-    // Handle errors if any
-    print('Error fetching recipes: $error');
+    // Handle any errors
+    print('Error checking if recipe is liked: $error');
+    return false;
   }
 }
-
 
 }

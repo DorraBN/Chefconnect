@@ -96,7 +96,7 @@ class NewsFeedPage1 extends StatelessWidget {
   }
 }
 
-// Le reste de votre code reste inchangé
+
 
 
 class _AvatarImage extends StatelessWidget {
