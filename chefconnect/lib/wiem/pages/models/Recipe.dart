@@ -12,7 +12,7 @@ class Recipe {
   final int readyInMinutes;
   final int servings;
   final List<Uint8List> ingredients;
-  final String description;
+  late final String description;
 
   Recipe({
     required this.id,

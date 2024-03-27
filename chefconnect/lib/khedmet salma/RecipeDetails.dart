@@ -2,15 +2,23 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:html/parser.dart' as htmlParser;
 
 class RecipeDetails extends StatelessWidget {
   final Recipe recipe;
 
   const RecipeDetails({Key? key, required this.recipe}) : super(key: key);
+
+  String _removeHtmlTags(String htmlText) {
+    var document = htmlParser.parse(htmlText);
+    String parsedString = parse(document.body!.text).documentElement!.text;
+    return parsedString;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +61,8 @@ class RecipeDetails extends StatelessWidget {
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          height: 55,
-          width: 55,
+          height: 35,
+          width: 35,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
           ),
@@ -169,7 +177,7 @@ class RecipeDetails extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  recipe.description,
+                  _removeHtmlTags(recipe.description),
                   style: TextStyle(
                     color: AppColors.secondaryColor,
                   ),
@@ -192,8 +200,7 @@ class RecipeDetails extends StatelessWidget {
       },
     );
   }
-
-  Widget _buildIngredientImage(int recipeId) {
+ Widget _buildIngredientImage(int recipeId) {
     return FutureBuilder<Uint8List>(
       future: fetchIngredientImage(recipeId),
       builder: (context, snapshot) {

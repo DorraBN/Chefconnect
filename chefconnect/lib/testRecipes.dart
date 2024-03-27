@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:iconly/iconly.dart';
+// ignore: depend_on_referenced_packages
+import 'package:html/parser.dart' as htmlParser; // Importer htmlParser
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 
 class TestRecipes extends StatefulWidget {
@@ -21,30 +22,41 @@ class _TestRecipesState extends State<TestRecipes> {
   Future<void> fetchRecipesData() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=436c43ec025b43ecaff23cd2915e586e'));
+          'https://api.spoonacular.com/recipes/complexSearch?query=chicken&apiKey=3b1737ae2c7c4cf986632577fdcc4530'));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
         final List<dynamic> results = jsonData['results'];
 
-        // Fetch details for each reciper
+        // Fetch details for each recipe
         for (var result in results) {
           final int id = result['id'];
           final recipeInfoResponse = await http.get(Uri.parse(
-              'https://api.spoonacular.com/recipes/$id/information?apiKey=436c43ec025b43ecaff23cd2915e586e'));
+              'https://api.spoonacular.com/recipes/$id/information?apiKey=3b1737ae2c7c4cf986632577fdcc4530'));
           if (recipeInfoResponse.statusCode == 200) {
             final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
             final recipe = Recipe.fromJson(recipeInfoJson);
+            recipe.description = _removeHtmlTags(recipe.description);
             recipes.add(recipe);
           }
         }
 
-        setState(() {}); // Refresh the UI
+        setState(() {});
       } else {
         throw Exception('Failed to load recipes');
       }
     } catch (error) {
-      // Handle errors if any
+    
       print('Error fetching recipes: $error');
+    }
+  }
+
+  String _removeHtmlTags(String? htmlText) {
+    if (htmlText != null) {
+      var document = htmlParser.parse(htmlText); // Utiliser la méthode parse de htmlParser
+      String parsedString = document.body!.text; // Récupérer le texte du body
+      return parsedString;
+    } else {
+      return ''; // Retourner une chaîne vide si htmlText est null
     }
   }
 
@@ -52,7 +64,7 @@ class _TestRecipesState extends State<TestRecipes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Your app bar content
+        title: Text('Recipes'),
       ),
       body: recipes.isEmpty
           ? Center(child: CircularProgressIndicator())
@@ -65,20 +77,20 @@ class _TestRecipesState extends State<TestRecipes> {
                 final recipe = recipes[index];
                 return ListTile(
                   onTap: () {
-                   
+                    // Handle tap
                   },
                   title: Text(recipe.title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   leading: recipe.image != null
                       ? Image.network(
                           recipe.image!,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100, 
+                          fit: BoxFit.cover, 
                         )
                       : SizedBox(
-                          width: 50,
-                          height: 50,
+                          width: 100,
+                          height: 100,
                           child: Placeholder(),
                         ),
                   subtitle: Column(
@@ -98,13 +110,18 @@ class _TestRecipesState extends State<TestRecipes> {
                               style: TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
+                      Text(
+                        _removeHtmlTags(recipe.description),
+                        maxLines: 2, 
+                        overflow: TextOverflow.ellipsis, 
+                      ),
                     ],
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.star, color: Colors.yellow),
-                      Text('${recipe.id}'), // Adjust as per your requirement
+                      Text('${recipe.id}'), 
                     ],
                   ),
                 );

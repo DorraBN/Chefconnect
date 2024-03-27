@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController messageController = TextEditingController();
+  _ChatScreenState createState() => _ChatScreenState();
+}
 
-    void sendMessage() {
-      String message = messageController.text.trim();
-      if (message.isNotEmpty) {
-        FirebaseFirestore.instance.collection('chat_messages').add({
-          'text': message,
-          'timestamp': DateTime.now(),
-          'senderId': 'user_id', // Remplacez 'user_id' par l'ID de l'utilisateur authentifié
-        });
-        messageController.clear(); // Effacer le champ de texte après l'envoi du message
-      }
+class _ChatScreenState extends State<ChatScreen> {
+  TextEditingController messageController = TextEditingController();
+
+  void sendMessage() {
+    String message = messageController.text.trim();
+    if (message.isNotEmpty) {
+      FirebaseFirestore.instance.collection('chat').add({
+        'text': message,
+        'timestamp': DateTime.now(),
+        'senderId': 'user_id', // Remplacez 'user_id' par l'ID de l'utilisateur authentifié
+      });
+      messageController.clear(); // Effacer le champ de texte après l'envoi du message
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,
       body: Padding(
@@ -42,13 +48,17 @@ class ChatScreen extends StatelessWidget {
                     backgroundImage: Image.asset('../../assets/chat111.png').image,
                   ),
                   const SizedBox(width: 15,),
-                  const Text('Danny Hopkins', style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'Quicksand',
-                    color: Colors.white
-                  ),),
+                  const Text(
+                    'Danny Hopkins',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Quicksand',
+                      color: Colors.white,
+                    ),
+                  ),
                   Spacer(),
-                  Icon(Icons.search_rounded,
+                  Icon(
+                    Icons.search_rounded,
                     color: Colors.white70,
                     size: 40,
                   )
@@ -58,7 +68,7 @@ class ChatScreen extends StatelessWidget {
               // Utilisez un StreamBuilder pour afficher les messages en temps réel
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('chat_messages').orderBy('timestamp', descending: true).snapshots(),
+                  stream: FirebaseFirestore.instance.collection('chat').orderBy('timestamp', descending: true).snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Erreur: ${snapshot.error}');
@@ -74,9 +84,37 @@ class ChatScreen extends StatelessWidget {
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot message = snapshot.data!.docs[index];
-                        return ListTile(
-                          title: Text(message['text']),
-                          subtitle: Text(message['timestamp'].toString()),
+                        DateTime timestamp = message['timestamp'].toDate();
+                        String formattedTime = DateFormat.Hm().format(timestamp);
+                        bool isMyMessage = message['senderId'] == 'user_id'; // Votre logique pour déterminer si le message est à vous
+
+                        return Row(
+                          mainAxisAlignment: isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 4.0),
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: isMyMessage ? Colors.red : Colors.blue, // Fond rouge pour vos messages, bleu pour les autres
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    message['text'],
+                                    style: TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                  Text(
+                                    formattedTime,
+                                    style: TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         );
                       },
                     );
@@ -91,7 +129,7 @@ class ChatScreen extends StatelessWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: const Color(0xff3D4354)
+                    color: const Color(0xff3D4354),
                   ),
                   child: Row(
                     children: [
@@ -102,7 +140,7 @@ class ChatScreen extends StatelessWidget {
                           width: 40,
                           decoration: BoxDecoration(
                             color: Colors.white30,
-                            borderRadius: BorderRadius.circular(50)
+                            borderRadius: BorderRadius.circular(50),
                           ),
                           child: Icon(Icons.camera_alt_outlined),
                         ),
@@ -123,12 +161,12 @@ class ChatScreen extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: sendMessage,
-                        icon: Icon(Icons.send,color: Colors.white54,),
+                        icon: Icon(Icons.send, color: Colors.white54),
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

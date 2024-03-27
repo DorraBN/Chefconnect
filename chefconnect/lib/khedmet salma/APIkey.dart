@@ -1,3 +1,3 @@
 class APIkey {
- static String apikey = "436c43ec025b43ecaff23cd2915e586e";
+ static String apikey = "3b1737ae2c7c4cf986632577fdcc4530";
 }
