@@ -1,3 +1,4 @@
+import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -205,7 +206,7 @@ Container(
                                 ),
                               ),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -242,8 +243,7 @@ Container(
   ),
   label: Text('Login with Google'),
   style: ElevatedButton.styleFrom(
-    primary: Colors.red, // Couleur du bouton
-    onPrimary: Colors.white, // Couleur du texte
+    foregroundColor: Colors.white, backgroundColor: Colors.red, // Couleur du texte
   ),
 )
 
@@ -319,7 +319,7 @@ Container(
         print("User was successfully logged In");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
         setState(() {
@@ -350,7 +350,7 @@ Container(
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       }
     } catch (e) {
@@ -373,7 +373,7 @@ Container(
       // Naviguer vers l'écran d'accueil
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } else {
       print("La connexion Facebook a échoué");

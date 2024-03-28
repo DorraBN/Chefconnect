@@ -29,7 +29,7 @@ Future<Object?> getIngredientInfo(String ingredientName) async {
 }
 
 // Utilisation dans votre code Flutter
-void main() {
+/*void main() {
   // Capture de l'image depuis la caméra
   File imageFile;
   FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(imageFile);
@@ -51,3 +51,4 @@ void main() {
     // Gestion des erreurs lors de la reconnaissance d'objet
   });
 }
+*/
