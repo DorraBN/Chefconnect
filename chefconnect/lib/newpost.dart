@@ -45,7 +45,7 @@ class _NewPostPageState extends State<NewPostPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.asset(
-              'assets/1.png', // Assurez-vous que le chemin d'accès est correct
+              '../../assets/1.png', // Assurez-vous que le chemin d'accès est correct
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -83,7 +83,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 String title = _recipeTitleController.text;
                 String ingredients = _ingredientsController.text;
                 String instructions = _instructionsController.text;
-
+ _postRecipe();
                 // Perform validation if needed
                 // Save the post to database or perform other actions
 
@@ -182,44 +182,91 @@ class _NewPostPageState extends State<NewPostPage> {
     }
   }
 
-  Future<void> _postRecipe() async {
-    // Save the post logic goes here
-    String title = _recipeTitleController.text;
-    String ingredients = _ingredientsController.text;
-    String instructions = _instructionsController.text;
+Future<void> _postRecipe() async {
+  // Save the post logic goes here
+  String title = _recipeTitleController.text;
+  String ingredients = _ingredientsController.text;
+  String instructions = _instructionsController.text;
 
-    // Perform validation if needed
-    // Save the post to database or perform other actions
-
-    // Upload image to Firebase Storage
-    if (_image != null) {
-      await _uploadImageToFirebaseStorage();
-    }
-
-    // Reset controllers
-    _recipeTitleController.clear();
-    _ingredientsController.clear();
-    _instructionsController.clear();
-
-    // Show a confirmation dialog or navigate to another screen
+  if (title.isEmpty || ingredients.isEmpty || instructions.isEmpty) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Post Created'),
-          content: Text('Your recipe "$title" has been posted!'),
+          title: const Text('Error'),
+          content: const Text('Please fill in all fields'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog
+                Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
       },
     );
+    return;
   }
+try {
+  // Save post data to Firestore
+  DocumentReference postRef = await FirebaseFirestore.instance.collection('posts').add({
+    'title': title,
+    'ingredients': ingredients,
+    'instructions': instructions,
+  });
+
+  // Afficher un message dans la console si l'enregistrement réussit
+  print('Recipe posted successfully. Document ID: ${postRef.id}');
+
+  // Upload image to Firebase Storage if available
+  if (_image != null) {
+    await _uploadImageToFirebaseStorage();
+  }
+
+  // Clear text controllers
+  _recipeTitleController.clear();
+  _ingredientsController.clear();
+  _instructionsController.clear();
+
+  // Show a confirmation dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Post Created'),
+        content: Text('Your recipe "$title" has been posted!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+} catch (error) {
+  print('Error posting recipe: $error');
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Error'),
+        content: Text('Failed to post recipe: $error'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );}
+}
 
   Future<void> _uploadImageToFirebaseStorage() async {
     Reference storageReference = FirebaseStorage.instance
@@ -230,22 +277,10 @@ class _NewPostPageState extends State<NewPostPage> {
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
         // Save the image URL to Firestore
-        _saveImageUrlToFirestore(fileURL);
+      
       });
     });
   }
 
-  Future<void> _saveImageUrlToFirestore(String imageUrl) async {
-    // Add the document with an automatically generated ID by Firestore
-    await FirebaseFirestore.instance.collection('images').add({
-      'imageUrl': imageUrl,
-    }).then((value) {
-      print('Document ID: ${value.id}');
-    }).catchError((error) {
-      print('Failed to add document: $error');
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Image saved to Firestore')),
-    );
-  }
+  
 }

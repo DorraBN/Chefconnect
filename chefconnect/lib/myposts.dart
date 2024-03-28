@@ -1,9 +1,6 @@
-import 'package:chefconnect/newpost.dart';
-import 'package:chefconnect/firebaseAuthImp.dart'; // Importez votre service FirebaseAuth ici
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewsFeedPage2 extends StatefulWidget {
   const NewsFeedPage2({Key? key}) : super(key: key);
@@ -16,11 +13,13 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
   String? fullName;
   String? email;
   String? imageUrl;
+  List<FeedItem> _feedItems = []; 
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _loadFeedItems(); 
   }
 
   Future<void> _loadUserData() async {
@@ -32,9 +31,28 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
       setState(() {
         fullName = username;
         email = currentUser?.email;
-        imageUrl = userImageUrl; // Assign the retrieved image URL
+        imageUrl = userImageUrl;
       });
     }
+  }
+
+  Future<void> _loadFeedItems() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('posts').get();
+    List<FeedItem> items = [];
+    querySnapshot.docs.forEach((doc) {
+      FeedItem item = FeedItem(
+        content: doc['content'],
+        imageUrl: doc['imageUrl'],
+        user: User1(doc['user']['fullName'], doc['user']['userName'], doc['user']['imageUrl']),
+        commentsCount: doc['commentsCount'],
+        likesCount: doc['likesCount'],
+        retweetsCount: doc['retweetsCount'],
+      );
+      items.add(item);
+    });
+    setState(() {
+      _feedItems = items;
+    });
   }
 
   @override
@@ -77,7 +95,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _AvatarImage(imageUrl), // Pass imageUrl here
+                    _AvatarImage(item.user.imageUrl), 
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
@@ -92,14 +110,14 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
                                 overflow: TextOverflow.ellipsis,
                                 text: TextSpan(children: [
                                   TextSpan(
-                                    text: fullName ?? '',
+                                    text: item.user.fullName,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                         color: Colors.black),
                                   ),
                                   TextSpan(
-                                    text: fullName != null ? " @$fullName" : '',
+                                    text: item.user.userName != null ? " @${item.user.userName}" : '',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -139,8 +157,6 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
     );
   }
 }
-// Le reste de votre code reste inchangé
-
 
 class _AvatarImage extends StatelessWidget {
   final String? imageUrl;
@@ -158,12 +174,11 @@ class _AvatarImage extends StatelessWidget {
                 fit: BoxFit.cover,
                 image: NetworkImage(imageUrl!),
               )
-            : null, // Mettez l'image à null si imageUrl est null
+            : null, 
       ),
     );
   }
 }
-
 
 class _ActionsRow extends StatelessWidget {
   final FeedItem item;
@@ -233,72 +248,34 @@ class User1 {
   User1(this.fullName, this.userName, this.imageUrl);
 }
 
-final List<User1> _users = [
-  User1(
-    "Joe Doe",
-    "joe_doe",
-    "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
-  ),
-  User1(
-    "Joe Doe",
-    "joe_doe",
-    "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
-  ),
-  User1(
-    "Joe Doe",
-    "joe_doe",
-    "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
-  ),
-  User1(
-    "Joe Doe",
-    "joe_doe",
-    "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
-  ),
-];
+class NewPostPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('New Post'),
+      ),
+      body: Center(
+        child: Text('Create new post page'),
+      ),
+    );
+  }
+}
 
-final List<FeedItem> _feedItems = [
-  FeedItem(
-    content:
-        "A son asked his father (a programmer) why the sun rises in the east, and sets in the west. His response? It works, don’t touch!",
-    user: _users[0],
-    imageUrl: "https://th.bing.com/th/id/OIP.SFmZoeTYOla0uWFetnZIogHaFs?rs=1&pid=ImgDetMain",
-    likesCount: 100,
-    commentsCount: 10,
-    retweetsCount: 1,
-  ),
-  FeedItem(
-      user: _users[1],
-      imageUrl: "https://th.bing.com/th/id/R.e4a0cf4be524c934349c8534831933ca?rik=hAOAo54USaBD4w&riu=http%3a%2f%2fimages.unsplash.com%2fphoto-1551024601-bec78aea704b%3fixlib%3drb-1.2.1%26q%3d80%26fm%3djpg%26crop%3dentropy%26cs%3dtinysrgb%26w%3d1080%26fit%3dmax%26ixid%3deyJhcHBfaWQiOjEyMDd9&ehk=4BzmliELoqZdxIlSsVTxpSNGdUR0d2jZwka0OnM%2bKdA%3d&risl=&pid=ImgRaw&r=0",
-      likesCount: 10,
-      commentsCount: 2),
-  FeedItem(
-      user: _users[0],
-       imageUrl: "https://resize.img.allw.mn/thumbs/nq/tu/knt5l6y35e9e60957ac91984701085_1080x1080.jpg?width=1200&height=1200",
-      content:
-          "How many programmers does it take to change a light bulb? None, that’s a hardware problem.",
-      likesCount: 50,
-      commentsCount: 22,
-      retweetsCount: 30),
-  FeedItem(
-      user: _users[1],
-      content:
-          "Programming today is a race between software engineers striving to build bigger and better idiot-proof programs, and the Universe trying to produce bigger and better idiots. So far, the Universe is winning.",
-      imageUrl: "https://th.bing.com/th/id/R.084953c6f0193b7fa9f0cbd437168fe0?rik=7Rex4uVkJ9CVcA&riu=http%3a%2f%2fwww.mainz-schmecker.de%2fwp-content%2fuploads%2f2016%2f12%2fEinfacher-Nachtisch-7.jpg&ehk=CdEiyHT04akFp5bJaftIP0r%2fJ1C14hf8Fj5NOevISvg%3d&risl=&pid=ImgRaw&r=0",
-      likesCount: 500,
-      commentsCount: 202,
-      retweetsCount: 120),
-  FeedItem(
-    user: _users[2],
-    content: "Good morning!",
-    imageUrl: "https://th.bing.com/th/id/R.dc4aa2e5749f02b6c3ea565ddadeb8eb?rik=GWlhKZW%2bxEt%2b9A&riu=http%3a%2f%2fimages6.fanpop.com%2fimage%2fphotos%2f36800000%2fDessert-food-36849257-2560-1600.jpg&ehk=N0nwSDw3BZD4G3uq4LRGdcgnEif9MLkltc0Zz9OoFms%3d&risl=&pid=ImgRaw&r=0",
-  ),
-  FeedItem(
-    user: _users[1],
-    imageUrl: "https://th.bing.com/th/id/R.41685d965d64c00ddb8f78c458d5f6d2?rik=nNcaLLG2LGnTpQ&riu=http%3a%2f%2f4.bp.blogspot.com%2f_Pe9obweD_W8%2fTH5lSLYTgPI%2fAAAAAAAAABU%2fjWp0YWwlP8A%2fs1600%2fwhite-chocolate-parfait-flambeed-cherries200711131%5b1%5d.jpg&ehk=V2fo27SKZkLNgq1LV34E65nv73g2YTvtqNAcbUmY6zE%3d&risl=&pid=ImgRaw&r=0",
-  ),
-  FeedItem(
-    user: _users[3],
-    imageUrl: "https://th.bing.com/th/id/R.9060765ff3e9f9816eee775a9828af1e?rik=FmHk27nyrOFFBA&riu=http%3a%2f%2fimages6.fanpop.com%2fimage%2fphotos%2f37200000%2fDessert-food-37262256-2560-1600.jpg&ehk=Ojjv93B1cpxrkz0TQmPywCHSu5Q4uWGuiBitOnb7UcY%3d&risl=&pid=ImgRaw&r=0",
-  ),
- 
-];
+class FirebaseAuthService {
+  Future<String?> getUsername(String email) async {
+    // Dummy implementation, replace with actual implementation
+    return "John Doe";
+  }
+
+  Future<String?> getCollectionImageUrl(String email) async {
+    // Dummy implementation, replace with actual implementation
+    return "https://example.com/image.jpg";
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: NewsFeedPage2(),
+  ));
+}

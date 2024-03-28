@@ -1,4 +1,5 @@
 
+import 'package:chefconnect/newpost.dart';
 import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
     //  home: ProfilePage(), 
-        home:WelcomePage()// Remplacez ceci par une instance de Register
+        home:NewPostPage()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
      //home: MainScreen(),
     );
