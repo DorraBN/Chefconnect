@@ -40,6 +40,8 @@ Future<String?> getCollectionImageUrl(String userEmail) async {
 }
 
 
+
+
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(

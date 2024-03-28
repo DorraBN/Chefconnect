@@ -1,4 +1,5 @@
 import 'package:chefconnect/image.dart';
+import 'package:chefconnect/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -120,7 +121,7 @@ class _ConcentricAnimationOnboardingState extends State<ConcentricAnimationOnboa
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProfilePage()),
+            MaterialPageRoute(builder: (context) => LoginPage()),
           );
         },
         backgroundColor: Colors.green,

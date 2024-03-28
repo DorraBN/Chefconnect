@@ -96,18 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     SizedBox(height: 20.0),
 Container(
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(50.0),
-    color: Colors.white.withOpacity(0.13), // Couleur de fond avec opacité
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.2), // Couleur de l'ombre avec opacité
-        spreadRadius: 1,
-        blurRadius: 5,
-        offset: Offset(0, 3), // Décalage de l'ombre
-      ),
-    ],
-  ),
+ 
   child: TextFormField(
     controller: _emailController,
     decoration: InputDecoration(
@@ -117,7 +106,7 @@ Container(
       ),
       hintText: 'Enter your email',
       filled: true,
-      fillColor: Colors.white, // Fond transparent pour permettre à l'ombre de se voir
+  fillColor: Colors.white.withOpacity(0.13),
       prefixIcon: Icon(Icons.email, color: Colors.black),
       hintStyle: TextStyle(color: Colors.black),
       errorText: _emailErrorText,
@@ -176,7 +165,7 @@ Container(
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Navigate to the password reset page (RememberPage)
+                             
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => RememberPage()),
@@ -230,7 +219,7 @@ Container(
     ElevatedButton.icon(
       icon: Icon(Icons.facebook),
       label: Text('Login with Facebook'),
-      onPressed: () {}, // Fonction vide, le bouton ne fera rien quand il sera pressé
+      onPressed: () {}, 
     ),
   
 
@@ -243,7 +232,7 @@ Container(
   ),
   label: Text('Login with Google'),
   style: ElevatedButton.styleFrom(
-    foregroundColor: Colors.white, backgroundColor: Colors.red, // Couleur du texte
+    foregroundColor: Colors.white, backgroundColor: Colors.red, 
   ),
 )
 
@@ -287,56 +276,56 @@ Container(
     );
   }
 
-  void _signIn() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+ void _signIn() async {
+  String email = _emailController.text;
+  String password = _passwordController.text;
 
+  setState(() {
+    _emailErrorText = null; 
+    _passwordErrorText = null;
+    _isLoading = true; 
+  });
+
+  if (email.isEmpty) {
     setState(() {
       _emailErrorText = 'Please enter your email';
-      _passwordErrorText = null;
-      _isLoading = true; // Set loading state to true
+      _isLoading = false; 
     });
-
-    if (email.isEmpty) {
-      setState(() {
-        _emailErrorText = 'Please enter your email';
-        _isLoading = false; // Set loading state to false
-      });
-      return;
-    }
-
-    if (password.isEmpty) {
-      setState(() {
-        _passwordErrorText = 'Please enter your password';
-        _isLoading = false; // Set loading state to false
-      });
-      return;
-    }
-
-    try {
-      User? user = await _auth.signInWithEmailAndPassword(email, password);
-      if (user != null) {
-        print("User was successfully logged In");
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
-      } else {
-        setState(() {
-          _emailErrorText = 'Email or password is incorrect';
-          _passwordErrorText = 'Email or password is incorrect';
-          _isLoading = false; // Set loading state to false
-        });
-      }
-    } catch (e) {
-      print("Error occurred during user login: $e");
-      setState(() {
-        _emailErrorText = 'An error occurred. Please try again later';
-        _passwordErrorText = 'An error occurred. Please try again later';
-        _isLoading = false; // Set loading state to false
-      });
-    }
+    return;
   }
+
+  if (password.isEmpty) {
+    setState(() {
+      _passwordErrorText = 'Please enter your password';
+      _isLoading = false; 
+    });
+    return;
+  }
+
+  try {
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+    if (user != null) {
+      print("User was successfully logged In");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } else {
+      setState(() {
+        _emailErrorText = 'Email or password is incorrect';
+        _passwordErrorText = 'Email or password is incorrect';
+        _isLoading = false; 
+      });
+    }
+  } catch (e) {
+    print("Error occurred during user login: $e");
+    setState(() {
+      _emailErrorText = 'An error occurred. Please try again later';
+      _passwordErrorText = 'An error occurred. Please try again later';
+      _isLoading = false; 
+    });
+  }
+}
 
   void _signInWithGoogle() async {
     try {

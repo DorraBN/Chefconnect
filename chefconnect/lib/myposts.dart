@@ -15,7 +15,7 @@ class NewsFeedPage2 extends StatefulWidget {
 class _NewsFeedPage2State extends State<NewsFeedPage2> {
   String? fullName;
   String? email;
-   String? imageUrl;
+  String? imageUrl;
 
   @override
   void initState() {
@@ -28,10 +28,11 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
     String? useremail = currentUser?.email;
     if (useremail != null) {
       String? username = await FirebaseAuthService().getUsername(useremail);
-       String? imageUrl = await FirebaseAuthService().getCollectionImageUrl(useremail);
+      String? userImageUrl = await FirebaseAuthService().getCollectionImageUrl(useremail);
       setState(() {
         fullName = username;
         email = currentUser?.email;
+        imageUrl = userImageUrl; // Assign the retrieved image URL
       });
     }
   }
@@ -76,7 +77,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _AvatarImage(item.user.imageUrl),
+                    _AvatarImage(imageUrl), // Pass imageUrl here
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
@@ -98,7 +99,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
                                         color: Colors.black),
                                   ),
                                   TextSpan(
-                                     text: fullName != null ? " @$fullName" : '',
+                                    text: fullName != null ? " @$fullName" : '',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -226,28 +227,24 @@ class FeedItem {
 
 class User1 {
   final String fullName;
-  final String imageUrl;
   final String userName;
+  final String imageUrl;
 
-  User1(
-    this.fullName,
-    this.userName,
-    this.imageUrl,
-  );
+  User1(this.fullName, this.userName, this.imageUrl);
 }
 
 final List<User1> _users = [
-User1(
+  User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
   ),
- User1(
+  User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",
   ),
- User1(
+  User1(
     "Joe Doe",
     "joe_doe",
     "https://th.bing.com/th/id/OIP.YWf2ipWdTwok7T4_sx75mgHaHa?rs=1&pid=ImgDetMain",

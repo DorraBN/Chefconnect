@@ -31,7 +31,7 @@ class _RegisterState extends State<Register> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   bool _registerButtonClicked = false; // Etat du bouton "Register"
-  // Expression régulière exigeant une longueur minimale de 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
+ 
   RegExp passwordPattern =
       RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
   RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
@@ -488,6 +488,10 @@ class _RegisterState extends State<Register> {
       User? user = await _auth.signUpWithEmailAndPassword(email, password);
       if (user != null) {
         print("User was successfully created");
+         Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
+          );
       } else {
         print("User creation failed: User object is null");
       }
