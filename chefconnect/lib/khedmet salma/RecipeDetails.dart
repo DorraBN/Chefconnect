@@ -45,7 +45,7 @@ class RecipeDetails extends StatelessWidget {
               ),
             ),
             _buildBackButton(context),
-            _buildScrollContent(context),
+            _buildScrollContent(context, recipe),
           ],
         ),
       ),
@@ -86,120 +86,125 @@ class RecipeDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildScrollContent(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      maxChildSize: 1.0,
-      minChildSize: 0.6,
-      builder: (context, scrollController) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+Widget _buildScrollContent(BuildContext context, Recipe recipe) {
+  return DraggableScrollableSheet(
+    initialChildSize: 0.6,
+    maxChildSize: 1.0,
+    minChildSize: 0.6,
+    builder: (context, scrollController) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        ),
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 5,
+                      width: 35,
+                      color: Colors.black12,
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                recipe.title,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Adjusted mainAxisAlignment
+                children: [
+                  Row(
                     children: [
-                      Container(
-                        height: 5,
-                        width: 35,
-                        color: Colors.black12,
+                      Icon(Icons.access_time),
+                      SizedBox(width: 5),
+                      Text(
+                        '${recipe.readyInMinutes} min',
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Text(
-                  recipe.title,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(Icons.access_time),
-                    SizedBox(width: 5),
-                    Text(
-                      '${recipe.readyInMinutes} min',
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
+                  Row(
+                    children: [
+                      Icon(Icons.people),
+                      SizedBox(width: 5),
+                      Text(
+                        '${recipe.servings} servings',
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      size: 40,
+                      color: Colors.black,
                     ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(Icons.people),
-                    SizedBox(width: 5),
-                    Text(
-                      '${recipe.servings} servings',
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                SizedBox(width: 70),
-                IconButton(
-                  icon: Icon(
-                    Icons.share,
-                    size: 40,
-                    color: Colors.black,
+                    onPressed: () {
+                      // Handle onPressed
+                    },
                   ),
-                  onPressed: () {
-                    // Handle onPressed
-                  },
+                ],
+              ),
+              SizedBox(height: 10),
+              SizedBox(width: 70),
+              const SizedBox(height: 2),
+              const SizedBox(height: 15),
+              const SizedBox(height: 10),
+              const SizedBox(height: 10),
+              Text(
+                'Description',
+                style: TextStyle(
+                  fontSize: 30,
                 ),
-                const SizedBox(height: 2),
-                const SizedBox(height: 15),
-                const SizedBox(height: 10),
-                const SizedBox(height: 10),
-                Text(
-                  'Description',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                _removeHtmlTags(recipe.description),
+                style: TextStyle(
+                  color: AppColors.secondaryColor,
                 ),
-                SizedBox(height: 10),
-                Text(
-                  _removeHtmlTags(recipe.description),
-                  style: TextStyle(
-                    color: AppColors.secondaryColor,
-                  ),
+              ),
+              const SizedBox(height: 10),
+              const SizedBox(height: 10),
+              const SizedBox(height: 15),
+              Text(
+                'Ingredients',
+                style: TextStyle(
+                  fontSize: 30,
                 ),
-                const SizedBox(height: 10),
-                const SizedBox(height: 10),
-                const SizedBox(height: 15),
-                Text(
-                  'Ingredients',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _buildIngredientImage(recipe.id),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              _buildIngredientImage(recipe.id),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
  Widget _buildIngredientImage(int recipeId) {
     return FutureBuilder<Uint8List>(
       future: fetchIngredientImage(recipeId),
