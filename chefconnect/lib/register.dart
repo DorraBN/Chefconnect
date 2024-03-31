@@ -53,14 +53,11 @@ class _RegisterState extends State<Register> {
           // Image de fond
           DecoratedBox(
             position: DecorationPosition.background,
+            
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color.fromARGB(255, 114, 242, 108),
-                  Color.fromARGB(255, 244, 207, 84)
-                ],
+              image: DecorationImage(
+                image: AssetImage("../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
+                fit: BoxFit.cover,
               ),
             ),
             child: Container(),
@@ -132,9 +129,14 @@ class _RegisterState extends State<Register> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Username',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Enter your username',
                             filled: true,
                             fillColor: _usernameController.text.isEmpty
@@ -157,9 +159,14 @@ class _RegisterState extends State<Register> {
                           controller: _pseudoController,
                           decoration: InputDecoration(
                             labelText: 'Pseudo',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Enter your pseudo name',
                             filled: true,
                             fillColor: _pseudoController.text.isEmpty
@@ -182,9 +189,14 @@ class _RegisterState extends State<Register> {
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Enter your email',
                             filled: true,
                             fillColor: _emailController.text.isEmpty
@@ -207,9 +219,14 @@ class _RegisterState extends State<Register> {
                           controller: _phoneController,
                           decoration: InputDecoration(
                             labelText: 'Phone',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Enter your phone number',
                             filled: true,
                             fillColor: _phoneController.text.isEmpty
@@ -233,9 +250,14 @@ class _RegisterState extends State<Register> {
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: 'Password',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Enter your password',
                             filled: true,
                             fillColor: _passwordController.text.isEmpty
@@ -247,7 +269,7 @@ class _RegisterState extends State<Register> {
                             suffixIcon: IconButton(
                               icon: Icon(_isPasswordVisible
                                   ? Icons.visibility_off
-                                  : Icons.visibility),
+                                  : Icons.visibility,color: Colors.black),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible = !_isPasswordVisible;
@@ -272,9 +294,14 @@ class _RegisterState extends State<Register> {
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: 'Confirm Password',
+                             labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
+                             focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                             hintText: 'Re-enter your password',
                             filled: true,
                             fillColor: _confirmPasswordController.text.isEmpty
@@ -286,7 +313,7 @@ class _RegisterState extends State<Register> {
                             suffixIcon: IconButton(
                               icon: Icon(_isPasswordVisible1
                                   ? Icons.visibility_off
-                                  : Icons.visibility),
+                                  : Icons.visibility,color: Colors.black),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible1 = !_isPasswordVisible1;

@@ -40,16 +40,14 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
+          // Image de fond
           DecoratedBox(
             position: DecorationPosition.background,
+            
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color.fromARGB(255, 114, 242, 108),
-                  Color.fromARGB(255, 244, 207, 84),
-                ],
+              image: DecorationImage(
+                image: AssetImage("../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
+                fit: BoxFit.cover,
               ),
             ),
             child: Container(),
@@ -101,8 +99,13 @@ Container(
     controller: _emailController,
     decoration: InputDecoration(
       labelText: 'Email',
+       labelStyle: TextStyle(color: Colors.black),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(50.0),
+      ),
+       focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
       ),
       hintText: 'Enter your email',
       filled: true,
@@ -121,16 +124,21 @@ Container(
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
                           labelText: 'Password',
+                           labelStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50.0),
                           ),
+                           focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0),
+        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
+      ),
                           hintText: 'Enter your password',
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.13),
                           prefixIcon: Icon(Icons.lock, color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           suffixIcon: IconButton(
-                            icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                            icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility,color: Colors.black),
                             onPressed: () {
                               setState(() {
                                 _isPasswordVisible = !_isPasswordVisible;
@@ -174,7 +182,7 @@ Container(
                             child: Text(
                               'Forgot Password?',
                               style: TextStyle(
-                                color: Colors.blue,
+                                color: Colors.green,
                                 fontWeight: FontWeight.bold
                               ),
                             ),
@@ -190,16 +198,16 @@ Container(
                                 'Login',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25.0),
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 20.0),
                         ),
                       ),
                       SizedBox(height: 16.0),
@@ -216,11 +224,7 @@ Container(
                       Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
   children: [
-    ElevatedButton.icon(
-      icon: Icon(Icons.facebook),
-      label: Text('Login with Facebook'),
-      onPressed: () {}, 
-    ),
+    
   
 
                          
@@ -258,9 +262,9 @@ Container(
                               ),
                               Text(
                                 "Register",
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green),
                               ),
-                              Icon(Icons.arrow_forward, color: Colors.blue),
+                              Icon(Icons.arrow_forward, color: Colors.green),
                             ],
                           ),
                         ),
