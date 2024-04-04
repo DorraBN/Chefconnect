@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chefconnect/khedmet%20salma/SearchHome.dart';
+import 'package:chefconnect/SearchHome.dart';
 
 class HomeSearchBar extends StatelessWidget {
   const HomeSearchBar({

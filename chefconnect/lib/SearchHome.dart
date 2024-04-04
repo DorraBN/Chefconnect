@@ -7,16 +7,16 @@ import 'package:chefconnect/khedmet%20salma/Food.dart';
 import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
+import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
-import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:chefconnect/testRecipes.dart';
 import 'dart:ui' as ui;
-import 'CustomButton.dart';
+import 'khedmet salma/CustomButton.dart';
 
 class SearchHome extends StatefulWidget {
   const SearchHome({Key? key}) : super(key: key);
@@ -34,17 +34,25 @@ class _SearchHome extends State<SearchHome> {
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
-
-  Icon favorite_icon = new Icon(IconlyLight.heart);
  late List<Person> people = [];
-
+  Icon favorite_icon = new Icon(IconlyLight.heart);
+  List<Post> posts = [
+    Post(
+      username: "James Elden",
+      caption: "Caption for post 1",
+      imageUrl: "../../assets/pancakes.jpeg",
+      likes: 123,
+      comments: 20,
+      date: DateTime.now(),
+      userProfileImageUrl: "../../assets/chat777.png",
+    ),
+  ];
   @override
   void initState() {
     super.initState();
-    fetchPeopleData();
+     fetchPeopleData();
   }
-
-  Future<void> fetchPeopleData() async {
+ Future<void> fetchPeopleData() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('registration').get();
@@ -64,7 +72,6 @@ class _SearchHome extends State<SearchHome> {
       print('Error fetching people: $error');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,15 +314,9 @@ class _SearchHome extends State<SearchHome> {
                             },
                           ),
                     ListView.builder(
-        itemCount: people.length,
-        itemBuilder: (context, index) {
-          final person = people[index];
-          return ListTile(
-            title: Text(person.name),
-            subtitle: Text(person.email),
-          );
-                    
-      
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        Post post = posts[index];
                         return Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -417,45 +418,15 @@ class _SearchHome extends State<SearchHome> {
                     ),
                     ListView.separated(
                       padding: EdgeInsets.all(15),
-                      itemCount: 20,
+                      itemCount: people.length,
                       separatorBuilder: (BuildContext context, int index) =>
                           const Divider(),
                       itemBuilder: (context, index) {
+                        fetchPeopleData();
+                        Person person = people[index];
                         return ListTile(
-                          onTap: () {},
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                AssetImage('../../assets/chat777.png'),
-                          ),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'James Edlen',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Quicksand',
-                                  fontSize: 17,
-                                ),
-                              ),
-                              Text(
-                                'Tap to view profile',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Quicksand',
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.message),
-                            onPressed: () {
-                              // Add your message button functionality here
-                            },
-                          ),
+                          title: Text(person.name),
+                          subtitle: Text(person.email),
                         );
                       },
                     ),

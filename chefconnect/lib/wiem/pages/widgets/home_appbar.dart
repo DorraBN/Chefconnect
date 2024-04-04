@@ -1,4 +1,4 @@
-import 'package:chefconnect/khedmet%20salma/SearchHome.dart';
+import 'package:chefconnect/SearchHome.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppbar extends StatelessWidget {
