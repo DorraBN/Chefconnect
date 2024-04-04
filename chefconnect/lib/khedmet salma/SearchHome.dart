@@ -23,7 +23,12 @@ class SearchHome extends StatefulWidget {
   @override
   State<SearchHome> createState() => _SearchHome();
 }
+class Person {
+  final String name;
+  final String email;
 
+  Person({required this.name, required this.email});
+}
 class _SearchHome extends State<SearchHome> {
   TextEditingController searchController = TextEditingController();
   static List previousSearchs = [];
@@ -31,20 +36,33 @@ class _SearchHome extends State<SearchHome> {
   bool isCommentVisible = true;
 
   Icon favorite_icon = new Icon(IconlyLight.heart);
-  List<Post> posts = [
-    Post(
-      username: "James Elden",
-      caption: "Caption for post 1",
-      imageUrl: "../../assets/pancakes.jpeg",
-      likes: 123,
-      comments: 20,
-      date: DateTime.now(),
-      userProfileImageUrl: "../../assets/chat777.png",
-    ),
-  ];
+ late List<Person> people = [];
+
   @override
   void initState() {
     super.initState();
+    fetchPeopleData();
+  }
+
+  Future<void> fetchPeopleData() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('registration').get();
+
+      final List<Person> loadedPeople = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Person(
+          name: data['name'] ?? '',
+          email: data['email'] ?? '',
+        );
+      }).toList();
+
+      setState(() {
+        people = loadedPeople;
+      });
+    } catch (error) {
+      print('Error fetching people: $error');
+    }
   }
 
   @override
@@ -289,9 +307,15 @@ class _SearchHome extends State<SearchHome> {
                             },
                           ),
                     ListView.builder(
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        Post post = posts[index];
+        itemCount: people.length,
+        itemBuilder: (context, index) {
+          final person = people[index];
+          return ListTile(
+            title: Text(person.name),
+            subtitle: Text(person.email),
+          );
+                    
+      
                         return Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(

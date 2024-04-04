@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Person {
+  final String name;
+  final String email;
+
+  Person({required this.name, required this.email});
+}
+
+class PeopleList extends StatefulWidget {
+  const PeopleList({Key? key}) : super(key: key);
+
+  @override
+  State<PeopleList> createState() => _PeopleListState();
+}
+
+class _PeopleListState extends State<PeopleList> {
+  late List<Person> people = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPeopleData();
+  }
+
+  Future<void> fetchPeopleData() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('registration').get();
+
+      final List<Person> loadedPeople = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Person(
+          name: data['name'] ?? '',
+          email: data['email'] ?? '',
+        );
+      }).toList();
+
+      setState(() {
+        people = loadedPeople;
+      });
+    } catch (error) {
+      print('Error fetching people: $error');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Search'),
+      ),
+      body: ListView.builder(
+        itemCount: people.length,
+        itemBuilder: (context, index) {
+          final person = people[index];
+          return ListTile(
+            title: Text(person.name),
+            subtitle: Text(person.email),
+          );
+        },
+      ),
+    );
+  }
+}
