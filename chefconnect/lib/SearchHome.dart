@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
+import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
 import 'package:chefconnect/khedmet%20salma/CustomField.dart';
 import 'package:chefconnect/khedmet%20salma/CustomSlider.dart';
@@ -8,6 +9,7 @@ import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,8 +28,13 @@ class SearchHome extends StatefulWidget {
 class Person {
   final String name;
   final String email;
+  final String imageUrl; // Ajouter une nouvelle propriété pour l'URL de l'image
 
-  Person({required this.name, required this.email});
+  Person({
+    required this.name,
+    required this.email,
+    required this.imageUrl,
+  });
 }
 class _SearchHome extends State<SearchHome> {
   TextEditingController searchController = TextEditingController();
@@ -62,6 +69,8 @@ class _SearchHome extends State<SearchHome> {
         return Person(
           name: data['name'] ?? '',
           email: data['email'] ?? '',
+        
+          imageUrl: data['imageUrl'] ?? '',
         );
       }).toList();
 
@@ -416,20 +425,40 @@ class _SearchHome extends State<SearchHome> {
                         );
                       },
                     ),
-                    ListView.separated(
-                      padding: EdgeInsets.all(15),
-                      itemCount: people.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(),
-                      itemBuilder: (context, index) {
-                        fetchPeopleData();
-                        Person person = people[index];
-                        return ListTile(
-                          title: Text(person.name),
-                          subtitle: Text(person.email),
-                        );
-                      },
-                    ),
+                  ListView.separated(
+  padding: EdgeInsets.all(15),
+  itemCount: people.length,
+  separatorBuilder: (BuildContext context, int index) => const Divider(),
+  itemBuilder: (context, index) {
+    Person person = people[index];
+    return ListTile(
+      title: Text(person.name),
+      subtitle: Text(person.email),
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(person.imageUrl), // Afficher l'image depuis l'URL
+      ),
+      trailing: ElevatedButton(
+        onPressed: () {
+           Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfilePage2(person: person),
+      ),
+    );
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.green, // Couleur verte
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajouter du padding
+          shape: RoundedRectangleBorder( // Définir une forme arrondie pour le bouton
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        child: Text('View Profile', style: TextStyle(color: Colors.white)), // Couleur du texte blanc
+      ),
+    );
+  },
+),
+
                   ],
                 ),
               )
@@ -631,4 +660,233 @@ class _SearchHome extends State<SearchHome> {
   }
 }
 
+}
+
+class ProfilePage2 extends StatelessWidget {
+  final Person person;
+   const ProfilePage2({Key? key, required this.person}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        
+       
+      ),
+      body: Column(
+        children: [
+          Expanded(
+  flex: 2,
+  child: _TopPortion(
+    imageUrl: person.imageUrl,
+  ),
+),
+
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  
+                  Text(
+                    person.email,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FloatingActionButton.extended(
+                        onPressed: () {},
+                        heroTag: 'follow',
+                        elevation: 0,
+                         backgroundColor: Color.fromARGB(255, 190, 244, 54),
+                        label: const Text("Follow"),
+                        icon: const Icon(Icons.person_add_alt_1),
+                      ),
+                      const SizedBox(width: 16.0),
+                     FloatingActionButton.extended(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatScreen()),
+    );
+  },
+  heroTag: 'message',
+  elevation: 0,
+  backgroundColor: const Color.fromARGB(255, 244, 184, 54),
+  label: const Text("Message"),
+  icon: const Icon(Icons.message_rounded),
+),
+
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const _ProfileInfoRow(),
+                  const SizedBox(height: 16),
+                  GestureDetector( // Ajouter GestureDetector pour gérer le clic
+                    onTap: () {
+                      Navigator.push( // Naviguer vers la page NewsFeedPage1
+                        context,
+                        MaterialPageRoute(builder: (context) =>_ProfileInfoRow()),
+                      );
+                    },
+                    child: Text( // Texte "Publications" enveloppé dans GestureDetector
+                      "Publications",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),               
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      
+    );
+  }
+}
+class _AvatarImage extends StatelessWidget {
+  final String url;
+  const _AvatarImage(this.url, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(image: NetworkImage(url))),
+    );
+  }
+}
+
+class _ProfileInfoRow extends StatelessWidget {
+  const _ProfileInfoRow({Key? key}) : super(key: key);
+
+  final List<ProfileInfoItem> _items = const [
+    ProfileInfoItem("Posts", 50),
+    ProfileInfoItem("Followers", 50),
+    ProfileInfoItem("Following", 300),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      constraints: const BoxConstraints(maxWidth: 400),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: _items
+            .map((item) => Expanded(
+                  child: Row(
+                    children: [
+                      if (_items.indexOf(item) != 0) const VerticalDivider(),
+                      Expanded(child: _singleItem(context, item)),
+                    ],
+                  ),
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _singleItem(BuildContext context, ProfileInfoItem item) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              item.value.toString(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          Text(
+            item.title,
+            style: Theme.of(context).textTheme.caption,
+          )
+        ],
+      );
+}
+
+class ProfileInfoItem {
+  final String title;
+  final int value;
+  const ProfileInfoItem(this.title, this.value);
+}
+
+class _TopPortion extends StatelessWidget {
+  final String imageUrl;
+
+  const _TopPortion({Key? key, required this.imageUrl}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 50),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+             colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(50),
+              bottomRight: Radius.circular(50),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            width: 150,
+            height: 150,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+               Container(
+  decoration: BoxDecoration(
+    color: Colors.black,
+    shape: BoxShape.circle,
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: NetworkImage(
+        imageUrl,
+      ),
+    ),
+  ),
+),
+
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    child: Container(
+                      margin: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

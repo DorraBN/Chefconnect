@@ -226,32 +226,3 @@ class _TopPortion extends StatelessWidget {
 }
 
 
-class FeedItem {
-  final User user;
-  final String? content;
-
-  FeedItem(this.user, this.content);
-}
-
-class User {
-  final String fullName;
-  final String imageUrl;
-
-  User(this.fullName, this.imageUrl);
-}
-
-final List<FeedItem> _feedItems = [
-  FeedItem(
-    User('John Doe', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'),
-    'Hello, world!',
-  ),
-  FeedItem(
-    User('Jane Smith', 'https://www.example.com/janesmith.jpg'),
-    'Flutter is awesome!',
-  ),
-  FeedItem(
-    User('James Brown', 'https://www.example.com/jamesbrown.jpg'),
-    null,
-  ),
-];
-
