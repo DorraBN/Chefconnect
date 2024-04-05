@@ -21,28 +21,29 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData() async {
-    // Add a delay for demonstration purposes (replace with actual data loading)
-    await Future.delayed(Duration(seconds: 2));
+ Future<void> _loadUserData() async {
+  // Add a delay for demonstration purposes (replace with actual data loading)
+  await Future.delayed(Duration(seconds: 2));
 
-    // Fetch user data from Firestore
-    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-    if (currentUserEmail != null) {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection('registration')
-          .where('email', isEqualTo: currentUserEmail)
-          .get();
-      if (querySnapshot.size > 0) {
-        var userData = querySnapshot.docs.first.data();
-        setState(() {
-          fullName = userData['fullName'];
-          email = userData['email'];
-          imageUrl = userData['imageUrl'];
-          isLoading = false; // Set loading state to false after data is loaded
-        });
-      }
+  // Fetch user data from Firestore
+  String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+  if (currentUserEmail != null) {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('registration')
+        .where('email', isEqualTo: currentUserEmail)
+        .get();
+    if (querySnapshot.size > 0) {
+      var userData = querySnapshot.docs.first.data();
+      setState(() {
+        fullName = userData['username'];
+        email = userData['email'];
+        imageUrl = userData['imageUrl'];
+        isLoading = false; // Set loading state to false after data is loaded
+      });
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
             : Container(
                 constraints: BoxConstraints(maxWidth: 400),
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+                   stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -90,7 +91,7 @@ class _NewsFeedPage2State extends State<NewsFeedPage2> {
                           imageUrl: data['imageUrl'], // Use imageUrl from Firestore
                           ingredients: data['ingredients'] ?? "",
                           instructions: data['instructions'] ?? "",
-                          user: UserInfo(fullName ?? "", fullName != null ? "@$fullName" : "", imageUrl ?? ""), // Pass user information
+                          user: UserInfo(fullName ?? "", email?? "", imageUrl ?? ""), // Pass user information
                         );
                         return Padding(
                           padding: const EdgeInsets.all(8.0),

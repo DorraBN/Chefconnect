@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chefconnect/image.dart';
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
@@ -9,6 +10,8 @@ import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:chefconnect/myposts.dart';
+
 
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -799,7 +802,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => _ProfileInfoRow()),
+                        MaterialPageRoute(builder: (context) => NewsFeedPage2()),
                       );
                     },
                     child: Text(
