@@ -16,6 +16,8 @@ class Post {
     required this.likes,
     required this.comments,
   });
+
+  Object? get authorEmail => null;
 }
 
 List<Post> posts = [

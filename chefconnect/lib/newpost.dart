@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewPostPage extends StatefulWidget {
@@ -18,8 +15,6 @@ class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _instructionsController = TextEditingController();
   final TextEditingController _imageUrlController = TextEditingController();
 
-  XFile? _image;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +27,6 @@ class _NewPostPageState extends State<NewPostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_image != null)
-              Image.file(
-                File(_image!.path),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            const SizedBox(height: 16.0),
             TextField(
               controller: _recipeTitleController,
               decoration: const InputDecoration(
@@ -69,15 +56,9 @@ class _NewPostPageState extends State<NewPostPage> {
             TextFormField(
               controller: _imageUrlController,
               decoration: const InputDecoration(
-                labelText: 'Image URL',
+                labelText: 'Recipe Image URL',
                 prefixIcon: Icon(Icons.image),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton.icon(
-              onPressed: _showImageSourceSelectionDialog,
-              icon: const Icon(Icons.add_a_photo),
-              label: const Text('Add Image'),
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
@@ -90,54 +71,13 @@ class _NewPostPageState extends State<NewPostPage> {
     );
   }
 
-  Future<void> _showImageSourceSelectionDialog() async {
-    final source = await showDialog<ImageSource>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Image Source'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text('Gallery'),
-                  onTap: () => Navigator.pop(context, ImageSource.gallery),
-                ),
-                const Padding(padding: EdgeInsets.all(8.0)),
-                ListTile(
-                  leading: const Icon(Icons.camera_alt),
-                  title: const Text('Camera'),
-                  onTap: () => Navigator.pop(context, ImageSource.camera),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-    if (source != null) {
-      _pickImage(source);
-    }
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = pickedFile;
-      });
-    }
-  }
-
   Future<void> _postRecipe() async {
     final title = _recipeTitleController.text;
     final ingredients = _ingredientsController.text;
     final instructions = _instructionsController.text;
     final imageUrl = _imageUrlController.text;
 
-    if (title.isEmpty || ingredients.isEmpty || instructions.isEmpty) {
+    if (title.isEmpty || ingredients.isEmpty || instructions.isEmpty || imageUrl.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -156,19 +96,39 @@ class _NewPostPageState extends State<NewPostPage> {
       return;
     }
 
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('User not authenticated'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     try {
+      final authorImageUrl = await _getAuthorImageUrl(user.email!);
+
       final postRef = await FirebaseFirestore.instance.collection('posts').add({
         'title': title,
         'ingredients': ingredients,
         'instructions': instructions,
         'imageUrl': imageUrl,
+        'authorImageUrl': authorImageUrl,
+        'email': user.email,
       });
 
       print('Recipe posted successfully. Document ID: ${postRef.id}');
-
-      if (_image != null) {
-        await _uploadImageToFirebaseStorage(postRef.id);
-      }
 
       _recipeTitleController.clear();
       _ingredientsController.clear();
@@ -210,9 +170,14 @@ class _NewPostPageState extends State<NewPostPage> {
     }
   }
 
-  Future<void> _uploadImageToFirebaseStorage(String documentId) async {
-    final storageReference = FirebaseStorage.instance.ref().child('images/$documentId.png');
-    final uploadTask = storageReference.putFile(File(_image!.path));
-    await uploadTask.whenComplete(() => print('Image uploaded'));
+  Future<String> _getAuthorImageUrl(String email) async {
+    final registrationSnapshot = await FirebaseFirestore.instance.collection('registration').doc(email).get();
+    final data = registrationSnapshot.data();
+  
+    if (registrationSnapshot.exists && data?['imageUrl'] != null) {
+      return data!['imageUrl'];
+    } else {
+      return ''; // Retourne une chaîne vide si l'URL de l'image n'est pas trouvée
+    }
   }
 }

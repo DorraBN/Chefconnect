@@ -19,6 +19,7 @@ import 'package:iconly/iconly.dart';
 import 'package:chefconnect/testRecipes.dart';
 import 'dart:ui' as ui;
 import 'khedmet salma/CustomButton.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchHome extends StatefulWidget {
   const SearchHome({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _SearchHome extends State<SearchHome> {
       final List<Person> loadedPeople = snapshot.docs.map((doc) {
         final data = doc.data();
         return Person(
-          name: data['name'] ?? '',
+          name: data['username'] ?? '',
           email: data['email'] ?? '',
         
           imageUrl: data['imageUrl'] ?? '',
@@ -662,36 +663,73 @@ class _SearchHome extends State<SearchHome> {
 
 }
 
-class ProfilePage2 extends StatelessWidget {
+class ProfilePage2 extends StatefulWidget {
   final Person person;
-   const ProfilePage2({Key? key, required this.person}) : super(key: key);
+
+  ProfilePage2({Key? key, required this.person}) : super(key: key);
+
+  @override
+  _ProfilePage2State createState() => _ProfilePage2State();
+}
+class _ProfilePage2State extends State<ProfilePage2> {
+  bool isFollowing = false; 
+  List<String> followingUsers = []; 
+
+  // Méthode pour obtenir l'utilisateur connecté
+  Future<String?> getLoggedInUserEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.email;
+    } else {
+      return null;
+    }
+  }
+
+  // Méthode pour mettre à jour le statut de "friend" dans les préférences partagées
+  Future<void> updateFriendStatus(bool isFollowing) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('${widget.person.email}_isFriend', isFollowing);
+  }
+
+  // Méthode pour obtenir le statut de "friend" des préférences partagées
+  Future<bool> getFriendStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('${widget.person.email}_isFriend') ?? false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Charger le statut de "friend" lors de l'initialisation de la page
+    getFriendStatus().then((value) {
+      setState(() {
+        isFollowing = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 244, 206, 54),
-        
-       
       ),
       body: Column(
         children: [
           Expanded(
-  flex: 2,
-  child: _TopPortion(
-    imageUrl: person.imageUrl,
-  ),
-),
-
+            flex: 2,
+            child: _TopPortion(
+              imageUrl: widget.person.imageUrl,
+            ),
+          ),
           Expanded(
             flex: 3,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  
                   Text(
-                    person.email,
+                    widget.person.email,
                     style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
@@ -699,55 +737,86 @@ class ProfilePage2 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       FloatingActionButton.extended(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            isFollowing = !isFollowing;
+                            // Mettre à jour le statut de "friend" dans les préférences partagées
+                            updateFriendStatus(isFollowing);
+                            if (isFollowing) {
+                              // Ajouter l'e-mail du follower et du following dans la collection "following"
+                              getLoggedInUserEmail().then((loggedInUserEmail) {
+                                if (loggedInUserEmail != null) {
+                                  FirebaseFirestore.instance.collection('following').add({
+                                    'follower': loggedInUserEmail,
+                                    'following': widget.person.email,
+                                  });
+                                }
+                              });
+                            } else {
+                              // Supprimer le document de la collection "following"
+                              getLoggedInUserEmail().then((loggedInUserEmail) {
+                                if (loggedInUserEmail != null) {
+                                  FirebaseFirestore.instance.collection('following')
+                                      .where('follower', isEqualTo: loggedInUserEmail)
+                                      .where('following', isEqualTo: widget.person.email)
+                                      .get()
+                                      .then((QuerySnapshot querySnapshot) {
+                                    querySnapshot.docs.forEach((doc) {
+                                      doc.reference.delete();
+                                    });
+                                  });
+                                }
+                              });
+                            }
+                          });
+                        },
                         heroTag: 'follow',
                         elevation: 0,
-                         backgroundColor: Color.fromARGB(255, 190, 244, 54),
-                        label: const Text("Follow"),
-                        icon: const Icon(Icons.person_add_alt_1),
+                        backgroundColor: isFollowing ? Colors.blue : Color.fromARGB(255, 190, 244, 54),
+                        label: Text(isFollowing ? "Friend" : "Follow"),
+                        icon: Icon(Icons.person_add_alt_1),
                       ),
-                      const SizedBox(width: 16.0),
-                     FloatingActionButton.extended(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ChatScreen()),
-    );
-  },
-  heroTag: 'message',
-  elevation: 0,
-  backgroundColor: const Color.fromARGB(255, 244, 184, 54),
-  label: const Text("Message"),
-  icon: const Icon(Icons.message_rounded),
-),
-
+                      SizedBox(width: 16.0),
+                      FloatingActionButton.extended(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatScreen()),
+                          );
+                        },
+                        heroTag: 'message',
+                        elevation: 0,
+                        backgroundColor: Color.fromARGB(255, 244, 184, 54),
+                        label: const Text("Message"),
+                        icon: const Icon(Icons.message_rounded),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   const _ProfileInfoRow(),
                   const SizedBox(height: 16),
-                  GestureDetector( // Ajouter GestureDetector pour gérer le clic
+                  GestureDetector(
                     onTap: () {
-                      Navigator.push( // Naviguer vers la page NewsFeedPage1
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>_ProfileInfoRow()),
+                        MaterialPageRoute(builder: (context) => _ProfileInfoRow()),
                       );
                     },
-                    child: Text( // Texte "Publications" enveloppé dans GestureDetector
+                    child: Text(
                       "Publications",
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                  ),               
+                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
-      
     );
   }
 }
+
 class _AvatarImage extends StatelessWidget {
   final String url;
   const _AvatarImage(this.url, {Key? key}) : super(key: key);
