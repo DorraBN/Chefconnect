@@ -45,7 +45,8 @@ class _SearchHome extends State<SearchHome> {
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
- late List<Person> people = [];
+  late List<Person> filteredPeople = []; 
+  late List<Person> people = [];
   Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
     Post(
@@ -61,9 +62,10 @@ class _SearchHome extends State<SearchHome> {
   @override
   void initState() {
     super.initState();
-     fetchPeopleData();
+    fetchPeopleData();
   }
- Future<void> fetchPeopleData() async {
+
+  Future<void> fetchPeopleData() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('registration').get();
@@ -73,18 +75,28 @@ class _SearchHome extends State<SearchHome> {
         return Person(
           name: data['username'] ?? '',
           email: data['email'] ?? '',
-        
           imageUrl: data['imageUrl'] ?? '',
         );
       }).toList();
 
       setState(() {
         people = loadedPeople;
+        filteredPeople = people;
       });
     } catch (error) {
       print('Error fetching people: $error');
     }
   }
+  
+  void filterPeople(String query) {
+    setState(() {
+      filteredPeople = people
+          .where((person) =>
+              person.name.toLowerCase().startsWith(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,11 +139,16 @@ class _SearchHome extends State<SearchHome> {
                             searchController.clear();
                           },
                           onChanged: (pure) {
+                             filterPeople(searchController.text);
                             setState(() {});
+                           
                           },
                           onEditingComplete: () {
                             previousSearchs.add(searchController.text);
                             fetchRecipesData(searchController.text, 2);
+                           
+  // Appeler la fonction de filtrage avec le texte de recherche actuel
+  filterPeople(searchController.text);
                           },
                         ),
                       ),
@@ -246,6 +263,7 @@ class _SearchHome extends State<SearchHome> {
                                     const Divider(),
                             itemBuilder: (context, index) {
                               final recipe = recipes[index];
+                               Person person = filteredPeople[index];
                     
                               return ListTile(
                                 onTap: () {
