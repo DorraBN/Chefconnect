@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:chefconnect/image.dart';
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
@@ -10,8 +9,6 @@ import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
-import 'package:chefconnect/myposts.dart';
-
 
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,8 +42,7 @@ class _SearchHome extends State<SearchHome> {
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
-  late List<Person> filteredPeople = []; 
-  late List<Person> people = [];
+ late List<Person> people = [];
   Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
     Post(
@@ -62,10 +58,9 @@ class _SearchHome extends State<SearchHome> {
   @override
   void initState() {
     super.initState();
-    fetchPeopleData();
+     fetchPeopleData();
   }
-
-  Future<void> fetchPeopleData() async {
+ Future<void> fetchPeopleData() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('registration').get();
@@ -75,28 +70,18 @@ class _SearchHome extends State<SearchHome> {
         return Person(
           name: data['username'] ?? '',
           email: data['email'] ?? '',
+        
           imageUrl: data['imageUrl'] ?? '',
         );
       }).toList();
 
       setState(() {
         people = loadedPeople;
-        filteredPeople = people;
       });
     } catch (error) {
       print('Error fetching people: $error');
     }
   }
-  
-  void filterPeople(String query) {
-    setState(() {
-      filteredPeople = people
-          .where((person) =>
-              person.name.toLowerCase().startsWith(query.toLowerCase()))
-          .toList();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,16 +124,11 @@ class _SearchHome extends State<SearchHome> {
                             searchController.clear();
                           },
                           onChanged: (pure) {
-                             filterPeople(searchController.text);
                             setState(() {});
-                           
                           },
                           onEditingComplete: () {
                             previousSearchs.add(searchController.text);
                             fetchRecipesData(searchController.text, 2);
-                           
-  // Appeler la fonction de filtrage avec le texte de recherche actuel
-  filterPeople(searchController.text);
                           },
                         ),
                       ),
@@ -263,7 +243,6 @@ class _SearchHome extends State<SearchHome> {
                                     const Divider(),
                             itemBuilder: (context, index) {
                               final recipe = recipes[index];
-                               Person person = filteredPeople[index];
                     
                               return ListTile(
                                 onTap: () {
@@ -469,7 +448,7 @@ class _SearchHome extends State<SearchHome> {
     );
         },
         style: ElevatedButton.styleFrom(
-          primary: Colors.green, // Couleur verte
+          backgroundColor: Colors.green, // Couleur verte
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajouter du padding
           shape: RoundedRectangleBorder( // Définir une forme arrondie pour le bouton
             borderRadius: BorderRadius.circular(20),
@@ -820,7 +799,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NewsFeedPage2()),
+                        MaterialPageRoute(builder: (context) => _ProfileInfoRow()),
                       );
                     },
                     child: Text(
@@ -838,9 +817,10 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 }
 
+// ignore: unused_element
 class _AvatarImage extends StatelessWidget {
   final String url;
-  const _AvatarImage(this.url, {Key? key}) : super(key: key);
+  const _AvatarImage(this.url);
 
   @override
   Widget build(BuildContext context) {
@@ -855,7 +835,7 @@ class _AvatarImage extends StatelessWidget {
 }
 
 class _ProfileInfoRow extends StatelessWidget {
-  const _ProfileInfoRow({Key? key}) : super(key: key);
+  const _ProfileInfoRow();
 
   final List<ProfileInfoItem> _items = const [
     ProfileInfoItem("Posts", 50),
@@ -914,7 +894,7 @@ class ProfileInfoItem {
 class _TopPortion extends StatelessWidget {
   final String imageUrl;
 
-  const _TopPortion({Key? key, required this.imageUrl}) : super(key: key);
+  const _TopPortion({required this.imageUrl});
 
 
   @override
