@@ -9,7 +9,6 @@ import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
-
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +25,7 @@ class SearchHome extends StatefulWidget {
   @override
   State<SearchHome> createState() => _SearchHome();
 }
+
 class Person {
   final String name;
   final String email;
@@ -37,12 +37,13 @@ class Person {
     required this.imageUrl,
   });
 }
+
 class _SearchHome extends State<SearchHome> {
   TextEditingController searchController = TextEditingController();
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
   bool isCommentVisible = true;
- late List<Person> people = [];
+  late List<Person> people = [];
   Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
     Post(
@@ -58,9 +59,10 @@ class _SearchHome extends State<SearchHome> {
   @override
   void initState() {
     super.initState();
-     fetchPeopleData();
+    fetchPeopleData();
   }
- Future<void> fetchPeopleData() async {
+
+  Future<void> fetchPeopleData() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance.collection('registration').get();
@@ -70,7 +72,6 @@ class _SearchHome extends State<SearchHome> {
         return Person(
           name: data['username'] ?? '',
           email: data['email'] ?? '',
-        
           imageUrl: data['imageUrl'] ?? '',
         );
       }).toList();
@@ -82,6 +83,7 @@ class _SearchHome extends State<SearchHome> {
       print('Error fetching people: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,6 +131,7 @@ class _SearchHome extends State<SearchHome> {
                           onEditingComplete: () {
                             previousSearchs.add(searchController.text);
                             fetchRecipesData(searchController.text, 2);
+                            fetchUserDataByUsername(searchController.text);
                           },
                         ),
                       ),
@@ -243,7 +246,7 @@ class _SearchHome extends State<SearchHome> {
                                     const Divider(),
                             itemBuilder: (context, index) {
                               final recipe = recipes[index];
-                    
+
                               return ListTile(
                                 onTap: () {
                                   Navigator.push(
@@ -426,40 +429,48 @@ class _SearchHome extends State<SearchHome> {
                         );
                       },
                     ),
-                  ListView.separated(
-  padding: EdgeInsets.all(15),
-  itemCount: people.length,
-  separatorBuilder: (BuildContext context, int index) => const Divider(),
-  itemBuilder: (context, index) {
-    Person person = people[index];
-    return ListTile(
-      title: Text(person.name),
-      subtitle: Text(person.email),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(person.imageUrl), // Afficher l'image depuis l'URL
-      ),
-      trailing: ElevatedButton(
-        onPressed: () {
-           Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProfilePage2(person: person),
-      ),
-    );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green, // Couleur verte
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajouter du padding
-          shape: RoundedRectangleBorder( // Définir une forme arrondie pour le bouton
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        child: Text('View Profile', style: TextStyle(color: Colors.white)), // Couleur du texte blanc
-      ),
-    );
-  },
-),
-
+                    ListView.separated(
+                      padding: EdgeInsets.all(15),
+                      itemCount: people.length,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                      itemBuilder: (context, index) {
+                        Person person = people[index];
+                        return ListTile(
+                          title: Text(person.name),
+                          subtitle: Text(person.email),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(person
+                                .imageUrl), // Afficher l'image depuis l'URL
+                          ),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfilePage2(person: person),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green, // Couleur verte
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10), // Ajouter du padding
+                              shape: RoundedRectangleBorder(
+                                // Définir une forme arrondie pour le bouton
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            child: Text('View Profile',
+                                style: TextStyle(
+                                    color: Colors
+                                        .white)), // Couleur du texte blanc
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               )
@@ -582,10 +593,9 @@ class _SearchHome extends State<SearchHome> {
           if (recipeInfoResponse.statusCode == 200) {
             final recipeInfoJson = jsonDecode(recipeInfoResponse.body);
             final recipe = Recipe.fromJson(recipeInfoJson);
-              recipe.isLiked = await isRecipeLikedByUser(recipe.id);
+            recipe.isLiked = await isRecipeLikedByUser(recipe.id);
             setState(() {
               recipes.add(recipe);
-               
             });
           }
         }
@@ -634,34 +644,79 @@ class _SearchHome extends State<SearchHome> {
       print('Failed to save like: $error');
     }
   }
-   Future<bool> isRecipeLikedByUser(int recipeId) async {
-  try {
-    // Get the current user
-    User? user = FirebaseAuth.instance.currentUser;
-    
-    if (user != null) {
-      // Check if a document exists in the Firestore collection
-      // where both the recipeId and the user's ID match
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection("favorites")
-          .where('recipeId', isEqualTo: recipeId)
-          .where('userEmail', isEqualTo: user.email)
-          .get();
 
-      // If the document exists, the recipe is liked by the user
-      return querySnapshot.docs.isNotEmpty;
-    } else {
-      // User is not authenticated
+  Future<bool> isRecipeLikedByUser(int recipeId) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Check if a document exists in the Firestore collection
+        // where both the recipeId and the user's ID match
+        QuerySnapshot<Map<String, dynamic>> querySnapshot =
+            await FirebaseFirestore.instance
+                .collection("favorites")
+                .where('recipeId', isEqualTo: recipeId)
+                .where('userEmail', isEqualTo: user.email)
+                .get();
+
+        // If the document exists, the recipe is liked by the user
+        return querySnapshot.docs.isNotEmpty;
+      } else {
+        // User is not authenticated
+        return false;
+      }
+    } catch (error) {
+      // Handle any errors
+      print('Error checking if recipe is liked: $error');
       return false;
     }
+  }
+  Future<void> fetchUserDataByUsername(String username) async {
+  try {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('registration').where('username', isEqualTo: username).get();
+
+    final List<Person> loadedPeople = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Person(
+        name: data['username'] ?? '',
+        email: data['email'] ?? '',
+        imageUrl: data['imageUrl'] ?? '',
+      );
+    }).toList();
+
+    setState(() {
+      people = loadedPeople;
+    });
   } catch (error) {
-    // Handle any errors
-    print('Error checking if recipe is liked: $error');
-    return false;
+    print('Error fetching user data: $error');
   }
 }
-
 }
+
+/*Future<List<String>> getEmailsByUsername(String username) async {
+  try {
+    // Query Firestore collection for documents where 'username' field matches the given username
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('registration')
+        .where('username', isEqualTo: username)
+        .get();
+
+    List<String> emails = querySnapshot.docs
+        .map((doc) =>
+            ((doc.data() as Map<String, dynamic>)?['email'] as String?) ??
+            '') 
+        .toList();
+    print(emails);
+    return emails;
+  } catch (error) {
+    print('Error retrieving emails: $error');
+    return [];
+  }
+}*/
+
+
 
 class ProfilePage2 extends StatefulWidget {
   final Person person;
@@ -671,9 +726,10 @@ class ProfilePage2 extends StatefulWidget {
   @override
   _ProfilePage2State createState() => _ProfilePage2State();
 }
+
 class _ProfilePage2State extends State<ProfilePage2> {
-  bool isFollowing = false; 
-  List<String> followingUsers = []; 
+  bool isFollowing = false;
+  List<String> followingUsers = [];
 
   // Méthode pour obtenir l'utilisateur connecté
   Future<String?> getLoggedInUserEmail() async {
@@ -700,7 +756,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
   @override
   void initState() {
     super.initState();
-    // Charger le statut de "friend" lors de l'initialisation de la page
+ 
     getFriendStatus().then((value) {
       setState(() {
         isFollowing = value;
@@ -730,7 +786,10 @@ class _ProfilePage2State extends State<ProfilePage2> {
                 children: [
                   Text(
                     widget.person.email,
-                    style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -746,7 +805,9 @@ class _ProfilePage2State extends State<ProfilePage2> {
                               // Ajouter l'e-mail du follower et du following dans la collection "following"
                               getLoggedInUserEmail().then((loggedInUserEmail) {
                                 if (loggedInUserEmail != null) {
-                                  FirebaseFirestore.instance.collection('following').add({
+                                  FirebaseFirestore.instance
+                                      .collection('following')
+                                      .add({
                                     'follower': loggedInUserEmail,
                                     'following': widget.person.email,
                                   });
@@ -756,9 +817,12 @@ class _ProfilePage2State extends State<ProfilePage2> {
                               // Supprimer le document de la collection "following"
                               getLoggedInUserEmail().then((loggedInUserEmail) {
                                 if (loggedInUserEmail != null) {
-                                  FirebaseFirestore.instance.collection('following')
-                                      .where('follower', isEqualTo: loggedInUserEmail)
-                                      .where('following', isEqualTo: widget.person.email)
+                                  FirebaseFirestore.instance
+                                      .collection('following')
+                                      .where('follower',
+                                          isEqualTo: loggedInUserEmail)
+                                      .where('following',
+                                          isEqualTo: widget.person.email)
                                       .get()
                                       .then((QuerySnapshot querySnapshot) {
                                     querySnapshot.docs.forEach((doc) {
@@ -772,7 +836,9 @@ class _ProfilePage2State extends State<ProfilePage2> {
                         },
                         heroTag: 'follow',
                         elevation: 0,
-                        backgroundColor: isFollowing ? Colors.blue : Color.fromARGB(255, 190, 244, 54),
+                        backgroundColor: isFollowing
+                            ? Colors.blue
+                            : Color.fromARGB(255, 190, 244, 54),
                         label: Text(isFollowing ? "Friend" : "Follow"),
                         icon: Icon(Icons.person_add_alt_1),
                       ),
@@ -781,7 +847,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ChatScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen()),
                           );
                         },
                         heroTag: 'message',
@@ -799,7 +866,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => _ProfileInfoRow()),
+                        MaterialPageRoute(
+                            builder: (context) => _ProfileInfoRow()),
                       );
                     },
                     child: Text(
@@ -896,7 +964,6 @@ class _TopPortion extends StatelessWidget {
 
   const _TopPortion({required this.imageUrl});
 
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -908,7 +975,10 @@ class _TopPortion extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-             colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
+              colors: [
+                Color.fromARGB(255, 114, 242, 108),
+                Color.fromARGB(255, 244, 207, 84)
+              ],
             ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(50),
@@ -924,19 +994,18 @@ class _TopPortion extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-               Container(
-  decoration: BoxDecoration(
-    color: Colors.black,
-    shape: BoxShape.circle,
-    image: DecorationImage(
-      fit: BoxFit.cover,
-      image: NetworkImage(
-        imageUrl,
-      ),
-    ),
-  ),
-),
-
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        imageUrl,
+                      ),
+                    ),
+                  ),
+                ),
                 Positioned(
                   bottom: 0,
                   right: 0,
