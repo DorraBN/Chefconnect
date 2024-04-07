@@ -1,19 +1,50 @@
-import 'package:chefconnect/wiem/pages/screens/quick_foods_screen.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import '../../../khedmet salma/Food.dart';
-import '../../../khedmet salma/RecipeDetails.dart';
+import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:chefconnect/khedmet salma/Food.dart';
+import 'package:chefconnect/wiem/pages/models/Recipe.dart';
+import 'package:chefconnect/wiem/pages/screens/quick_foods_screen.dart';
 
 class QuickAndFastList extends StatefulWidget {
-  const QuickAndFastList({Key? key, required this.foods}) : super(key: key);
-  
-  final List<Food> foods;
+  const QuickAndFastList({Key? key}) : super(key: key);
 
   @override
   State<QuickAndFastList> createState() => _QuickAndFastListState();
 }
 
 class _QuickAndFastListState extends State<QuickAndFastList> {
+  late List<Recipe> _randomRecipes = []; // Variable to hold random recipes
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRandomRecipes(); // Fetch random recipes when the widget initializes
+  }
+
+  Future<void> fetchRandomRecipes() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://api.spoonacular.com/recipes/random?number=10&apiKey=26defb92453348b3ae5252d8c8ea9206'));
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final List<dynamic> recipesList = jsonData['recipes'];
+        for (var recipeJson in recipesList) {
+          final recipe = Recipe.fromJson(recipeJson);
+       
+          setState(() {
+            _randomRecipes.add(recipe);
+          });
+        }
+      } else {
+        throw Exception('Failed to load random recipes');
+      }
+    } catch (error) {
+      print('Error fetching random recipes: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +65,7 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const QuickFoodsScreen(),
+                    builder: (context) => QuickFoodsScreen(recipes: _randomRecipes),
                   ),
                 );
               },
@@ -46,20 +77,19 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: List.generate(
-              widget.foods.length,
-              (index) => GestureDetector(
+            children: _randomRecipes.map((recipe) {
+              return GestureDetector(
                 onTap: () {
-                  final recipe = widget.foods[index];
-              /*    Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RecipeDetails(food: recipe),
+                      builder: (context) => RecipeDetails(recipe: recipe),
                     ),
-                  );*/
+                  );
                 },
                 child: Container(
                   margin: const EdgeInsets.only(right: 10),
+                  height:250,
                   width: 200,
                   child: Stack(
                     children: [
@@ -72,14 +102,14 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               image: DecorationImage(
-                                image: AssetImage(widget.foods[index].image),
+                                image: NetworkImage(recipe.image ?? ''),
                                 fit: BoxFit.fill,
                               ),
                             ),
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            widget.foods[index].name,
+                            recipe.title,
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -89,12 +119,12 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                           Row(
                             children: [
                               const Icon(
-                                Icons.flash_auto,
+                                Icons.people,
                                 size: 18,
                                 color: Colors.grey,
                               ),
                               Text(
-                                "${widget.foods[index].cal} Cal",
+                                "${recipe.servings} servings",
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -110,7 +140,7 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                                 color: Colors.grey,
                               ),
                               Text(
-                                "${widget.foods[index].time} Min",
+                                "${recipe.readyInMinutes} Min",
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -124,13 +154,18 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                         top: 1,
                         right: 1,
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // Handle favorite button tap
+                            setState(() {
+                              recipe.isLiked = !recipe.isLiked;
+                            });
+                          },
                           style: IconButton.styleFrom(
                             backgroundColor: Colors.white,
                             fixedSize: const Size(30, 30),
                           ),
                           iconSize: 20,
-                          icon: widget.foods[index].isLiked
+                          icon: recipe.isLiked
                               ? const Icon(
                                   Icons.favorite,
                                   color: Colors.red,
@@ -141,8 +176,8 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                     ],
                   ),
                 ),
-              ),
-            ),
+              );
+            }).toList(),
           ),
         ),
       ],

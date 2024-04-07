@@ -55,7 +55,6 @@ class Post {
   }
 }
 
-// Définition de la classe HomeScreen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -63,7 +62,6 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// Définition de la classe _HomeScreenState
 class _HomeScreenState extends State<HomeScreen> {
   String currentCat = "All";
   List<String> followingEmails = [];
@@ -151,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onCategorySelected: _onCategorySelected,
                 ),
                 const SizedBox(height: 20),
-                QuickAndFastList(foods: FoodList.foods),
+                QuickAndFastList(),
                 const SizedBox(height: 20),
                 const Text(
                   "Posts",

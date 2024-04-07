@@ -21,25 +21,26 @@ class Recipe {
     required this.title,
     this.image,
     this.sourceUrl,
-    this.isLiked=false,
+    this.isLiked = false,
     required this.description,
     required this.readyInMinutes,
     required this.servings,
     required this.ingredients,
   });
 
-  factory Recipe.fromJson(Map<String, dynamic> json) {
-    return Recipe(
-      id: json['id'],
-      title: json['title'],
-      image: json['image'],
-      sourceUrl: json['sourceUrl'],
-      readyInMinutes: json['readyInMinutes'],
-      servings: json['servings'],
-      description: json['summary'],
-      ingredients: [],
-    );
-  }
+factory Recipe.fromJson(Map<String, dynamic> json) {
+  return Recipe(
+    id: json['id'] ?? 0, // Provide a default value or handle null case
+    title: json['title'] ?? '', // Provide a default value or handle null case
+    image: json['image'],
+    sourceUrl: json['sourceUrl'],
+    readyInMinutes: json['readyInMinutes'] ?? 0, // Provide a default value or handle null case
+    servings: json['servings'] ?? 0, // Provide a default value or handle null case
+    description: json['summary'] ?? '', // Provide a default value or handle null case
+    ingredients: [],
+  );
+}
+
 
   Future<Recipe> createFromJson(Map<String, dynamic> json) async {
     List<dynamic> extendedIngredients = json['extendedIngredients'];
@@ -76,31 +77,29 @@ class Recipe {
       throw Exception('Failed to fetch ingredient image');
     }
   }
-  Future<bool> isRecipeLikedByUser(int recipeId) async {
-  try {
-    // Get the current user
-    User? user = FirebaseAuth.instance.currentUser;
-    
-    if (user != null) {
-      // Check if a document exists in the Firestore collection
-      // where both the recipeId and the user's ID match
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection("favorites")
-          .where('recipeId', isEqualTo: recipeId)
-          .where('userEmail', isEqualTo: user.email)
-          .get();
 
-      // If the document exists, the recipe is liked by the user
-      return querySnapshot.docs.isNotEmpty;
-    } else {
-      // User is not authenticated
+  Future<bool> isRecipeLikedByUser(int recipeId) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        QuerySnapshot<Map<String, dynamic>> querySnapshot =
+            await FirebaseFirestore.instance
+                .collection("favorites")
+                .where('recipeId', isEqualTo: recipeId)
+                .where('userEmail', isEqualTo: user.email)
+                .get();
+        return querySnapshot.docs.isNotEmpty;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print('Error checking if recipe is liked: $error');
       return false;
     }
-  } catch (error) {
-    // Handle any errors
-    print('Error checking if recipe is liked: $error');
-    return false;
   }
-}
 
 }
+
+
