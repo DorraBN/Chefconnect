@@ -674,8 +674,11 @@ class _SearchHome extends State<SearchHome> {
   }
   Future<void> fetchUserDataByUsername(String username) async {
   try {
-    final QuerySnapshot<Map<String, dynamic>> snapshot =
-        await FirebaseFirestore.instance.collection('registration').where('username', isEqualTo: username).get();
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('registration')
+            .where('username', isGreaterThanOrEqualTo: username)
+            .where('username', isLessThan: username + 'z')
+            .get();
 
     final List<Person> loadedPeople = snapshot.docs.map((doc) {
       final data = doc.data();
@@ -695,26 +698,6 @@ class _SearchHome extends State<SearchHome> {
 }
 }
 
-/*Future<List<String>> getEmailsByUsername(String username) async {
-  try {
-    // Query Firestore collection for documents where 'username' field matches the given username
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('registration')
-        .where('username', isEqualTo: username)
-        .get();
-
-    List<String> emails = querySnapshot.docs
-        .map((doc) =>
-            ((doc.data() as Map<String, dynamic>)?['email'] as String?) ??
-            '') 
-        .toList();
-    print(emails);
-    return emails;
-  } catch (error) {
-    print('Error retrieving emails: $error');
-    return [];
-  }
-}*/
 
 
 
