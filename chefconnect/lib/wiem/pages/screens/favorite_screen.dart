@@ -1,4 +1,6 @@
 import 'package:chefconnect/navigation.dart';
+import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
+import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:chefconnect/wiem/pages/widgets/favorite_api_recipes.dart';
 import 'package:chefconnect/wiem/pages/widgets/favorite_post_recipes.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +35,12 @@ class _FavoriteRecipesScreenState extends State<FavoriteRecipesScreen> {
           ],
         ),
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+         onPressed: () {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+  },
           icon: Icon(CupertinoIcons.chevron_back),
         ),
       ),

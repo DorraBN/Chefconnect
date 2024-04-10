@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:chefconnect/khedmet salma/Food.dart';
@@ -92,88 +94,92 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
                   height:250,
                   width: 200,
                   child: Stack(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 130,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                image: NetworkImage(recipe.image ?? ''),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            recipe.title,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.people,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                "${recipe.servings} servings",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const Text(
-                                " · ",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              const Icon(
-                                Icons.alarm,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                "${recipe.readyInMinutes} Min",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      Positioned(
-                        top: 1,
-                        right: 1,
-                        child: IconButton(
-                          onPressed: () {
-                            // Handle favorite button tap
-                            setState(() {
-                              recipe.isLiked = !recipe.isLiked;
-                            });
-                          },
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            fixedSize: const Size(30, 30),
-                          ),
-                          iconSize: 20,
-                          icon: recipe.isLiked
-                              ? const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                )
-                              : const Icon(Icons.favorite),
-                        ),
-                      )
-                    ],
+                   children: [
+  Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          image: DecorationImage(
+            image: NetworkImage(recipe.image ?? ''),
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      const SizedBox(height: 10),
+     Text(
+          recipe.title,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+     const SizedBox(height: 10),
+      Row(
+        children: [
+          const Icon(
+            Icons.people,
+            size: 18,
+            color: Colors.grey,
+          ),
+          Text(
+            "${recipe.servings} servings",
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+           const SizedBox(height: 10),
+          const Text(
+            " · ",
+            style: TextStyle(color: Colors.grey),
+          ),
+          const Icon(
+            Icons.alarm,
+            size: 18,
+            color: Colors.grey,
+          ),
+          Text(
+            "${recipe.readyInMinutes} Min",
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      )
+    ],
+  ),
+  Positioned(
+    top: 1,
+    right: 1,
+    child: IconButton(
+      onPressed: () {
+        setState(() {
+          recipe.isLiked = !recipe.isLiked;
+          if (recipe.isLiked) {
+            saveLikeInfo(recipe.id);
+          }
+        });
+      },
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.white,
+        fixedSize: const Size(30, 30),
+      ),
+      iconSize: 20,
+      icon: recipe.isLiked
+          ? const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            )
+          : const Icon(Icons.favorite),
+    ),
+  )
+],
+
                   ),
                 ),
               );
@@ -182,5 +188,41 @@ class _QuickAndFastListState extends State<QuickAndFastList> {
         ),
       ],
     );
+  }
+    Future<void> saveLikeInfo(int recipeId) async {
+    try {
+      // Get the user's email
+      String? userEmail = await getUserEmail();
+
+      // Check if the user email is not null
+      if (userEmail != null) {
+        // If not null, save the like info to Firestore
+        await FirebaseFirestore.instance.collection("favorites").add({
+          'recipeId': recipeId,
+          'userEmail': userEmail,
+        });
+        print('Like saved successfully!');
+      } else {
+        print('User email is null');
+      }
+    } catch (error) {
+      print('Failed to save like: $error');
+    }
+  }
+
+  Future<String?> getUserEmail() async {
+    String? userEmail;
+    try {
+      // Récupérer l'utilisateur actuellement authentifié
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Si l'utilisateur est authentifié, récupérer son adresse e-mail
+        userEmail = user.email;
+      }
+    } catch (e) {
+      print('Error getting user email: $e');
+    }
+    return userEmail;
   }
 }

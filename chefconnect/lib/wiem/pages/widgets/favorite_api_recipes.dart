@@ -48,7 +48,7 @@ Future<Set<int>> fetchLikedRecipeIds() async {
 Future<Recipe> fetchRecipeById(int recipeId) async {
   try {
     String apiKey = APIkey.apikey;
-    final response = await http.get(Uri.parse('https://api.spoonacular.com/recipes/$recipeId/information?apiKey=$apiKey'));
+    final response = await http.get(Uri.parse('https://api.spoonacular.com/recipes/$recipeId/information?apiKey=ddcfa9a1d9114bc8921bb717753e05e8'));
     
     if (response.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(response.body);
@@ -118,33 +118,37 @@ Widget build(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-                      child: Row(
-                        children: [
-                          Text(
-                            recipe.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: () {},
-                            icon: recipe.isLiked
-                                ? const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: 24,
-                                  )
-                                : const Icon(
-                                    Icons.favorite,
-                                    size: 24,
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
+  padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+  child: Row(
+    children: [
+      Expanded( 
+        child: Text(
+          recipe.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+          overflow: TextOverflow.ellipsis, 
+        ),
+      ),
+      const Spacer(),
+      IconButton(
+        onPressed: () {},
+        icon: recipe.isLiked
+            ? const Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 24,
+              )
+            : const Icon(
+                Icons.favorite,
+                size: 24,
+              ),
+      ),
+    ],
+  ),
+),
+
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                       child: ClipRRect(
