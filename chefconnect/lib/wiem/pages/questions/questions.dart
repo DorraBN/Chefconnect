@@ -276,86 +276,79 @@
 // }
 
 
-
-
-
 class ConcentricAnimationOnboarding extends StatelessWidget {
-
-
   const ConcentricAnimationOnboarding({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: OnboardingPagePresenter(
-        pages: [
-          OnboardingPageModel(
-            backgroundImage: "../../../assets/bg1.png",
-            textColor: const Color.fromARGB(255, 0, 0, 0),
-            question: "Which cuisine do you prefer?",
-            responses: [
-              "Tunisian", "Italian", "Asian",
-              "British", "French", "Chinese",
-              "Middle East", "Irish", "German",
-              "Korean", "Greek", "Mexican",
-            ],
-            responseBackgroundImages: [
-              "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
-              "assets/british.png", "assets/french.png", "assets/chinese.png",
-              "assets/middleeast.png", "assets/irish.png", "assets/german.png",
-              "assets/korean.png", "assets/greek.png", "assets/mexican.png",
-            ],
-          ),
-          OnboardingPageModel(
-            backgroundImage: "assets/bg1.png",
-            textColor: Color.fromARGB(255, 8, 8, 10),
-            question: "What's your dietary preference?",
-            responses: [
-              "Gluten Free", "Ketogenic", "Vegetarian",
-              "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
-              "Pescetarian", "Paleo", "Primal",
-              "Low FODMAP", "Whole30","Flexitarian",
-            ],
-            responseBackgroundImages: [
-              "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
-              "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
-              "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
-              "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
-            ],
-          ),
-          OnboardingPageModel(
-            backgroundImage: "assets/bg1.png",
-            textColor: Color.fromARGB(255, 0, 0, 0),
-            question: "Which allergies do you have?",
-            responses: [
-              "Gluten", "Dairy", "Sesame",
-              "Seafood", "Egg", "Soy",
-              "Wheat", "Peanut","Tree nuts",
-              "Mustard" , "Lupin" , "Sulfites" ,
-            ],
-            responseBackgroundImages: [
-              "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
-              "assets/seafood.png", "assets/egg.png", "assets/soy.png",
-              "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
-              "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
-            ],
-          ),
-        ], email: '',
-        // Passer l'e-mail à OnboardingPagePresenter
-      ),
+      body: OnboardingPagePresenter(pages: [
+        OnboardingPageModel(
+          backgroundImage: "../../../assets/bg1.png",
+          textColor: const Color.fromARGB(255, 0, 0, 0),
+          question: "Which cuisine do you prefer?",
+          responses: [
+            "Tunisian", "Italian", "Asian",
+            "British", "French", "Chinese",
+            "Middle East", "Irish", "German",
+            "Korean", "Greek", "Mexican",
+          ],
+          responseBackgroundImages: [
+            "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
+            "assets/british.png", "assets/french.png", "assets/chinese.png",
+            "assets/middleeast.png", "assets/irish.png", "assets/german.png",
+            "assets/korean.png", "assets/greek.png", "assets/mexican.png",
+          ],
+        ),
+        OnboardingPageModel(
+          backgroundImage: "assets/bg1.png",
+          textColor: Color.fromARGB(255, 8, 8, 10),
+          question: "What's your dietary preference?",
+          responses: [
+            "Gluten Free", "Ketogenic", "Vegetarian",
+            "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
+            "Pescetarian", "Paleo", "Primal",
+            "Low FODMAP", "Whole30","Flexitarian",
+          ],
+          responseBackgroundImages: [
+            "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
+            "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
+            "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
+            "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
+          ],
+        ),
+        OnboardingPageModel(
+          backgroundImage: "assets/bg1.png",
+          textColor: Color.fromARGB(255, 0, 0, 0),
+          question: "Which allergies do you have?",
+          responses: [
+            "Gluten", "Dairy", "Sesame",
+            "Seafood", "Egg", "Soy",
+            "Wheat", "Peanut","Tree nuts",
+            "Mustard" , "Lupin" , "Sulfites" ,
+          ],
+          responseBackgroundImages: [
+            "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
+            "assets/seafood.png", "assets/egg.png", "assets/soy.png",
+            "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
+            "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
+          ],
+        ),
+      ]),
     );
   }
 }
 
 class OnboardingPagePresenter extends StatefulWidget {
   final List<OnboardingPageModel> pages;
-  final String email;
+  final VoidCallback? onSkip;
+  final VoidCallback? onFinish;
 
   const OnboardingPagePresenter({
     Key? key,
     required this.pages,
-    required this.email,
+    this.onSkip,
+    this.onFinish,
   }) : super(key: key);
 
   @override
@@ -365,7 +358,7 @@ class OnboardingPagePresenter extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPagePresenter> {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  List<String> temporaryResponses = [];
+  List<Map<String, dynamic>> selectedResponses = []; // Liste pour stocker les paires (question, réponse)
 
   @override
   Widget build(BuildContext context) {
@@ -423,7 +416,7 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
                                           onTap: () {
-                                            _saveResponse(item.responses![index]);
+                                            _toggleResponse(item.question, item.responses![index]);
                                           },
                                           child: Card(
                                             child: SizedBox(
@@ -512,7 +505,7 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                       ),
                       onPressed: () {
                         if (_currentPage == widget.pages.length - 1) {
-                          _saveAllResponsesToFirestore();
+                          _saveSelectedResponsesToFirestore(); // Enregistrer toutes les paires (question, réponse) sélectionnées lorsque l'utilisateur clique sur "Finish"
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => LoginPage()),
@@ -551,24 +544,29 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
     );
   }
 
-  void _saveResponse(String response) {
+  void _toggleResponse(String question, String response) {
     setState(() {
-      temporaryResponses.add(response);
+      bool responseExists = selectedResponses.any((element) => element['question'] == question && element['response'] == response);
+      if (responseExists) {
+        selectedResponses.removeWhere((element) => element['question'] == question && element['response'] == response); // Supprimer la paire (question, réponse) si elle existe déjà
+      } else {
+        selectedResponses.add({'question': question, 'response': response}); // Ajouter la paire (question, réponse) si elle n'existe pas déjà
+      }
     });
   }
 
-  void _saveAllResponsesToFirestore() {
-    String combinedResponses = temporaryResponses.join(", ");
-  
+  void _saveSelectedResponsesToFirestore() {
+    // Enregistrer toutes les paires (question, réponse) sélectionnées dans la collection "responses" de Firestore
     FirebaseFirestore.instance.collection('allergies').add({
-      'responses': combinedResponses,
+      'selected_responses': selectedResponses,
     }).then((value) {
-      print('Responses saved to Firestore: $combinedResponses');
+      print('Selected responses saved to Firestore');
     }).catchError((error) {
-      print('Failed to save responses: $error');
+      print('Failed to save selected responses: $error');
     });
 
-    temporaryResponses.clear();
+    // Effacer les paires (question, réponse) sélectionnées après l'enregistrement
+    selectedResponses.clear();
   }
 }
 

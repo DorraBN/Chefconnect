@@ -1,5 +1,4 @@
 import 'package:chefconnect/firebaseAuthImp.dart';
-import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -422,15 +421,6 @@ class _RegisterState extends State<Register> {
                                       builder: (context) =>
                                           RegistrationSuccessPage()),
                                 );
-                                Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => OnboardingPagePresenter(
-      email: _emailController.text,
-      pages: [],
-    ),
-  ),
-);
                               }).catchError((error) {
                                 // Erreur lors de l'enregistrement
                                 print('Failed to register user: $error');
