@@ -1,6 +1,8 @@
 
+import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:chefconnect/wiem/pages/welcome/welcome.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Importez kIsWeb pour détecter si l'application est web
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
     //  home: ProfilePage(), 
-        home:WelcomePage()// Remplacez ceci par une instance de Register
+        home:ConcentricAnimationOnboarding()// Remplacez ceci par une instance de Register
       // home: ConcentricAnimationOnboarding() ,
      //home: MainScreen(),
     );
