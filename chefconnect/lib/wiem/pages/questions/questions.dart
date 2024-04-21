@@ -278,88 +278,84 @@
 
 
 
+
 class ConcentricAnimationOnboarding extends StatelessWidget {
+
+
   const ConcentricAnimationOnboarding({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: OnboardingPagePresenter(pages: [
-        OnboardingPageModel(
-          backgroundImage: "../../../assets/bg1.png",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-          question: "Which cuisine do you prefer?",
-          responses: [
-            "Tunisian", "Italian", "Asian",
-            "British", "French", "Chinese",
-            "Middle East", "Irish", "German",
-            "Korean", "Greek", "Mexican",
-          ],
-          responseBackgroundImages: [
-            "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
-            "assets/british.png", "assets/french.png", "assets/chinese.png",
-            "assets/middleeast.png", "assets/irish.png", "assets/german.png",
-            "assets/korean.png", "assets/greek.png", "assets/mexican.png",
-          ],
-        ),
-        OnboardingPageModel(
-          backgroundImage: "assets/bg1.png",
-          textColor: Color.fromARGB(255, 8, 8, 10),
-          question: "What's your dietary preference?",
-          responses: [
-            "Gluten Free", "Ketogenic", "Vegetarian",
-            "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
-            "Pescetarian", "Paleo", "Primal",
-            "Low FODMAP", "Whole30","Flexitarian",
-          ],
-          responseBackgroundImages: [
-            "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
-            "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
-            "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
-            "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
-          ],
-        ),
-        OnboardingPageModel(
-          backgroundImage: "assets/bg1.png",
-          textColor: Color.fromARGB(255, 0, 0, 0),
-          question: "Which allergies do you have?",
-          responses: [
-            "Gluten", "Dairy", "Sesame",
-            "Seafood", "Egg", "Soy",
-            "Wheat", "Peanut","Tree nuts",
-            "Mustard" , "Lupin" , "Sulfites" ,
-          ],
-          responseBackgroundImages: [
-            "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
-            "assets/seafood.png", "assets/egg.png", "assets/soy.png",
-            "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
-            "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
-          ],
-        ),
-      ]),
+      body: OnboardingPagePresenter(
+        pages: [
+          OnboardingPageModel(
+            backgroundImage: "../../../assets/bg1.png",
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+            question: "Which cuisine do you prefer?",
+            responses: [
+              "Tunisian", "Italian", "Asian",
+              "British", "French", "Chinese",
+              "Middle East", "Irish", "German",
+              "Korean", "Greek", "Mexican",
+            ],
+            responseBackgroundImages: [
+              "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
+              "assets/british.png", "assets/french.png", "assets/chinese.png",
+              "assets/middleeast.png", "assets/irish.png", "assets/german.png",
+              "assets/korean.png", "assets/greek.png", "assets/mexican.png",
+            ],
+          ),
+          OnboardingPageModel(
+            backgroundImage: "assets/bg1.png",
+            textColor: Color.fromARGB(255, 8, 8, 10),
+            question: "What's your dietary preference?",
+            responses: [
+              "Gluten Free", "Ketogenic", "Vegetarian",
+              "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
+              "Pescetarian", "Paleo", "Primal",
+              "Low FODMAP", "Whole30","Flexitarian",
+            ],
+            responseBackgroundImages: [
+              "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
+              "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
+              "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
+              "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
+            ],
+          ),
+          OnboardingPageModel(
+            backgroundImage: "assets/bg1.png",
+            textColor: Color.fromARGB(255, 0, 0, 0),
+            question: "Which allergies do you have?",
+            responses: [
+              "Gluten", "Dairy", "Sesame",
+              "Seafood", "Egg", "Soy",
+              "Wheat", "Peanut","Tree nuts",
+              "Mustard" , "Lupin" , "Sulfites" ,
+            ],
+            responseBackgroundImages: [
+              "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
+              "assets/seafood.png", "assets/egg.png", "assets/soy.png",
+              "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
+              "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
+            ],
+          ),
+        ], email: '',
+        // Passer l'e-mail à OnboardingPagePresenter
+      ),
     );
   }
 }
 
-
-
-
-
-
-
-
-
-
 class OnboardingPagePresenter extends StatefulWidget {
   final List<OnboardingPageModel> pages;
-  final VoidCallback? onSkip;
-  final VoidCallback? onFinish;
+  final String email;
 
   const OnboardingPagePresenter({
     Key? key,
     required this.pages,
-    this.onSkip,
-    this.onFinish,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -369,7 +365,7 @@ class OnboardingPagePresenter extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPagePresenter> {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  List<String> temporaryResponses = []; // Tableau temporaire pour stocker les réponses
+  List<String> temporaryResponses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -516,7 +512,7 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
                       ),
                       onPressed: () {
                         if (_currentPage == widget.pages.length - 1) {
-                          _saveAllResponsesToFirestore(); // Enregistrer toutes les réponses lorsque l'utilisateur clique sur "Finish"
+                          _saveAllResponsesToFirestore();
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => LoginPage()),
@@ -557,24 +553,23 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
 
   void _saveResponse(String response) {
     setState(() {
-      temporaryResponses.add(response); // Ajouter la réponse au tableau temporaire
+      temporaryResponses.add(response);
     });
   }
-void _saveAllResponsesToFirestore() {
-  String combinedResponses = temporaryResponses.join(", "); // Combinez toutes les réponses en une seule chaîne
+
+  void _saveAllResponsesToFirestore() {
+    String combinedResponses = temporaryResponses.join(", ");
   
-  FirebaseFirestore.instance.collection('allergies').add({
-    'responses': combinedResponses,
-    // Vous pouvez également ajouter d'autres champs nécessaires ici
-  }).then((value) {
-    print('Responses saved to Firestore: $combinedResponses');
-  }).catchError((error) {
-    print('Failed to save responses: $error');
-  });
+    FirebaseFirestore.instance.collection('allergies').add({
+      'responses': combinedResponses,
+    }).then((value) {
+      print('Responses saved to Firestore: $combinedResponses');
+    }).catchError((error) {
+      print('Failed to save responses: $error');
+    });
 
-  temporaryResponses.clear(); // Effacer le tableau temporaire après l'enregistrement
-}
-
+    temporaryResponses.clear();
+  }
 }
 
 class OnboardingPageModel {
