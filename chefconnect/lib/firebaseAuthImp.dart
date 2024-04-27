@@ -76,4 +76,17 @@ Future<String?> getCollectionImageUrl(String userEmail) async {
     }
   }
   
+
+  Future<String?> getUserEmail() async {
+  // Vérifier si un utilisateur est actuellement connecté
+  User? user = FirebaseAuth.instance.currentUser;
+  
+  if (user != null) {
+    // L'utilisateur est connecté, vous pouvez récupérer son email
+    return user.email;
+  } else {
+    // Aucun utilisateur n'est connecté
+    return null;
+  }
+}
 }
