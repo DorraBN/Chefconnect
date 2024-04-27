@@ -1,4 +1,5 @@
 import 'package:chefconnect/firebaseAuthImp.dart';
+import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -398,38 +399,39 @@ class _RegisterState extends State<Register> {
                                   content: Text('Processing registration...'),
                                 ),
                               );
-    _signup();
-                              // Enregistrement des données dans la collection Firestore
-                              FirebaseFirestore.instance
-                                  .collection('registration')
-                                  .add({
-                                'username': _usernameController.text,
-                                'pseudo': _pseudoController.text,
-                                'email': _emailController.text,
-                                'phone': _phoneController.text,
-                                'password': _passwordController.text,
-                                'confirm': _confirmPasswordController.text,
-                                'gender': _selectedGender,
-                                 'imageUrl':  _imageUrlController.text
-                              }).then((value) {
-                                
-                                // Enregistrement réussi
-                                print('User registered successfully');
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          RegistrationSuccessPage()),
-                                );
-                              }).catchError((error) {
-                                // Erreur lors de l'enregistrement
-                                print('Failed to register user: $error');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Failed to register user'),
-                                  ),
-                                );
-                              }).whenComplete(() {
+   _signup();
+// Enregistrement des données dans la collection Firestore
+FirebaseFirestore.instance.collection('registration').add({
+  'username': _usernameController.text,
+  'pseudo': _pseudoController.text,
+  'email': _emailController.text,
+  'phone': _phoneController.text,
+  'password': _passwordController.text,
+  'confirm': _confirmPasswordController.text,
+  'gender': _selectedGender,
+  'imageUrl': _imageUrlController.text,
+}).then((value) {
+  // Enregistrement réussi
+  print('User registered successfully');
+  // Pass the user's email to the onboarding process
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ConcentricAnimationOnboarding(userEmail: _emailController.text),
+    ),
+  );
+}).catchError((error) {
+  // Erreur lors de l'enregistrement
+  print('Failed to register user: $error');
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Failed to register user'),
+    ),
+  );
+}).whenComplete(() {
+  // Optional: Any additional actions to take after registration completes
+
+
                                 // Réinitialisation de l'état du bouton après l'enregistrement
                                 setState(() {
                                   _registerButtonClicked = false;
@@ -517,8 +519,12 @@ class _RegisterState extends State<Register> {
         print("User was successfully created");
          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RegistrationSuccessPage()),
-          );
+           MaterialPageRoute(
+    builder: (context) => ConcentricAnimationOnboarding(userEmail: _emailController.text),
+  ),
+);
+      
+          
       } else {
         print("User creation failed: User object is null");
       }

@@ -1,3 +1,4 @@
+import 'package:chefconnect/login2.dart';
 import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +69,7 @@ class RegistrationSuccessPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ConcentricAnimationOnboarding()),
+                  MaterialPageRoute(builder: (context) =>LoginPage()),
                 );
               },
               label: Text(

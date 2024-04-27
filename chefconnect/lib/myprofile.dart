@@ -63,6 +63,34 @@ class _ProfilePage1State extends State<ProfilePage1> {
       });
     }
   }
+
+ Future<List<Map<String, dynamic>>> getAllergiesInfo() async {
+  List<Map<String, dynamic>> allergiesInfoList = [];
+  try {
+    // Get reference to the 'allergies' collection
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('allergies').get();
+
+    // Iterate through each document in the collection
+    querySnapshot.docs.forEach((doc) {
+      // Extract email, question, and response from document data
+      String email = doc['email'];
+      String question = doc['question'];
+      String response = doc['response'];
+
+      // Create a map with the extracted data and add it to the list
+      allergiesInfoList.add({'email': email, 'question': question, 'response': response});
+    });
+
+    return allergiesInfoList;
+  } catch (e) {
+    // Handle any errors
+    print('Error fetching allergies info: $e');
+    return [];
+  }
+}
+
+
+
  int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
 @override
@@ -169,135 +197,172 @@ Widget build(BuildContext context) {
                   _ProfileInfoItem(title: 'Following', value: 50),
                 ],
               ),
+               body: ListView.builder(
+        itemCount: allergiesInfo.length,
+        itemBuilder: (context, index) {
+          // Extract email, question, and response from the current item in the list
+          String email = allergiesInfo[index]['email'];
+          String question = allergiesInfo[index]['question'];
+          String response = allergiesInfo[index]['response'];
+          // Create an AllergiesInfo object
+          AllergiesInfo allergies = AllergiesInfo(email: email, question: question, response: response);
+          // Build a ListTile to display the information
+          return ListTile(
+            title: Text(allergies.question),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Email: ${allergies.email}'),
+                Text('Response: ${allergies.response}'),
+              ],
+            ),
+          );
+        },
               const SizedBox(height: 16),
-              Center(
-                child: isLoading
-                    ? CircularProgressIndicator() // Show loading indicator while data is loading
-                    : Container(
-                        constraints: BoxConstraints(maxWidth: 400),
-                        
-                        child: StreamBuilder(
-                          stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
-                          builder: (BuildContext context, AsyncSnapshot
-                          <QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            }
+Center(
+  child: isLoading
+      ? CircularProgressIndicator()
+      : Container(
+          constraints: BoxConstraints(maxWidth: 400),
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
+            builder: (BuildContext context, AsyncSnapshot
+                  <QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
 
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
 
-                            return ListView(
-                               shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-                              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                                FeedItem item = FeedItem(
-                                  title: data['title'],
-                                  content: data['content'],
-                                  imageUrl: data['imageUrl'], // Use imageUrl from Firestore
-                                  ingredients: data['ingredients'] ?? "",
-                                  instructions: data['instructions'] ?? "",
-                                  user: UserInfo(fullName ?? "", email?? "", imageUrl ?? ""), // Pass user information
-                                );
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
+              return Expanded( // Wrap the SingleChildScrollView with Expanded
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded( // Wrap the ListView.builder with Expanded
+                        child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            DocumentSnapshot document = snapshot.data!.docs[index];
+                            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                            FeedItem item = FeedItem(
+                              title: data['title'],
+                              content: data['content'],
+                              imageUrl: data['imageUrl'], // Use imageUrl from Firestore
+                              ingredients: data['ingredients'] ?? "",
+                              instructions: data['instructions'] ?? "",
+                              user: UserInfo(fullName ?? "", email ?? "", imageUrl ?? ""), // Pass user information
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          _AvatarImage(item.user.imageUrl),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                      _AvatarImage(item.user.imageUrl),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: RichText(
-                                                        overflow: TextOverflow.ellipsis,
-                                                        text: TextSpan(
-                                                          children: [
-                                                            TextSpan(
-                                                              text: fullName ?? '',
-                                                              style: const TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 16,
-                                                                  color: Colors.black),
-                                                            ),
-                                                            TextSpan(
-                                                              text: fullName != null ? " @$fullName" : '',
-                                                              style: Theme.of(context).textTheme.subtitle1,
-                                                            ),
-                                                          ],
+                                                Expanded(
+                                                  child: RichText(
+                                                    overflow: TextOverflow.ellipsis,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: fullName ?? '',
+                                                          style: const TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 16,
+                                                              color: Colors.black),
                                                         ),
-                                                      ),
+                                                        TextSpan(
+                                                          text: fullName != null ? " @$fullName" : '',
+                                                          style: Theme.of(context).textTheme.subtitle1,
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
-                                                    const Padding(
-                                                      padding: EdgeInsets.only(left: 8.0),
-                                                      child: Icon(Icons.more_horiz),
-                                                    )
-                                                  ],
+                                                  ),
                                                 ),
-                                                SizedBox(height: 8),
-                                                if (item.content != null) Text(item.content!),
-                                                if (item.imageUrl != null)
-                                                  Container(
-                                                    height: 200,
-                                                    margin: const EdgeInsets.only(top: 8.0),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(8.0),
-                                                      image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image: NetworkImage(item.imageUrl!),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                SizedBox(height: 8),
-                                                if (item.title != null)
-                                                  Text(
-                                                    item.title!,
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                if (item.ingredients.isNotEmpty)
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "Ingrédients:",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      for (String ingredient in item.ingredients.split(','))
-                                                        Text("- $ingredient"),
-                                                    ],
-                                                  ),
-                                                _ActionsRow(), // Actions row
+                                                Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
+                                                const Padding(
+                                                  padding: EdgeInsets.only(left: 8.0),
+                                                  child: Icon(Icons.more_horiz),
+                                                )
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(height: 8),
+                                            if (item.content != null) Text(item.content!),
+                                            if (item.imageUrl != null)
+                                              Container(
+                                                height: 200,
+                                                margin: const EdgeInsets.only(top: 8.0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(item.imageUrl!),
+                                                  ),
+                                                ),
+                                              ),
+                                            SizedBox(height: 8),
+                                            if (item.title != null)
+                                              Text(
+                                                item.title!,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            if (item.ingredients.isNotEmpty)
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Ingrédients:",
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  for (String ingredient in item.ingredients.split(','))
+                                                    Text("- $ingredient"),
+                                                ],
+                                              ),
+                                            _ActionsRow(), // Actions row
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                            ); },
-                         ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
+                    ],
+                  ),
                 ),
+              );
+            },
+          ),
+        ),
+)
+
+
+
               
             ],
           ),
@@ -394,6 +459,7 @@ class _ProfileInfoItem extends StatelessWidget {
     );
   }
 }
+
 class _AvatarImage extends StatelessWidget {
   final String? imageUrl;
   const _AvatarImage(this.imageUrl, {Key? key}) : super(key: key);
@@ -470,7 +536,13 @@ class FeedItem {
     required this.user,
   });
 }
+class AllergiesInfo {
+  final String email;
+  final String question;
+  final String response;
 
+  AllergiesInfo({required this.email, required this.question, required this.response});
+}
 class UserInfo {
   final String fullName;
   final String email;
@@ -481,12 +553,4 @@ class UserInfo {
     this.email,
     this.imageUrl,
   );
-}
-
-
-
-void main() {
-  runApp(MaterialApp(
-    home: ProfilePage1(),
-  ));
 }

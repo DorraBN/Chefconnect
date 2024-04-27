@@ -276,68 +276,86 @@
 // }
 
 
+
 class ConcentricAnimationOnboarding extends StatelessWidget {
-  const ConcentricAnimationOnboarding({Key? key}) : super(key: key);
+  final String userEmail;
+    static late String _cachedEmail;
+
+  const ConcentricAnimationOnboarding({Key? key, required this.userEmail}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+       _cachedEmail = userEmail;
     return Scaffold(
-      body: OnboardingPagePresenter(pages: [
-        OnboardingPageModel(
-          backgroundImage: "../../../assets/bg1.png",
-          textColor: const Color.fromARGB(255, 0, 0, 0),
-          question: "Which cuisine do you prefer?",
-          responses: [
-            "Tunisian", "Italian", "Asian",
-            "British", "French", "Chinese",
-            "Middle East", "Irish", "German",
-            "Korean", "Greek", "Mexican",
-          ],
-          responseBackgroundImages: [
-            "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
-            "assets/british.png", "assets/french.png", "assets/chinese.png",
-            "assets/middleeast.png", "assets/irish.png", "assets/german.png",
-            "assets/korean.png", "assets/greek.png", "assets/mexican.png",
-          ],
-        ),
-        OnboardingPageModel(
-          backgroundImage: "assets/bg1.png",
-          textColor: Color.fromARGB(255, 8, 8, 10),
-          question: "What's your dietary preference?",
-          responses: [
-            "Gluten Free", "Ketogenic", "Vegetarian",
-            "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
-            "Pescetarian", "Paleo", "Primal",
-            "Low FODMAP", "Whole30","Flexitarian",
-          ],
-          responseBackgroundImages: [
-            "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
-            "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
-            "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
-            "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
-          ],
-        ),
-        OnboardingPageModel(
-          backgroundImage: "assets/bg1.png",
-          textColor: Color.fromARGB(255, 0, 0, 0),
-          question: "Which allergies do you have?",
-          responses: [
-            "Gluten", "Dairy", "Sesame",
-            "Seafood", "Egg", "Soy",
-            "Wheat", "Peanut","Tree nuts",
-            "Mustard" , "Lupin" , "Sulfites" ,
-          ],
-          responseBackgroundImages: [
-            "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
-            "assets/seafood.png", "assets/egg.png", "assets/soy.png",
-            "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
-            "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
-          ],
-        ),
-      ]),
+      appBar: AppBar(
+        title: Text('Onboarding'),
+        backgroundColor: Colors.blue, // Choisissez la couleur de l'AppBar selon vos préférences
+      ),
+      body: OnboardingPagePresenter(
+        pages: [
+          OnboardingPageModel(
+            backgroundImage: "../../../assets/bg1.png",
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+            question: "Which cuisine do you prefer?",
+            responses: [
+              "Tunisian", "Italian", "Asian",
+              "British", "French", "Chinese",
+              "Middle East", "Irish", "German",
+              "Korean", "Greek", "Mexican",
+            ],
+            responseBackgroundImages: [
+              "assets/tunisian.png", "assets/italian.png", "assets/asian.png",
+              "assets/british.png", "assets/french.png", "assets/chinese.png",
+              "assets/middleeast.png", "assets/irish.png", "assets/german.png",
+              "assets/korean.png", "assets/greek.png", "assets/mexican.png",
+            ],
+          ),
+          OnboardingPageModel(
+            backgroundImage: "assets/bg1.png",
+            textColor: Color.fromARGB(255, 8, 8, 10),
+            question: "What's your dietary preference?",
+            responses: [
+              "Gluten Free", "Ketogenic", "Vegetarian",
+              "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan",
+              "Pescetarian", "Paleo", "Primal",
+              "Low FODMAP", "Whole30","Flexitarian",
+            ],
+            responseBackgroundImages: [
+              "assets/glutenfree.png","assets/ketogenic.png","assets/vegetarian.png",
+              "assets/lactovegetarian.png","assets/ovovegetarian.png","assets/vegan.png",
+              "assets/pescetarian.png","assets/paleo.png","assets/primal.png",
+              "assets/lowfoodmaps.png","assets/whole30.png","assets/flexitarien.png",
+            ],
+          ),
+          OnboardingPageModel(
+            backgroundImage: "assets/bg1.png",
+            textColor: Color.fromARGB(255, 0, 0, 0),
+            question: "Which allergies do you have?",
+            responses: [
+              "Gluten", "Dairy", "Sesame",
+              "Seafood", "Egg", "Soy",
+              "Wheat", "Peanut","Tree nuts",
+              "Mustard" , "Lupin" , "Sulfites" ,
+            ],
+            responseBackgroundImages: [
+              "assets/gluten.png", "assets/diary.png", "assets/sesame.png",
+              "assets/seafood.png", "assets/egg.png", "assets/soy.png",
+              "assets/wheat.png", "assets/peanut.png","assets/treenuts.png",
+              "assets/mustard.png", "assets/lupin.png","assets/sulfites.png",
+            ],
+          ),
+        ],
+        userEmail: userEmail, // Pass the user's email here
+      ),
     );
   }
+  static String getCachedEmail() {
+    return _cachedEmail;
+  }
 }
+
+
+
 
 class OnboardingPagePresenter extends StatefulWidget {
   final List<OnboardingPageModel> pages;
@@ -348,7 +366,7 @@ class OnboardingPagePresenter extends StatefulWidget {
     Key? key,
     required this.pages,
     this.onSkip,
-    this.onFinish,
+    this.onFinish, required String userEmail,
   }) : super(key: key);
 
   @override
@@ -554,20 +572,22 @@ class _OnboardingPageState extends State<OnboardingPagePresenter> {
       }
     });
   }
+void _saveSelectedResponsesToFirestore() {
+  // Enregistrer toutes les paires (question, réponse) sélectionnées dans la collection "responses" de Firestore
+ var userEmail = ConcentricAnimationOnboarding.getCachedEmail();
 
-  void _saveSelectedResponsesToFirestore() {
-    // Enregistrer toutes les paires (question, réponse) sélectionnées dans la collection "responses" de Firestore
-    FirebaseFirestore.instance.collection('allergies').add({
-      'selected_responses': selectedResponses,
-    }).then((value) {
-      print('Selected responses saved to Firestore');
-    }).catchError((error) {
-      print('Failed to save selected responses: $error');
-    });
+  FirebaseFirestore.instance.collection('allergies').add({
+    'email': userEmail, // Utilisez userEmail au lieu de ConcentricAnimationOnboarding.userEmail
+    'selected_responses': selectedResponses,
+  }).then((value) {
+    print('Selected responses saved to Firestore');
+  }).catchError((error) {
+    print('Failed to save selected responses: $error');
+  });
 
-    // Effacer les paires (question, réponse) sélectionnées après l'enregistrement
-    selectedResponses.clear();
-  }
+  // Effacer les paires (question, réponse) sélectionnées après l'enregistrement
+  selectedResponses.clear();
+}
 }
 
 class OnboardingPageModel {
