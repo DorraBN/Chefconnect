@@ -3,8 +3,12 @@ import 'package:chefconnect/wiem/pages/questions/questions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'success.dart';
 import 'login.dart';
+import 'dart:io';
+
+
 
 void main() {
   runApp(MaterialApp(
@@ -36,6 +40,7 @@ class _RegisterState extends State<Register> {
   RegExp passwordPattern =
       RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
   RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
 
   @override
   void dispose() {
@@ -421,7 +426,7 @@ FirebaseFirestore.instance.collection('registration').add({
     ),
   );
 }).catchError((error) {
-  // Erreur lors de l'enregistrement
+  // Erreur lors de l'enregistrement 
   print('Failed to register user: $error');
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(

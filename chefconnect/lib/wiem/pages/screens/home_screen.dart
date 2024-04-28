@@ -118,15 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 244, 206, 54),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Home'),
-          ],
-        ),
-      ),
+      
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
