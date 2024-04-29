@@ -19,12 +19,15 @@ class _ProfilePage1State extends State<ProfilePage1> {
   String? email;
   String? imageUrl;
   bool isLoading = true;
+  List<String> allergies = []; // Liste pour stocker les allergies
+  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
     _loadUserData2();
+    fetchUserAllergies(); // Appel de la fonction pour récupérer les allergies
   }
 
   Future<void> _loadUserData() async {
@@ -48,6 +51,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
     }
   }
 
+  // Fonction pour récupérer les données utilisateur depuis FirebaseAuthService
   Future<void> _loadUserData2() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? useremail = currentUser?.email;
@@ -59,6 +63,33 @@ class _ProfilePage1State extends State<ProfilePage1> {
         email = currentUser?.email;
         imageUrl = userImageUrl;
       });
+    }
+  }
+
+  Future<void> fetchUserAllergies() async {
+    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    if (currentUserEmail != null) {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection('allergies')
+          .where('email', isEqualTo: currentUserEmail)
+          .get();
+      if (querySnapshot.size > 0) {
+        List<String> userAllergies = [];
+        List<String> userQuestions = [];
+        querySnapshot.docs.forEach((doc) {
+          List<Map<String, dynamic>> selectedResponses = List<Map<String, dynamic>>.from(doc['selected_responses']);
+          selectedResponses.forEach((response) {
+            userAllergies.add(response['response']);
+            userQuestions.add(response['question']); // Ajouter la question correspondante
+          });
+        });
+        setState(() {
+          allergies = userAllergies;
+          questions = userQuestions;
+        });
+      } else {
+        print('Aucune allergie trouvée pour cet utilisateur.');
+      }
     }
   }
 
@@ -142,7 +173,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     fullName ?? 'Full Name',
@@ -154,6 +185,65 @@ class _ProfilePage1State extends State<ProfilePage1> {
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   const SizedBox(height: 16),
+                  // Afficher les allergies
+                  if (allergies.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Allergies:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: allergies.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            String question = "Question ${index + 1}"; // Question générique si aucune n'est fournie
+                            String response = entry.value;
+
+                            // Vérifier si une question correspondante existe dans la liste de questions
+                            if (index < questions.length) {
+                              question = questions[index];
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      question,
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      response,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    )
+                  else
+                    Text(
+                      'Aucune allergie',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -161,6 +251,17 @@ class _ProfilePage1State extends State<ProfilePage1> {
                       _ProfileInfoItem(title: 'Followers', value: 100),
                       _ProfileInfoItem(title: 'Following', value: 50),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Posts',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                    thickness: 2,
                   ),
                   const SizedBox(height: 16),
                   Expanded(
