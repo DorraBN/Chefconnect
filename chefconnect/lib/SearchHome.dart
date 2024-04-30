@@ -702,14 +702,29 @@ class _SearchHome extends State<SearchHome> {
 
 
 
+// Modèle FeedItem
+class FeedItem {
+  final String? title;
+  final String? content;
+  final String? imageUrl;
+  final String ingredients;
+  final String instructions;
+  final UserInfo user;
+
+  FeedItem({this.title, this.content, this.imageUrl, required this.ingredients, required this.instructions, required this.user});
+}
+
+// Modèle UserInfo
+class UserInfo {
+  final String fullName;
+  final String email;
+  final String? imageUrl;
+
+  UserInfo(this.fullName, this.email, this.imageUrl);
+}
+
 class ProfilePage2 extends StatefulWidget {
   final Person person;
- String? fullName;
-  String? email;
-  String? imageUrl;
-  bool isLoading = true;
-  List<String> allergies = []; // Liste pour stocker les allergies
-  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
 
   ProfilePage2({Key? key, required this.person}) : super(key: key);
 
@@ -719,14 +734,10 @@ class ProfilePage2 extends StatefulWidget {
 
 class _ProfilePage2State extends State<ProfilePage2> {
   bool isFollowing = false;
-  List<String> followingUsers = [];
-   String? fullName;
+  String? fullName;
   String? email;
   String? imageUrl;
   bool isLoading = true;
-  List<String> allergies = []; // Liste pour stocker les allergies
-  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
-
 
   // Méthode pour obtenir l'utilisateur connecté
   Future<String?> getLoggedInUserEmail() async {
@@ -753,8 +764,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   @override
   void initState() {
     super.initState();
-  _loadUserData();
-    _loadUserData2();
+    _loadUserData();
+
     getFriendStatus().then((value) {
       setState(() {
         isFollowing = value;
@@ -762,12 +773,12 @@ class _ProfilePage2State extends State<ProfilePage2> {
     });
   }
 
-
-
-   Future<void> _loadUserData() async {
+  // Méthode pour charger les données utilisateur du profil consulté
+  Future<void> _loadUserData() async {
     await Future.delayed(Duration(seconds: 2));
 
-    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    // Utiliser l'e-mail de la personne du profil
+    String? currentUserEmail = widget.person.email;
     if (currentUserEmail != null) {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
           .collection('registration')
@@ -784,22 +795,6 @@ class _ProfilePage2State extends State<ProfilePage2> {
       }
     }
   }
-
-  // Fonction pour récupérer les données utilisateur depuis FirebaseAuthService
-  Future<void> _loadUserData2() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    String? useremail = currentUser?.email;
-    if (useremail != null) {
-      String? username = await FirebaseAuthService().getUsername(useremail);
-      String? userImageUrl = await FirebaseAuthService().getCollectionImageUrl(useremail);
-      setState(() {
-        fullName = username;
-        email = currentUser?.email;
-        imageUrl = userImageUrl;
-      });
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -823,10 +818,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                 children: [
                   Text(
                     widget.person.email,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -856,10 +848,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
                                 if (loggedInUserEmail != null) {
                                   FirebaseFirestore.instance
                                       .collection('following')
-                                      .where('follower',
-                                          isEqualTo: loggedInUserEmail)
-                                      .where('following',
-                                          isEqualTo: widget.person.email)
+                                      .where('follower', isEqualTo: loggedInUserEmail)
+                                      .where('following', isEqualTo: widget.person.email)
                                       .get()
                                       .then((QuerySnapshot querySnapshot) {
                                     querySnapshot.docs.forEach((doc) {
@@ -873,9 +863,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                         },
                         heroTag: 'follow',
                         elevation: 0,
-                        backgroundColor: isFollowing
-                            ? Colors.blue
-                            : Color.fromARGB(255, 190, 244, 54),
+                        backgroundColor: isFollowing ? Colors.blue : Color.fromARGB(255, 190, 244, 54),
                         label: Text(isFollowing ? "Friend" : "Follow"),
                         icon: Icon(Icons.person_add_alt_1),
                       ),
@@ -884,8 +872,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatScreen()),
+                            MaterialPageRoute(builder: (context) => ChatScreen()),
                           );
                         },
                         heroTag: 'message',
@@ -897,7 +884,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const _ProfileInfoRow(),
+                  const _ProfileInfoRow(), // Contient Posts, Followers, Followings
                   const SizedBox(height: 16),
                   Text(
                     'Posts',
@@ -915,7 +902,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                       child: isLoading
                           ? CircularProgressIndicator()
                           : StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
+                              stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: widget.person.email).snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
@@ -1044,14 +1031,9 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 }
 
-
-
-
-
-
-
 class _TopPortion extends StatelessWidget {
   final String? imageUrl;
+
   const _TopPortion({Key? key, this.imageUrl}) : super(key: key);
 
   @override
@@ -1117,6 +1099,22 @@ class _TopPortion extends StatelessWidget {
   }
 }
 
+class _ProfileInfoRow extends StatelessWidget {
+  const _ProfileInfoRow({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _ProfileInfoItem(title: 'Posts', value: 20), // Remplacez 20 par le nombre de posts
+        _ProfileInfoItem(title: 'Followers', value: 100), // Remplacez 100 par le nombre de followers
+        _ProfileInfoItem(title: 'Followings', value: 50), // Remplacez 50 par le nombre de followings
+      ],
+    );
+  }
+}
+
 class _ProfileInfoItem extends StatelessWidget {
   final String title;
   final int value;
@@ -1136,7 +1134,6 @@ class _ProfileInfoItem extends StatelessWidget {
     );
   }
 }
-
 class _AvatarImage extends StatelessWidget {
   final String? imageUrl;
   const _AvatarImage(this.imageUrl, {Key? key}) : super(key: key);
@@ -1196,37 +1193,6 @@ class _ActionsRow extends StatelessWidget {
   }
 }
 
-class FeedItem {
-  final String? title;
-  final String? content;
-  final String? imageUrl;
-  final String ingredients;
-  final String instructions;
-  final UserInfo user;
-
-  FeedItem({
-    this.title,
-    this.content,
-    this.imageUrl,
-    required this.ingredients,
-    required this.instructions,
-    required this.user,
-  });
-}
-
-class UserInfo {
-  final String fullName;
-  final String email;
-  final String imageUrl;
-
-  UserInfo(
-    this.fullName,
-    this.email,
-    this.imageUrl,
-  );
-}
-
-
 
 
 
@@ -1236,35 +1202,6 @@ class UserInfo {
 // ignore: unused_element
 
 
-class _ProfileInfoRow extends StatelessWidget {
-  const _ProfileInfoRow();
-
-  final List<ProfileInfoItem> _items = const [
-    ProfileInfoItem("Posts", 50),
-    ProfileInfoItem("Followers", 50),
-    ProfileInfoItem("Following", 300),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _items
-            .map((item) => Expanded(
-                  child: Row(
-                    children: [
-                      if (_items.indexOf(item) != 0) const VerticalDivider(),
-                      Expanded(child: _singleItem(context, item)),
-                    ],
-                  ),
-                ))
-            .toList(),
-      ),
-    );
-  }
 
   Widget _singleItem(BuildContext context, ProfileInfoItem item) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1285,7 +1222,7 @@ class _ProfileInfoRow extends StatelessWidget {
           )
         ],
       );
-}
+
 
 class ProfileInfoItem {
   final String title;
