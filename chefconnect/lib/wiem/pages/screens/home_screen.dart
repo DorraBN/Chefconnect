@@ -61,7 +61,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   String currentCat = "All";
   List<String> followingEmails = [];
@@ -118,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -157,14 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator();
                     }
+                    final filteredPosts = snapshot.data!.docs.where((doc) => followingEmails.contains(doc['email']));
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: filteredPosts.length,
                       itemBuilder: (context, index) {
-                        DocumentSnapshot postSnapshot = snapshot.data!.docs[index];
+                        DocumentSnapshot postSnapshot = filteredPosts.elementAt(index);
                         Post post = Post.fromSnapshot(postSnapshot);
-
                         String authorUsername = userNames[post.authorEmail] ?? "";
 
                         return Padding(
@@ -269,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ), 
+      ),
     );
   }
 }
