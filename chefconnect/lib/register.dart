@@ -307,41 +307,46 @@ class _RegisterState extends State<Register> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 10.0),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final pickedImage = await ImagePicker().pickImage(
-                              source: ImageSource.camera,
-                            );
-                            if (pickedImage != null) {
-                              setState(() {
-                                _imageUrlController.text = pickedImage.path;
-                              });
-                            }
-                          },
-                          child: Text('Take Picture'),
-                        ),
-                        SizedBox(height: 10.0),
-                        TextFormField(
-                          controller: _imageUrlController,
-                          decoration: InputDecoration(
-                            labelText: 'Image URL',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                            hintText: 'Enter image URL',
-                            filled: true,
-                            fillColor: _imageUrlController.text.isEmpty
-                                ? Colors.white.withOpacity(0.13)
-                                : Color.fromARGB(255, 55, 201, 29)
-                                    .withOpacity(0.13),
-                            prefixIcon:
-                                Icon(Icons.image, color: Colors.black),
-                            hintStyle: TextStyle(color: Colors.black),
-                          ),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        SizedBox(height: 16.0),
+SizedBox(height: 20.0,width: 26,),
+Container(
+  margin: EdgeInsets.symmetric(horizontal: 20.0),
+  child: TextFormField(
+    readOnly: true, // Rend le champ de texte en lecture seule
+    controller: _imageUrlController,
+    onTap: () async {
+      final pickedImage = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+      );
+      if (pickedImage != null) {
+        setState(() {
+          _imageUrlController.text = pickedImage.path;
+        });
+      }
+    },
+    decoration: InputDecoration(
+      labelText: 'Profile image',
+      labelStyle: TextStyle(color: Colors.black), // Ajout du style pour le label
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0), // Modification du rayon du bord
+        borderSide: BorderSide(color: Colors.black),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(50.0), // Modification du rayon du bord
+        borderSide: BorderSide(color: Colors.black),
+      ),
+      hintText: 'Tap to take a picture',
+      filled: true,
+      fillColor: _imageUrlController.text.isEmpty
+          ? Colors.white.withOpacity(0.13)
+          : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+      prefixIcon: Icon(Icons.camera_alt, color: Colors.black), // Utilisez l'icône de la caméra comme préfixe
+      hintStyle: TextStyle(color: Colors.black),
+    ),
+    style: TextStyle(color: Colors.black),
+  ),
+),
+
+       SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
