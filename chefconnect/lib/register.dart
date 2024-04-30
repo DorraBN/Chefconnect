@@ -1,14 +1,10 @@
-import 'package:chefconnect/firebaseAuthImp.dart';
+import 'package:chefconnect/login.dart';
 import 'package:chefconnect/wiem/pages/questions/questions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'success.dart';
-import 'login.dart';
 import 'dart:io';
-
-
 
 void main() {
   runApp(MaterialApp(
@@ -24,23 +20,18 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
   bool _isPasswordVisible1 = false;
-  final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  String _selectedGender = '';
-   TextEditingController _imageUrlController = TextEditingController();
+  TextEditingController _imageUrlController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
-  TextEditingController _pseudoController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  bool _registerButtonClicked = false; // Etat du bouton "Register"
-  // Expression régulière exigeant une longueur minimale de 8 caractères avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
+  bool _registerButtonClicked = false;
   RegExp passwordPattern =
       RegExp(r'^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$');
   RegExp emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
 
   @override
   void dispose() {
@@ -48,6 +39,8 @@ class _RegisterState extends State<Register> {
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -59,23 +52,21 @@ class _RegisterState extends State<Register> {
           // Image de fond
           DecoratedBox(
             position: DecorationPosition.background,
-            
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
+                image: AssetImage("../assets/R5.png"),
                 fit: BoxFit.cover,
               ),
             ),
             child: Container(),
           ),
-
           Positioned(
             left: 20,
             bottom: 20,
             child: IconButton(
               icon: Icon(Icons.home),
               onPressed: () {
-                Navigator.pop(context); // Retour à la page initiale
+                Navigator.pop(context);
               },
             ),
           ),
@@ -116,8 +107,7 @@ class _RegisterState extends State<Register> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.restaurant,
-                                size: 30,
-                                color: Colors.black), // Icône de restaurant
+                                size: 30, color: Colors.black),
                             SizedBox(width: 10),
                             Text(
                               'Sign Up',
@@ -127,7 +117,7 @@ class _RegisterState extends State<Register> {
                                 color: Colors.black,
                               ),
                               textAlign: TextAlign.center,
-                            ), // form h3
+                            ),
                           ],
                         ),
                         SizedBox(height: 20.0),
@@ -135,57 +125,28 @@ class _RegisterState extends State<Register> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Username',
-                             labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             hintText: 'Enter your username',
                             filled: true,
                             fillColor: _usernameController.text.isEmpty
                                 ? Colors.white.withOpacity(0.13)
                                 : Color.fromARGB(255, 37, 188, 10)
                                     .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.person, color: Colors.black),
+                            prefixIcon:
+                                Icon(Icons.person, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
-                          style: TextStyle(color: Colors.black), // form *
+                          style: TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your username';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20.0),
-                        TextFormField(
-                          controller: _pseudoController,
-                          decoration: InputDecoration(
-                            labelText: 'Pseudo',
-                             labelStyle: TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
-                            hintText: 'Enter your pseudo name',
-                            filled: true,
-                            fillColor: _pseudoController.text.isEmpty
-                                ? Colors.white.withOpacity(0.13)
-                                : Color.fromARGB(255, 55, 201, 29)
-                                    .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.person, color: Colors.black),
-                            hintStyle: TextStyle(color: Colors.black),
-                          ),
-                          style: TextStyle(color: Colors.black), // form *
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your pseudo name';
                             }
                             return null;
                           },
@@ -195,24 +156,25 @@ class _RegisterState extends State<Register> {
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                             labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             hintText: 'Enter your email',
                             filled: true,
                             fillColor: _emailController.text.isEmpty
                                 ? Colors.white.withOpacity(0.13)
                                 : Color.fromARGB(255, 55, 201, 29)
                                     .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            prefixIcon:
+                                Icon(Icons.email, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
-                          style: TextStyle(color: Colors.black), // form *
+                          style: TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
@@ -225,24 +187,25 @@ class _RegisterState extends State<Register> {
                           controller: _phoneController,
                           decoration: InputDecoration(
                             labelText: 'Phone',
-                             labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             hintText: 'Enter your phone number',
                             filled: true,
                             fillColor: _phoneController.text.isEmpty
                                 ? Colors.white.withOpacity(0.13)
                                 : Color.fromARGB(255, 55, 201, 29)
                                     .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.phone, color: Colors.black),
+                            prefixIcon:
+                                Icon(Icons.phone, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
-                          style: TextStyle(color: Colors.black), // form *
+                          style: TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your phone number';
@@ -256,26 +219,29 @@ class _RegisterState extends State<Register> {
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                             labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             hintText: 'Enter your password',
                             filled: true,
                             fillColor: _passwordController.text.isEmpty
                                 ? Colors.white.withOpacity(0.13)
                                 : Color.fromARGB(255, 55, 201, 29)
                                     .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                             suffixIcon: IconButton(
                               icon: Icon(_isPasswordVisible
                                   ? Icons.visibility_off
-                                  : Icons.visibility,color: Colors.black),
+                                  : Icons.visibility,
+                              color: Colors.black,
+                              ),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible = !_isPasswordVisible;
@@ -297,29 +263,32 @@ class _RegisterState extends State<Register> {
                         SizedBox(height: 10.0),
                         TextFormField(
                           controller: _confirmPasswordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible1,
                           decoration: InputDecoration(
                             labelText: 'Confirm Password',
-                             labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                             ),
-                             focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: BorderSide(color: Colors.black), // Couleur de la bordure lorsque l'input est en focus
-      ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             hintText: 'Re-enter your password',
                             filled: true,
                             fillColor: _confirmPasswordController.text.isEmpty
                                 ? Colors.white.withOpacity(0.13)
                                 : Color.fromARGB(255, 55, 201, 29)
                                     .withOpacity(0.13),
-                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.black),
                             hintStyle: TextStyle(color: Colors.black),
                             suffixIcon: IconButton(
                               icon: Icon(_isPasswordVisible1
                                   ? Icons.visibility_off
-                                  : Icons.visibility,color: Colors.black),
+                                  : Icons.visibility,
+                              color: Colors.black,
+                              ),
                               onPressed: () {
                                 setState(() {
                                   _isPasswordVisible1 = !_isPasswordVisible1;
@@ -339,63 +308,43 @@ class _RegisterState extends State<Register> {
                           },
                         ),
                         SizedBox(height: 10.0),
-                        Row(
-                          children: <Widget>[
-                            Text('Gender:',
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.black)),
-                            SizedBox(width: 10),
-                            Radio(
-                              value: 'Male',
-                              groupValue: _selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGender = value.toString();
-                                });
-                              },
-                            ),
-                            Text('Male',
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.black)),
-                            SizedBox(width: 10),
-                            Radio(
-                              value: 'Female',
-                              groupValue: _selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGender = value.toString();
-                                });
-                              },
-                            ),
-                            Text('Female',
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.black)),
-                          ],
+                        ElevatedButton(
+                          onPressed: () async {
+                            final pickedImage = await ImagePicker().pickImage(
+                              source: ImageSource.camera,
+                            );
+                            if (pickedImage != null) {
+                              setState(() {
+                                _imageUrlController.text = pickedImage.path;
+                              });
+                            }
+                          },
+                          child: Text('Take Picture'),
                         ),
-                         TextFormField(
-            controller: _imageUrlController,
-            decoration: InputDecoration(
-              labelText: 'Image URL',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.0),
-              ),
-              hintText: 'Enter image URL',
-              filled: true,
-              fillColor: _imageUrlController.text.isEmpty
-                  ? Colors.white.withOpacity(0.13)
-                  : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-              prefixIcon: Icon(Icons.image, color: Colors.black),
-              hintStyle: TextStyle(color: Colors.black),
-            ),
-            style: TextStyle(color: Colors.black),
-            // Vous pouvez ajouter une validation si nécessaire
-          ),
-
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: _imageUrlController,
+                          decoration: InputDecoration(
+                            labelText: 'Image URL',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            hintText: 'Enter image URL',
+                            filled: true,
+                            fillColor: _imageUrlController.text.isEmpty
+                                ? Colors.white.withOpacity(0.13)
+                                : Color.fromARGB(255, 55, 201, 29)
+                                    .withOpacity(0.13),
+                            prefixIcon:
+                                Icon(Icons.image, color: Colors.black),
+                            hintStyle: TextStyle(color: Colors.black),
+                          ),
+                          style: TextStyle(color: Colors.black),
+                        ),
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
-                          
                               setState(() {
                                 _registerButtonClicked = true;
                               });
@@ -404,44 +353,7 @@ class _RegisterState extends State<Register> {
                                   content: Text('Processing registration...'),
                                 ),
                               );
-   _signup();
-// Enregistrement des données dans la collection Firestore
-FirebaseFirestore.instance.collection('registration').add({
-  'username': _usernameController.text,
-  'pseudo': _pseudoController.text,
-  'email': _emailController.text,
-  'phone': _phoneController.text,
-  'password': _passwordController.text,
-  'confirm': _confirmPasswordController.text,
-  'gender': _selectedGender,
-  'imageUrl': _imageUrlController.text,
-}).then((value) {
-  // Enregistrement réussi
-  print('User registered successfully');
-  // Pass the user's email to the onboarding process
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ConcentricAnimationOnboarding(userEmail: _emailController.text),
-    ),
-  );
-}).catchError((error) {
-  // Erreur lors de l'enregistrement 
-  print('Failed to register user: $error');
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('Failed to register user'),
-    ),
-  );
-}).whenComplete(() {
-  // Optional: Any additional actions to take after registration completes
-
-
-                                // Réinitialisation de l'état du bouton après l'enregistrement
-                                setState(() {
-                                  _registerButtonClicked = false;
-                                });
-                              });
+                              _signup();
                             }
                           },
                           child: Container(
@@ -471,11 +383,11 @@ FirebaseFirestore.instance.collection('registration').add({
                         SizedBox(height: 16.0),
                         GestureDetector(
                           onTap: () {
-                            // Naviguer vers la page de connexion
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
+                                builder: (context) => LoginPage(),
+                              ),
                             );
                           },
                           child: Container(
@@ -517,19 +429,48 @@ FirebaseFirestore.instance.collection('registration').add({
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
-     String imageUrl = _imageUrlController.text;
+    String imageUrl = _imageUrlController.text;
     try {
-      User? user = await _auth.signUpWithEmailAndPassword(email, password);
+      User? user = (await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(email: email, password: password))
+          .user;
       if (user != null) {
         print("User was successfully created");
-         Navigator.push(
+        // Enregistrement des données dans la collection Firestore
+        FirebaseFirestore.instance.collection('registration').add({
+          'username': username,
+          'email': email,
+          'phone': _phoneController.text,
+          'password': password,
+          'confirm': _confirmPasswordController.text,
+          'imageUrl': imageUrl,
+        }).then((value) {
+          // Enregistrement réussi
+          print('User registered successfully');
+          // Pass the user's email to the onboarding process
+          Navigator.push(
             context,
-           MaterialPageRoute(
-    builder: (context) => ConcentricAnimationOnboarding(userEmail: _emailController.text),
-  ),
-);
-      
-          
+            MaterialPageRoute(
+              builder: (context) => ConcentricAnimationOnboarding(
+                userEmail: email,
+              ),
+            ),
+          );
+        }).catchError((error) {
+          // Erreur lors de l'enregistrement
+          print('Failed to register user: $error');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to register user'),
+            ),
+          );
+        }).whenComplete(() {
+          // Optional: Any additional actions to take after registration completes
+          // Réinitialisation de l'état du bouton après l'enregistrement
+          setState(() {
+            _registerButtonClicked = false;
+          });
+        });
       } else {
         print("User creation failed: User object is null");
       }
