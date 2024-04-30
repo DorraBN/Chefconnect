@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chefconnect/firebaseAuthImp.dart';
 import 'package:chefconnect/khedmet%20salma/APIkey.dart';
 import 'package:chefconnect/khedmet%20salma/ChatScreen.dart';
 import 'package:chefconnect/khedmet%20salma/CustomCategoriesList.dart';
@@ -703,6 +704,12 @@ class _SearchHome extends State<SearchHome> {
 
 class ProfilePage2 extends StatefulWidget {
   final Person person;
+ String? fullName;
+  String? email;
+  String? imageUrl;
+  bool isLoading = true;
+  List<String> allergies = []; // Liste pour stocker les allergies
+  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
 
   ProfilePage2({Key? key, required this.person}) : super(key: key);
 
@@ -713,6 +720,13 @@ class ProfilePage2 extends StatefulWidget {
 class _ProfilePage2State extends State<ProfilePage2> {
   bool isFollowing = false;
   List<String> followingUsers = [];
+   String? fullName;
+  String? email;
+  String? imageUrl;
+  bool isLoading = true;
+  List<String> allergies = []; // Liste pour stocker les allergies
+  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
+
 
   // Méthode pour obtenir l'utilisateur connecté
   Future<String?> getLoggedInUserEmail() async {
@@ -739,13 +753,53 @@ class _ProfilePage2State extends State<ProfilePage2> {
   @override
   void initState() {
     super.initState();
- 
+  _loadUserData();
+    _loadUserData2();
     getFriendStatus().then((value) {
       setState(() {
         isFollowing = value;
       });
     });
   }
+
+
+
+   Future<void> _loadUserData() async {
+    await Future.delayed(Duration(seconds: 2));
+
+    String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    if (currentUserEmail != null) {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection('registration')
+          .where('email', isEqualTo: currentUserEmail)
+          .get();
+      if (querySnapshot.size > 0) {
+        var userData = querySnapshot.docs.first.data();
+        setState(() {
+          fullName = userData['username'];
+          email = userData['email'];
+          imageUrl = userData['imageUrl'];
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  // Fonction pour récupérer les données utilisateur depuis FirebaseAuthService
+  Future<void> _loadUserData2() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? useremail = currentUser?.email;
+    if (useremail != null) {
+      String? username = await FirebaseAuthService().getUsername(useremail);
+      String? userImageUrl = await FirebaseAuthService().getCollectionImageUrl(useremail);
+      setState(() {
+        fullName = username;
+        email = currentUser?.email;
+        imageUrl = userImageUrl;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -845,17 +899,139 @@ class _ProfilePage2State extends State<ProfilePage2> {
                   const SizedBox(height: 16),
                   const _ProfileInfoRow(),
                   const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => _ProfileInfoRow()),
-                      );
-                    },
-                    child: Text(
-                      "Publications",
-                      style: Theme.of(context).textTheme.headline6,
+                  Text(
+                    'Posts',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: Center(
+                      child: isLoading
+                          ? CircularProgressIndicator()
+                          : StreamBuilder(
+                              stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
+                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
+
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                }
+
+                                return ListView.builder(
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    DocumentSnapshot document = snapshot.data!.docs[index];
+                                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                                    FeedItem item = FeedItem(
+                                      title: data['title'],
+                                      content: data['content'],
+                                      imageUrl: data['imageUrl'],
+                                      ingredients: data['ingredients'] ?? "",
+                                      instructions: data['instructions'] ?? "",
+                                      user: UserInfo(fullName ?? "", email ?? "", imageUrl ?? ""),
+                                    );
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              _AvatarImage(item.user.imageUrl),
+                                              const SizedBox(width: 16),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: RichText(
+                                                            overflow: TextOverflow.ellipsis,
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: fullName ?? '',
+                                                                  style: const TextStyle(
+                                                                      fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: fullName != null ? " @$fullName" : '',
+                                                                  style: Theme.of(context).textTheme.subtitle1,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
+                                                        const Padding(
+                                                          padding: EdgeInsets.only(left: 8.0),
+                                                          child: Icon(Icons.more_horiz),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    if (item.content != null) Text(item.content!),
+                                                    if (item.imageUrl != null)
+                                                      Container(
+                                                        height: 200,
+                                                        margin: const EdgeInsets.only(top: 8.0),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                          image: DecorationImage(
+                                                            fit: BoxFit.cover,
+                                                            image: NetworkImage(item.imageUrl!),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    SizedBox(height: 8),
+                                                    if (item.title != null)
+                                                      Text(
+                                                        item.title!,
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    if (item.ingredients.isNotEmpty)
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            "Ingrédients:",
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                          for (String ingredient in item.ingredients.split(','))
+                                                            Text("- $ingredient"),
+                                                        ],
+                                                      ),
+                                                    _ActionsRow(),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                     ),
                   ),
                 ],
@@ -868,22 +1044,197 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 }
 
-// ignore: unused_element
-class _AvatarImage extends StatelessWidget {
-  final String url;
-  const _AvatarImage(this.url);
+
+
+
+
+
+
+class _TopPortion extends StatelessWidget {
+  final String? imageUrl;
+  const _TopPortion({Key? key, this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(url))),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 50),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(50),
+              bottomRight: Radius.circular(50),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            width: 150,
+            height: 150,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                  child: imageUrl != null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl!),
+                        )
+                      : null,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    child: Container(
+                      margin: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
+
+class _ProfileInfoItem extends StatelessWidget {
+  final String title;
+  final int value;
+
+  const _ProfileInfoItem({Key? key, required this.title, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(title),
+      ],
+    );
+  }
+}
+
+class _AvatarImage extends StatelessWidget {
+  final String? imageUrl;
+  const _AvatarImage(this.imageUrl, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 24,
+      backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
+      child: imageUrl == null ? Icon(Icons.person) : null,
+    );
+  }
+}
+
+class _ActionsRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.favorite_border),
+              onPressed: () {
+                // Handle like button pressed
+              },
+            ),
+            SizedBox(width: 5),
+            Text(
+              "Like",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.comment),
+              onPressed: () {
+                // Handle comment button pressed
+              },
+            ),
+            SizedBox(width: 5),
+            Text(
+              "Comment",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class FeedItem {
+  final String? title;
+  final String? content;
+  final String? imageUrl;
+  final String ingredients;
+  final String instructions;
+  final UserInfo user;
+
+  FeedItem({
+    this.title,
+    this.content,
+    this.imageUrl,
+    required this.ingredients,
+    required this.instructions,
+    required this.user,
+  });
+}
+
+class UserInfo {
+  final String fullName;
+  final String email;
+  final String imageUrl;
+
+  UserInfo(
+    this.fullName,
+    this.email,
+    this.imageUrl,
+  );
+}
+
+
+
+
+
+
+
+
+// ignore: unused_element
+
 
 class _ProfileInfoRow extends StatelessWidget {
   const _ProfileInfoRow();
@@ -942,73 +1293,3 @@ class ProfileInfoItem {
   const ProfileInfoItem(this.title, this.value);
 }
 
-class _TopPortion extends StatelessWidget {
-  final String imageUrl;
-
-  const _TopPortion({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 50),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Color.fromARGB(255, 114, 242, 108),
-                Color.fromARGB(255, 244, 207, 84)
-              ],
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(50),
-              bottomRight: Radius.circular(50),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            width: 150,
-            height: 150,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        imageUrl,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    child: Container(
-                      margin: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

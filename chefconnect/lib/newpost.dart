@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NewPostPage extends StatefulWidget {
   const NewPostPage({Key? key}) : super(key: key);
@@ -27,6 +28,16 @@ class _NewPostPageState extends State<NewPostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Container(
+              height: 200.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('../../assets/1.png'), // Ajout de l'image
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _recipeTitleController,
               decoration: const InputDecoration(
@@ -52,18 +63,69 @@ class _NewPostPageState extends State<NewPostPage> {
               ),
               maxLines: null,
             ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              controller: _imageUrlController,
-              decoration: const InputDecoration(
-                labelText: 'Recipe Image URL',
-                prefixIcon: Icon(Icons.image),
+            SizedBox(height: 20.0), // Ajustement de l'espacement
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20.0),
+              child: TextFormField(
+                readOnly: true,
+                controller: _imageUrlController,
+                onTap: () async {
+                  final pickedImage = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (pickedImage != null) {
+                    setState(() {
+                      _imageUrlController.text = pickedImage.path;
+                    });
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: 'Profile image',
+                  labelStyle: TextStyle(color: Colors.black),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  hintText: 'Tap to take a picture',
+                  filled: true,
+                  fillColor: _imageUrlController.text.isEmpty
+                      ? Colors.white.withOpacity(0.13)
+                      : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
+                  prefixIcon: Icon(Icons.camera_alt, color: Colors.black),
+                  hintStyle: TextStyle(color: Colors.black),
+                ),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _postRecipe,
-              child: const Text('Post'),
+            GestureDetector(
+              onTap: _postRecipe,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [Colors.orange, Colors.green],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    'Post',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
