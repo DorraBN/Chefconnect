@@ -20,15 +20,15 @@ class _ProfilePage1State extends State<ProfilePage1> {
   String? email;
   String? imageUrl;
   bool isLoading = true;
-  List<String> allergies = []; // Liste pour stocker les allergies
-  List<String> questions = []; // Liste pour stocker les questions correspondantes aux allergies
+  List<String> allergies = []; 
+  List<String> questions = []; 
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
     _loadUserData2();
-    fetchUserAllergies(); // Appel de la fonction pour récupérer les allergies
+    fetchUserAllergies();
   }
 
   Future<void> _loadUserData() async {
@@ -52,7 +52,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
     }
   }
 
-  // Fonction pour récupérer les données utilisateur depuis FirebaseAuthService
+
   Future<void> _loadUserData2() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? useremail = currentUser?.email;
@@ -81,7 +81,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
           List<Map<String, dynamic>> selectedResponses = List<Map<String, dynamic>>.from(doc['selected_responses']);
           selectedResponses.forEach((response) {
             userAllergies.add(response['response']);
-            userQuestions.add(response['question']); // Ajouter la question correspondante
+            userQuestions.add(response['question']); 
           });
         });
         setState(() {
@@ -111,7 +111,7 @@ List<Map<String, dynamic>> _groupAllergiesByQuestion(List<String> allergies, Lis
 Widget _buildResponseBox(String response) {
   return Container(
     decoration: BoxDecoration(
-      color: Color.fromARGB(255, 169, 234, 181), // Change the background color here
+      color: Color.fromARGB(255, 169, 234, 181), 
       border: Border.all(color: Color.fromARGB(255, 31, 184, 59)),
       borderRadius: BorderRadius.circular(10),
     ),
@@ -199,7 +199,7 @@ Widget build(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
      Container(
-  margin: EdgeInsets.only(bottom: 10, top: 0), // Modification du margin
+  margin: EdgeInsets.only(bottom: 10, top: 0), 
   width: double.infinity,
   decoration: BoxDecoration(
     gradient: LinearGradient(
@@ -217,21 +217,21 @@ Widget build(BuildContext context) {
       fit: StackFit.expand,
       children: [
         Container(
-          margin: EdgeInsets.only(bottom: 10), // Ajustement pour déplacer légèrement vers le bas
+          margin: EdgeInsets.only(bottom: 10), 
           decoration: const BoxDecoration(
             color: Colors.black,
             shape: BoxShape.circle,
           ),
           child: imageUrl != null
               ? CircleAvatar(
-                  radius: 15, // Ajustement pour réduire la taille de l'image
+                  radius: 15, 
                   backgroundImage: NetworkImage(imageUrl!),
                 )
               : null,
         ),
         Positioned(
-          bottom: 0, // Ajustement pour attacher en bas de l'image
-          right: 150, // Ajustement pour attacher à la moitié de l'image
+          bottom: 0, 
+          right: 150, 
           child: CircleAvatar(
             radius: 20,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
