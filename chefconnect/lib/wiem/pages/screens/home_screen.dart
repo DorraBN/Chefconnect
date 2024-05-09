@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:chefconnect/khedmet%20salma/Food.dart';
 import 'package:chefconnect/wiem/pages/models/posts_data.dart';
 import 'package:chefconnect/wiem/pages/widgets/categories.dart';
 import 'package:chefconnect/wiem/pages/widgets/home_appbar.dart';
 import 'package:chefconnect/wiem/pages/widgets/quick_and_fast_list.dart';
-
+import 'package:iconly/iconly.dart';
 
 class Post {
   String title;
@@ -14,6 +13,9 @@ class Post {
   String ingredients;
   String authorImageUrl;
   String authorEmail;
+  int likes;
+  int comments;
+  bool isLiked; // Add a boolean to track liked state for each post
 
   Post({
     required this.title,
@@ -21,9 +23,11 @@ class Post {
     required this.ingredients,
     required this.authorImageUrl,
     required this.authorEmail,
+    required this.likes,
+    required this.comments,
+    required this.isLiked, // Initialize isLiked in the constructor
   });
 
- 
   Future<String?> fetchUserImageUrl(String email) async {
     QuerySnapshot userSnapshot = await FirebaseFirestore.instance
         .collection('registration')
@@ -36,7 +40,6 @@ class Post {
     }
   }
 
-  // Méthode pour créer une instance de Post à partir d'un DocumentSnapshot
   factory Post.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
 
@@ -45,11 +48,40 @@ class Post {
     }
 
     return Post(
-      title: data['title'] ?? "", 
+      title: data['title'] ?? "",
       imageUrl: data['imageUrl'] ?? "",
       ingredients: data['ingredients'] ?? "",
       authorImageUrl: data['authorImageUrl'] ?? "",
       authorEmail: data['email'] ?? "",
+      likes: data['likes'] ?? 0,
+      comments: data['comments'] ?? 0,
+      isLiked: false, // Initialize isLiked to false for each post
+    );
+  }
+}
+
+class Comment {
+  String postId;
+  String comment;
+  String userEmail;
+
+  Comment({
+    required this.postId,
+    required this.comment,
+    required this.userEmail,
+  });
+
+  factory Comment.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+
+    if (data == null) {
+      throw Exception("Comment data is null");
+    }
+
+    return Comment(
+      postId: data['postId'] ?? "",
+      comment: data['comment'] ?? "",
+      userEmail: data['userEmail'] ?? "",
     );
   }
 }
@@ -60,10 +92,12 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
   String currentCat = "All";
   List<String> followingEmails = [];
   Map<String, String> userNames = {};
+  final TextEditingController _commentController = TextEditingController();
 
   Future<void> fetchFollowingUsers() async {
     String? loggedInUserEmail = await getLoggedInUserEmail();
@@ -94,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  
   @override
   void initState() {
     super.initState();
@@ -106,6 +139,61 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       currentCat = category;
     });
+  }
+
+  void addComment(String postId, String comment, Post post) async {
+    // Récupérer l'utilisateur actuellement connecté
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (comment.isNotEmpty && currentUser != null) {
+      // Ajouter le commentaire à la collection 'comments'
+      FirebaseFirestore.instance.collection('comments').add({
+        'postId': postId,
+        'comment': comment,
+        'userEmail': currentUser.email, // Utiliser l'e-mail de l'utilisateur actuel
+        'postTitle': post.title,
+      }).then((docRef) {
+        // Incrémenter le compteur de commentaires dans le document du post
+        FirebaseFirestore.instance.collection('posts').doc(postId).update({
+          'comments': FieldValue.increment(1),
+        });
+      }).catchError((error) {
+        // Gérer les erreurs éventuelles ici
+        print("Error adding comment: $error");
+      });
+    }
+
+    setState(() {
+      // Increment comment count
+      post.comments++;
+    });
+
+    _commentController.clear();
+  }
+
+  int ChangeColorToRed(Post post, int number) {
+    int newNumber = number;
+
+    // Toggle like status and update like count
+    setState(() {
+      if (post.isLiked) {
+        post.isLiked = false;
+        newNumber--;
+      } else {
+        post.isLiked = true;
+        newNumber++;
+      }
+    });
+
+    return newNumber;
+  }
+
+  void _onSubmitted(String postId, Post post) {
+    String comment = _commentController.text;
+
+    if (comment.isNotEmpty) {
+      addComment(postId, comment, post);
+    }
   }
 
   @override
@@ -240,14 +328,65 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(height: 20),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(Icons.thumb_up),
-                                  SizedBox(width: 5),
-                                  Text('Like', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.comment),
-                                  SizedBox(width: 5),
-                                  Text('Comment', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: post.isLiked ? Icon(Icons.favorite, color: Colors.red) : Icon(IconlyLight.heart),
+                                        onPressed: () async {
+                                          setState(() {
+                                            post.likes = ChangeColorToRed(post, post.likes);
+                                          });
+                                          
+                                          // Mettre à jour le nombre de likes dans Firestore
+                                          await FirebaseFirestore.instance.collection('posts').doc(postSnapshot.id).update({
+                                            'likes': post.likes,
+                                          });
+                                        },
+                                      ),
+                                      Text("${post.likes} Likes"),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.comment),
+                                        onPressed: () {
+                                          // Ouvrir une nouvelle page pour afficher les commentaires
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CommentScreen(postId: postSnapshot.id),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text("${post.comments} Comments"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _commentController,
+                                      decoration: InputDecoration(
+                                        hintText: 'Add a comment...',
+                                      ),
+                                      onSubmitted: (comment) {
+                                        _onSubmitted(postSnapshot.id, post);
+                                      },
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.send),
+                                    onPressed: () {
+                                      _onSubmitted(postSnapshot.id, post);
+                                    },
+                                  ),
                                 ],
                               ),
                             ],
@@ -261,6 +400,47 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CommentScreen extends StatefulWidget {
+  final String postId;
+
+  const CommentScreen({Key? key, required this.postId}) : super(key: key);
+
+  @override
+  _CommentScreenState createState() => _CommentScreenState();
+}
+
+class _CommentScreenState extends State<CommentScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Comments'),
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('comments').where('postId', isEqualTo: widget.postId).snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          List<Comment> comments = [];
+          snapshot.data!.docs.forEach((doc) {
+            comments.add(Comment.fromSnapshot(doc));
+          });
+          return ListView.builder(
+            itemCount: comments.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(comments[index].comment),
+                subtitle: Text(comments[index].userEmail),
+              );
+            },
+          );
+        },
       ),
     );
   }
