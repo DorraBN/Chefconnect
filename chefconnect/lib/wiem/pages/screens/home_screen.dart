@@ -7,7 +7,7 @@ import 'package:chefconnect/wiem/pages/widgets/categories.dart';
 import 'package:chefconnect/wiem/pages/widgets/home_appbar.dart';
 import 'package:chefconnect/wiem/pages/widgets/quick_and_fast_list.dart';
 
-// Définition de la classe Post
+
 class Post {
   String title;
   String imageUrl;
@@ -15,7 +15,6 @@ class Post {
   String authorImageUrl;
   String authorEmail;
 
-  // Constructeur de la classe Post
   Post({
     required this.title,
     required this.imageUrl,
@@ -24,7 +23,7 @@ class Post {
     required this.authorEmail,
   });
 
-  // Méthode pour récupérer l'URL de l'image de l'utilisateur à partir de son e-mail
+ 
   Future<String?> fetchUserImageUrl(String email) async {
     QuerySnapshot userSnapshot = await FirebaseFirestore.instance
         .collection('registration')
@@ -66,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> followingEmails = [];
   Map<String, String> userNames = {};
 
-  // Méthode pour récupérer les utilisateurs suivis
   Future<void> fetchFollowingUsers() async {
     String? loggedInUserEmail = await getLoggedInUserEmail();
     if (loggedInUserEmail != null) {
@@ -80,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Méthode pour récupérer l'e-mail de l'utilisateur connecté
   Future<String?> getLoggedInUserEmail() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -90,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Méthode pour récupérer les noms d'utilisateur
   Future<void> fetchUserNames() async {
     QuerySnapshot usersSnapshot = await FirebaseFirestore.instance.collection('registration').get();
     setState(() {
@@ -98,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Méthode appelée lors de l'initialisation de l'écran
+  
   @override
   void initState() {
     super.initState();
@@ -106,14 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchUserNames();
   }
 
-  // Méthode appelée pour changer la catégorie sélectionnée
   void _onCategorySelected(String category) {
     setState(() {
       currentCat = category;
     });
   }
 
-  // Méthode pour construire l'interface utilisateur de l'écran
   @override
   Widget build(BuildContext context) {
     return Scaffold(
