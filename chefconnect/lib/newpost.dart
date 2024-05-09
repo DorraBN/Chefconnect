@@ -80,7 +80,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   }
                 },
                 decoration: InputDecoration(
-                  labelText: 'Profile image',
+                  labelText: 'Recipe image',
                   labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
