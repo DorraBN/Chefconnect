@@ -366,6 +366,66 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Text("${post.comments} Comments"),
                                     ],
                                   ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.share), // Ajout de l'icône de partage
+                                        onPressed: () async {
+                                          // Récupérer l'utilisateur actuellement connecté
+                                          User? currentUser = FirebaseAuth.instance.currentUser;
+                                          if (currentUser != null) {
+                                            // Récupérer les informations du post
+                                            String postId = postSnapshot.id;
+                                            String title = post.title;
+                                            String ingredients = post.ingredients;
+                                            String imageUrl = post.imageUrl;
+                                            String authorImageUrl = post.authorImageUrl;
+                                            String authorEmail = post.authorEmail;
+                                            
+                                            // Vérifier si le post est déjà partagé par l'utilisateur actuel
+                                            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                                                .collection('partage')
+                                                .where('userId', isEqualTo: currentUser.uid)
+                                                .where('postId', isEqualTo: postId)
+                                                .get();
+                                            
+                                            if (querySnapshot.docs.isNotEmpty) {
+                                              // Le post est déjà partagé, afficher un message d'alerte
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text("Already Shared"),
+                                                    content: Text("This post is already on your profile."),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text("OK"),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            } else {
+                                              // Le post n'est pas encore partagé, l'ajouter à la collection "partage"
+                                              await FirebaseFirestore.instance.collection('partage').add({
+                                                'userId': currentUser.uid,
+                                                'postId': postId,
+                                                'title': title,
+                                                'ingredients': ingredients,
+                                                'imageUrl': imageUrl,
+                                                'authorImageUrl': authorImageUrl,
+                                                'authorEmail': authorEmail,
+                                                'currentUserEmail': currentUser.email, // Ajouter le courant utilisateur
+                                              });
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                               Row(
@@ -451,3 +511,4 @@ void main() {
     home: HomeScreen(),
   ));
 }
+

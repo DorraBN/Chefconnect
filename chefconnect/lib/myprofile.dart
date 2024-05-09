@@ -125,345 +125,477 @@ Widget _buildResponseBox(String response) {
   );
 }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Profile'),
-      backgroundColor: Color.fromARGB(255, 244, 206, 54),
-      actions: [
-        PopupMenuButton<String>(
-          offset: Offset(0, 40),
-          onSelected: (value) {
-            if (value == 'settings') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsPage2()),
-              );
-            } else if (value == 'logout') {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Confirm Logout'),
-                    content: Text('Are you sure you want to logout?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacementNamed(context, '/');
-                        },
-                        child: Text('Logout'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-          },
-          itemBuilder: (BuildContext context) => [
-            PopupMenuItem<String>(
-              value: 'settings',
-              child: Container(
-                width: 120,
-                child: ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Settings'),
-                  contentPadding: EdgeInsets.zero,
+   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile'),
+        backgroundColor: Color.fromARGB(255, 244, 206, 54),
+        actions: [
+          PopupMenuButton<String>(
+            offset: Offset(0, 40),
+            onSelected: (value) {
+              if (value == 'settings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage2()),
+                );
+              } else if (value == 'logout') {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Confirm Logout'),
+                      content: Text('Are you sure you want to logout?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          child: Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<String>(
+                value: 'settings',
+                child: Container(
+                  width: 120,
+                  child: ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ),
               ),
-            ),
-            PopupMenuItem<String>(
-              value: 'logout',
-              child: Container(
-                width: 120,
-                child: ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text('Log out'),
-                  contentPadding: EdgeInsets.zero,
+              PopupMenuItem<String>(
+                value: 'logout',
+                child: Container(
+                  width: 120,
+                  child: ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Log out'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-    body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-     Container(
-  margin: EdgeInsets.only(bottom: 10, top: 0), 
-  width: double.infinity,
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
-    ),
-    borderRadius: BorderRadius.only(
-      bottomLeft: Radius.circular(50),
-      bottomRight: Radius.circular(50),
-    ),
-  ),
-  child: SizedBox(
-    width: double.infinity,
-    height: 150,
-    child: Stack(
-      fit: StackFit.expand,
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: 10), 
-          decoration: const BoxDecoration(
-            color: Colors.black,
-            shape: BoxShape.circle,
-          ),
-          child: imageUrl != null
-              ? CircleAvatar(
-                  radius: 15, 
-                  backgroundImage: NetworkImage(imageUrl!),
-                )
-              : null,
-        ),
-        Positioned(
-          bottom: 0, 
-          right: 150, 
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            child: Container(
-              margin: const EdgeInsets.all(8.0),
-              decoration: const BoxDecoration(
-                color: Colors.green,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
-           SizedBox(height: 16),
-                Text(
-                  fullName ?? 'Full Name',
-                  style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
-                ),
-          SizedBox(height: 16),
-          Text(
-            email ?? 'Email',
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _ProfileInfoItem(title: 'Posts', value: 10),
-              _ProfileInfoItem(title: 'Followers', value: 100),
-              _ProfileInfoItem(title: 'Following', value: 50),
             ],
           ),
-          SizedBox(height: 16),
-          Text(
-            'Food Preferences & Restrictions',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          Divider(
-            color: Colors.black,
-            thickness: 1,
-          ),
-          if (allergies.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: _groupAllergiesByQuestion(allergies, questions).map((group) {
-                      String question = group['question'];
-                      List<String> responses = group['responses'];
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, left: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              question,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: responses.map((response) => Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                child: _buildResponseBox(response),
-                              )).toList(),
-                            ),
-                          ],
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 10, top: 0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color.fromARGB(255, 114, 242, 108), Color.fromARGB(255, 244, 207, 84)],
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(50),
+                  bottomRight: Radius.circular(50),
+                ),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 150,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: imageUrl != null
+                          ? CircleAvatar(
+                              radius: 15,
+                              backgroundImage: NetworkImage(imageUrl!),
+                            )
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 150,
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        child: Container(
+                          margin: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )
-          else
+            ),
+            SizedBox(height: 16),
             Text(
-              'Aucune allergie',
+              fullName ?? 'Full Name',
+              style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            Text(
+              email ?? 'Email',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _ProfileInfoItem(title: 'Posts', value: 10),
+                _ProfileInfoItem(title: 'Followers', value: 100),
+                _ProfileInfoItem(title: 'Following', value: 50),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Food Preferences & Restrictions',
+              textAlign: TextAlign.start,
               style: TextStyle(
-                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
-          SizedBox(height: 16),
-          Text(
-            'Posts',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            Divider(
+              color: Colors.black,
+              thickness: 1,
             ),
-          ),
-          SizedBox(height: 16),
-          isLoading
-              ? Center(child: CircularProgressIndicator())
-              : StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+            if (allergies.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: _groupAllergiesByQuestion(allergies, questions).map((group) {
+                        String question = group['question'];
+                        List<String> responses = group['responses'];
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        DocumentSnapshot document = snapshot.data!.docs[index];
-                        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                        FeedItem item = FeedItem(
-                          title: data['title'],
-                          content: data['content'],
-                          imageUrl: data['imageUrl'],
-                          ingredients: data['ingredients'] ?? "",
-                          instructions: data['instructions'] ?? "",
-                          user: UserInfo(fullName ?? "", email ?? "", imageUrl ?? ""),
-                        );
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(bottom: 8.0, left: 10.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                question,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 4),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _AvatarImage(item.user.imageUrl),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: RichText(
-                                                overflow: TextOverflow.ellipsis,
-                                                text: TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: fullName ?? '',
-                                                      style: const TextStyle(
-                                                          fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
-                                                    ),
-                                                    TextSpan(
-                                                      text: fullName != null ? " @$fullName" : '',
-                                                      style: Theme.of(context).textTheme.subtitle1,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
-                                            const Padding(
-                                              padding: EdgeInsets.only(left: 8.0),
-                                              child: Icon(Icons.more_horiz),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-                                        if (item.content != null) Text(item.content!),
-                                        if (item.imageUrl != null)
-                                          Container(
-                                            height: 200,
-                                            margin: const EdgeInsets.only(top: 8.0),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8.0),
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(item.imageUrl!),
-                                              ),
-                                            ),
-                                          ),
-                                        SizedBox(height: 8),
-                                        if (item.title != null)
-                                          Text(
-                                            item.title!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                        if (item.ingredients.isNotEmpty)
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Ingrédients:",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              for (String ingredient in item.ingredients.split(','))
-                                                Text("- $ingredient"),
-                                            ],
-                                          ),
-                                        _ActionsRow(),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                children: responses.map((response) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: _buildResponseBox(response),
+                                )).toList(),
                               ),
                             ],
                           ),
                         );
-                      },
-                    );
-                  },
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-        ],
+              )
+            else
+              Text(
+                'Aucune allergie',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            SizedBox(height: 16),
+            Text(
+              'Posts',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: email).snapshots(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              DocumentSnapshot document = snapshot.data!.docs[index];
+                              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                              FeedItem item = FeedItem(
+                                title: data['title'] ?? '',
+                                content: data['content'] ?? '',
+                                imageUrl: data['imageUrl'] ?? '',
+                                ingredients: data['ingredients'] ?? "",
+                                instructions: data['instructions'] ?? "",
+                                user: UserInfo(fullName ?? "", email ?? "", imageUrl ?? ""),
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _AvatarImage(item.user.imageUrl),
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    child: RichText(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      text: TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text: fullName ?? '',
+                                                            style: const TextStyle(
+                                                                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                                                          ),
+                                                          TextSpan(
+                                                            text: fullName != null ? " @$fullName" : '',
+                                                            style: Theme.of(context).textTheme.subtitle1,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(left: 8.0),
+                                                    child: Icon(Icons.more_horiz),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              if (item.content != null) Text(item.content!),
+                                              if (item.imageUrl != null)
+                                                Container(
+                                                  height: 200,
+                                                  margin: const EdgeInsets.only(top: 8.0),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(8.0),
+                                                    image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(item.imageUrl!),
+                                                    ),
+                                                  ),
+                                                ),
+                                              SizedBox(height: 8),
+                                              if (item.title != null)
+                                                Text(
+                                                  item.title!,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              if (item.ingredients.isNotEmpty)
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Ingrédients:",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    for (String ingredient in item.ingredients.split(','))
+                                                      Text("- $ingredient"),
+                                                  ],
+                                                ),
+                                              _ActionsRow(),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance.collection('partage').where('currentUserEmail', isEqualTo: email).snapshots(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              DocumentSnapshot document = snapshot.data!.docs[index];
+                              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                              String? authorName = data['authorName'] ?? '';
+                              String? authorEmail = data['authorEmail'] ?? '';
+                              String? authorImageUrl = data['authorImageUrl'] ?? '';
+                              FeedItem item = FeedItem(
+                                title: data['title'] ?? '',
+                                content: data['content'] ?? '',
+                                imageUrl: data['imageUrl'] ?? '',
+                                ingredients: data['ingredients'] ?? "",
+                                instructions: data['instructions'] ?? "",
+                                user: UserInfo(authorName ?? "", authorEmail ?? "", authorImageUrl ?? ""),
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Shared Post',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    child: RichText(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      text: TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text: authorName ?? '',
+                                                            style: const TextStyle(
+                                                                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                                                          ),
+                                                          TextSpan(
+                                                            text: authorEmail != null ? " <$authorEmail>" : '',
+                                                            style: Theme.of(context).textTheme.subtitle1,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text('· 5m', style: Theme.of(context).textTheme.subtitle1),
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(left: 8.0),
+                                                    child: Icon(Icons.more_horiz),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              if (item.content != null) Text(item.content!),
+                                              if (item.imageUrl != null)
+                                                Container(
+                                                  height: 200,
+                                                  margin: const EdgeInsets.only(top: 8.0),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(8.0),
+                                                    image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(item.imageUrl!),
+                                                    ),
+                                                  ),
+                                                ),
+                                              SizedBox(height: 8),
+                                              if (item.title != null)
+                                                Text(
+                                                  item.title!,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              if (item.ingredients.isNotEmpty)
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Ingrédients:",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    for (String ingredient in item.ingredients.split(','))
+                                                      Text("- $ingredient"),
+                                                  ],
+                                                ),
+                                              _ActionsRow(),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-}
+
 class _TopPortion extends StatelessWidget {
   final String? imageUrl;
   const _TopPortion({Key? key, this.imageUrl}) : super(key: key);
