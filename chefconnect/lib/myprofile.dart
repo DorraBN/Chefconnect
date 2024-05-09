@@ -576,7 +576,7 @@ class _ActionsRow extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.favorite_border),
               onPressed: () {
-                // Handle like button pressed
+               
               },
             ),
             SizedBox(width: 5),
@@ -593,7 +593,7 @@ class _ActionsRow extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.comment),
               onPressed: () {
-                // Handle comment button pressed
+              
               },
             ),
             SizedBox(width: 5),
