@@ -10,6 +10,7 @@ import 'package:chefconnect/khedmet%20salma/Post.dart';
 import 'package:chefconnect/khedmet%20salma/RecipeDetails.dart';
 import 'package:chefconnect/khedmet%20salma/SearchPage.dart';
 import 'package:chefconnect/khedmet%20salma/styles/app_colors.dart';
+import 'package:chefconnect/notification.dart';
 import 'package:chefconnect/wiem/pages/models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -726,7 +727,9 @@ class UserInfo {
 class ProfilePage2 extends StatefulWidget {
   final Person person;
 
+  // Modifiez le constructeur pour qu'il soit correctement défini
   ProfilePage2({Key? key, required this.person}) : super(key: key);
+
 
   @override
   _ProfilePage2State createState() => _ProfilePage2State();

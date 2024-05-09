@@ -1,6 +1,7 @@
 import 'package:chefconnect/khedmet%20salma/ChatHome.dart';
 import 'package:chefconnect/myprofile.dart';
 import 'package:chefconnect/newpost.dart';
+import 'package:chefconnect/notification.dart';
 import 'package:chefconnect/wiem/pages/screens/favorite_screen.dart';
 import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     const ChatHome(),
     const NewPostPage(),
     const FavoriteRecipesScreen(),
-    const Scaffold(),
+    NotificationsPage(),
     const ProfilePage1(),
   ];
 

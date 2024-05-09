@@ -1,10 +1,6 @@
-import 'package:chefconnect/myprofile.dart';
-
-import 'package:chefconnect/newpost.dart';
-import 'package:chefconnect/wiem/pages/screens/home_screen.dart';
-import 'package:chefconnect/wiem/pages/widgets/favorite_api_recipes.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'ChatScreen.dart';
 
@@ -13,639 +9,187 @@ class ChatHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.green,
       body: SafeArea(
         child: SingleChildScrollView(
-        
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Messages',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Quicksand',
+                          fontSize: 30,
+                          color: Colors.white),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
             Padding(
-               padding: EdgeInsets.all(16.0),
-           child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Messages',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: ('Quicksand'),
-                      fontSize: 30,
-                      color: Colors.white),
-                ),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 36,
-                                 ),
-                    ),
-                  ],
+  padding: EdgeInsets.all(16.0),
+  child: Text(
+    'R E C E N T',
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: 14, // Réduisez la taille de police ici
+    ),
+  ),
+),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: SizedBox(
+                  height: 110,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection('following').where('follower', isEqualTo: currentUser!.email).snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return SizedBox(); // Si pas de données, retourne un conteneur vide
+                      }
+                      List<DocumentSnapshot> following = snapshot.data!.docs;
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: following.length,
+                        itemBuilder: (context, index) {
+                          var user = following[index].data() as Map<String, dynamic>;
+                          var followingUser = user['following']; // Accédez à l'attribut 'following'
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(user['photoURL'] ?? ''), // Vérifie si l'URL de l'image est null
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                followingUser ?? '', // Affiche le contenu de l'attribut 'following'
+                                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold,),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-            SizedBox(
-              height: 5,
-            ),
-         Padding (    padding: EdgeInsets.all(16.0),
-          child:   Text(
-              'R E C E N T',
-              style: TextStyle(
-                color: Colors.white,
+              SizedBox(
+                height: 20,
               ),
-            ),
-         ),
-            SizedBox(
-              height: 15,
-            ),
-           Padding(
-         padding: EdgeInsets.only(left: 16.0),
-           child:  SizedBox(
-              height: 110,
-              
-              child: ListView(scrollDirection: Axis.horizontal, children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          Image.asset('../../assets/image1.png').image,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Barry',
-                      style: TextStyle(color: Colors.black, fontSize: 18,fontWeight: FontWeight.bold,),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          Image.asset('../../assets/image22.png').image,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Perez',
-                      style: TextStyle(color: Colors.black, fontSize: 18,fontWeight: FontWeight.bold,),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          Image.asset('../../assets/image33.png').image,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Alvin',
-                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold,),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          Image.asset('../../assets/image44.png').image,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Dan',
-                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold,),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          Image.asset('../../assets/image55.png').image,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Fresh',
-                      
-                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold,),
-                    )
-                  ],
-                ),
-              ]),
-            ),  
-           ),
-        
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              height: 555,
-              width: double.infinity,
-              decoration: const BoxDecoration(
+              Container(
+                height: 555,
+                width: double.infinity,
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50),
-                  )),
-              child: ListView(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChatScreen()));
-                    },
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                Image.asset('../../assets/chat111.png').image,
+                  ),
+                ),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('following').where('following', isEqualTo: currentUser!.email).snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return SizedBox(); // Si pas de données, retourne un conteneur vide
+                    }
+                    List<DocumentSnapshot> followers = snapshot.data!.docs;
+                    return ListView.builder(
+                      itemCount: followers.length,
+                      itemBuilder: (context, index) {
+                        var user = followers[index].data() as Map<String, dynamic>;
+                        var followerUser = user['follower']; // Accédez à l'attribut 'follower'
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ChatScreen()),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 26.0, top: 35, right: 10),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(user['photoURL'] ?? ''), // Vérifie si l'URL de l'image est null
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          followerUser ?? '', // Affiche le contenu de l'attribut 'follower'
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Quicksand',
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 100,
+                                        ),
+                                        Text(
+                                          'Follower', // Vous pouvez ajouter un indicateur ici pour distinguer les followers des followings
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    // Ajoutez ici d'autres informations sur les followers si nécessaire
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Danny Hopkins',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                       fontWeight: FontWeight.bold,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 17),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                  ),
-                                  Text(
-                                    '08:43',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'How are you doing?',
-                                style: TextStyle(
-                                  color: Colors.black,
-                           
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat222.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Bobby LangFod',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: ('Quicksand'),
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                ),
-                                Text(
-                                  'Tue',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Will do,thank you',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat333.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'William Wiles',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: ('Quicksand'),
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  'Sun',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Goodnight',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat555.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: ('Quicksand'),
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black,
-                                ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Do you know a method to make a crea..",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat666.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: ('Quicksand'),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Hello , how have you been ?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat777.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: ('Quicksand'),
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Hello , how have you been ?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat777.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: ('Quicksand'),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Hello , how have you been ?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat777.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: ('Quicksand'),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Hello , how have you been ?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              Image.asset('../../assets/chat777.png').image,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'James Edlen',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: ('Quicksand'),
-                                      fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                ),
-                                Text(
-                                  '23 Mar',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Hello , how have you been ?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      ),
-      
     );
   }
 }
- 
