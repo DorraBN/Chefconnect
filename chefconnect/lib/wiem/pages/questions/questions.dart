@@ -287,10 +287,7 @@ class ConcentricAnimationOnboarding extends StatelessWidget {
   Widget build(BuildContext context) {
        _cachedEmail = userEmail;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Onboarding'),
-        backgroundColor: Colors.blue, // Choisissez la couleur de l'AppBar selon vos préférences
-      ),
+    
       body: OnboardingPagePresenter(
         pages: [
           OnboardingPageModel(

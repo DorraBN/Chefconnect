@@ -307,39 +307,29 @@ class _RegisterState extends State<Register> {
                             return null;
                           },
                         ),
-SizedBox(height: 20.0,width: 26,),
 Container(
+  height: 20.0,
+  width: 26.0,
   margin: EdgeInsets.symmetric(horizontal: 20.0),
   child: TextFormField(
-    readOnly: true, // Rend le champ de texte en lecture seule
     controller: _imageUrlController,
-    onTap: () async {
-      final pickedImage = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-      );
-      if (pickedImage != null) {
-        setState(() {
-          _imageUrlController.text = pickedImage.path;
-        });
-      }
-    },
     decoration: InputDecoration(
-      labelText: 'Profile image',
-      labelStyle: TextStyle(color: Colors.black), // Ajout du style pour le label
+      labelText: 'Profile image URL', // Modifiez le libellé pour indiquer que l'utilisateur doit saisir une URL
+      labelStyle: TextStyle(color: Colors.black),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0), // Modification du rayon du bord
+        borderRadius: BorderRadius.circular(50.0),
         borderSide: BorderSide(color: Colors.black),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0), // Modification du rayon du bord
+        borderRadius: BorderRadius.circular(50.0),
         borderSide: BorderSide(color: Colors.black),
       ),
-      hintText: 'Tap to take a picture',
+      hintText: 'Enter image URL', // Modifiez le texte d'aide pour indiquer à l'utilisateur ce qu'il doit saisir
       filled: true,
       fillColor: _imageUrlController.text.isEmpty
           ? Colors.white.withOpacity(0.13)
           : Color.fromARGB(255, 55, 201, 29).withOpacity(0.13),
-      prefixIcon: Icon(Icons.camera_alt, color: Colors.black), // Utilisez l'icône de la caméra comme préfixe
+      prefixIcon: Icon(Icons.link, color: Colors.black),
       hintStyle: TextStyle(color: Colors.black),
     ),
     style: TextStyle(color: Colors.black),

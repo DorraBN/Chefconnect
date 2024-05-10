@@ -89,6 +89,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           return ListTile(
                             title: Row(
                               children: [
+                                
                                 Text(_followers[index]),
                                 Spacer(),
                                 ElevatedButton(

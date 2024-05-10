@@ -1,7 +1,7 @@
 import 'package:chefconnect/wiem/pages/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:chefconnect/firebaseAuthImp.dart';
@@ -46,24 +46,24 @@ class _LoginPageState extends State<LoginPage> {
             
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
+                image: AssetImage("../../assets/R5.png"), // Remplacez "assets/login_background.jpeg" par le chemin de votre image
                 fit: BoxFit.cover,
               ),
             ),
             child: Container(),
           ),
-          Positioned(
-            left: 20,
-            bottom: 20,
-            top: 590,
-            child: IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              color: Colors.black,
-            ),
-          ),
+          // Positioned(
+          //   left: 20,
+          //   bottom: 20,
+          //   top: 590,
+          //   child: IconButton(
+          //     icon: Icon(Icons.home),
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //     color: Colors.black,
+          //   ),
+          // ),
           Center(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 50.0),
@@ -182,7 +182,7 @@ Container(
                             child: Text(
                               'Forgot Password?',
                               style: TextStyle(
-                                color: Colors.green,
+                                color: Color.fromARGB(255, 0, 55, 220),
                                 fontWeight: FontWeight.bold
                               ),
                             ),
@@ -190,26 +190,34 @@ Container(
                         ],
                       ),
                       SizedBox(height: 16.0),
-                      ElevatedButton(
-                        onPressed: _isLoading ? null : _signIn,
-                        child: _isLoading
-                            ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                            : Text(
-                                'Login',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 20.0),
-                        ),
-                      ),
+                      GestureDetector(
+  onTap: _isLoading ? null : _signIn,
+  child: Container(
+    height: 40,
+    margin: EdgeInsets.symmetric(horizontal: 70.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(50),
+      gradient: LinearGradient(
+        colors: [Colors.orange, Colors.green],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
+    ),
+    child: Center(
+      child: _isLoading
+          ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+          : Text(
+              'Login',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+    ),
+  ),
+),
+
                       SizedBox(height: 16.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -236,7 +244,7 @@ Container(
   ),
   label: Text('Login with Google'),
   style: ElevatedButton.styleFrom(
-    foregroundColor: Colors.white, backgroundColor: Colors.red, 
+    foregroundColor: Colors.white, backgroundColor: Color.fromARGB(255, 244, 67, 54), 
   ),
 )
 
@@ -262,9 +270,9 @@ Container(
                               ),
                               Text(
                                 "Register",
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 55, 220)),
                               ),
-                              Icon(Icons.arrow_forward, color: Colors.green),
+                              Icon(Icons.arrow_forward, color: Color.fromARGB(255, 0, 55, 220)),
                             ],
                           ),
                         ),

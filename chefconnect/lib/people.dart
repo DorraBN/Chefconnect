@@ -14,7 +14,7 @@ class HeroListPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
           
-            Text('People'),
+            Text('Friends'),
             
             IconButton(
               icon: Icon(Icons.person),
@@ -70,7 +70,7 @@ class HeroListPage extends StatelessWidget {
                                       style: ButtonStyle(
                                         backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                                       ),
-                                      child: Text('Follow'),
+                                      child: Text('Friend'),
                                     ),
                                   ),
                                 ),
@@ -92,17 +92,14 @@ class HeroListPage extends StatelessWidget {
 }
 
 final List<String> _images = [
-  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-  'https://th.bing.com/th/id/OIP.FkjJIndgbxyQfVJTRbwJ6wHaHa?rs=1&pid=ImgDetMain',
-  'https://th.bing.com/th/id/OIP.OIFJfeW8fJlpCXuaQubTgwAAAA?w=440&h=661&rs=1&pid=ImgDetMain',
-  'https://th.bing.com/th/id/OIP.32f9nJbOSCIrZ1r8d_uuDwHaJ4?rs=1&pid=ImgDetMain',
-  'https://th.bing.com/th/id/OIP.68Vh73rymoLkudcERv9EJgHaIE?rs=1&pid=ImgDetMain',
+  'https://thumbs.dreamstime.com/b/verticale-de-femme-de-chef-dans-la-cuisine-23037212.jpg',
+  'https://th.bing.com/th/id/OIP.OqgcKqx97M8vVbuX1ZmjDQHaHW?rs=1&pid=ImgDetMain'
+  '../../assets/justin.png'
 ];
 
 final List<String> _names = [
-  'Jill Doe',
-  'Jane Doe',
-  'Alice Smith',
-  'Bob Johnson',
-  'Emily Brown',
+  'jane austen',
+  'mark doe',
+  'justin jill',
+  
 ];

@@ -199,7 +199,7 @@ Widget _buildResponseBox(String response) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: 10, top: 0),
+              margin: EdgeInsets.only(bottom: 10, top: 2),
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -212,7 +212,7 @@ Widget _buildResponseBox(String response) {
               ),
               child: SizedBox(
                 width: double.infinity,
-                height: 150,
+                height: 180,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
