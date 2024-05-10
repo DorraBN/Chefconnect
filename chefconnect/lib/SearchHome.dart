@@ -39,8 +39,33 @@ class Person {
     required this.imageUrl,
   });
 }
+class Post {
+  final String authorImageUrl; // Ajouter la propriété authorImageUrl
+
+  // Autres propriétés de Post
+  final String email;
+  final String imageUrl;
+  final String ingredients;
+  final String instructions;
+  final String title;
+  int likes;
+  int comments;
+
+  Post({
+    required this.authorImageUrl, // Assurez-vous que la propriété est incluse dans le constructeur
+    required this.email,
+    required this.imageUrl,
+    required this.ingredients,
+    required this.instructions,
+    required this.title,
+     required this.likes, required this.comments,
+  });
+
+  // Reste de la classe...
+}
 
 class _SearchHome extends State<SearchHome> {
+  
   TextEditingController searchController = TextEditingController();
   static List previousSearchs = [];
   bool isLiked = false; // Initialize liked state
@@ -48,19 +73,44 @@ class _SearchHome extends State<SearchHome> {
   late List<Person> people = [];
   Icon favorite_icon = new Icon(IconlyLight.heart);
   List<Post> posts = [
-    Post(
-      username: "James Elden",
-      caption: "Caption for post 1",
-      imageUrl: "../../assets/pancakes.jpeg",
-      likes: 123,
-      comments: 20,
-      date: DateTime.now(),
-      userProfileImageUrl: "../../assets/chat777.png",
-    ),
+   
+    
   ];
+ Future<void> fetchPostsData() async {
+  try {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('posts').get();
+
+    final List<Post> loadedPosts = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Post(
+       
+        imageUrl: data['imageUrl'] ?? 'blob:http://localhost:55653/62f50f4e-45d9-41ae-8641-a6186aa720ad',
+       
+       
+        likes: data['likes'] ?? 0,
+        comments: data['comments'] ?? 0,
+        authorImageUrl: data['authorImageUrl'] ?? 'blob:http://localhost:55653/62f50f4e-45d9-41ae-8641-a6186aa720ad', // Utilisez la valeur de authorImageUrl si elle est disponible
+        email: data['email'] ?? '', // Assurez-vous d'inclure la propriété email dans la création de l'objet Post
+        ingredients: data['ingredients'] ?? '', // Assurez-vous d'inclure la propriété ingredients dans la création de l'objet Post
+        instructions: data['instructions'] ?? '', // Assurez-vous d'inclure la propriété instructions dans la création de l'objet Post
+        title: data['title'] ?? '', // Assurez-vous d'inclure la propriété title dans la création de l'objet Post
+      );
+    }).toList();
+
+    setState(() {
+      posts = loadedPosts;
+    });
+  } catch (error) {
+    print('Error fetching posts: $error');
+  }
+}
+
+
   @override
   void initState() {
     super.initState();
+     fetchPostsData(); 
     fetchPeopleData();
   }
 
@@ -343,16 +393,16 @@ class _SearchHome extends State<SearchHome> {
                             children: [
                               Row(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage:
-                                        AssetImage(post.userProfileImageUrl),
-                                  ),
+                                 CircleAvatar(
+  radius: 20,
+  backgroundImage: NetworkImage(post.authorImageUrl),
+),
+
                                   SizedBox(width: 10),
-                                  Text(post.username),
+                                  Text(post.email),
                                   Spacer(),
                                   Text(
-                                    "${post.date.day}/${post.date.month}/${post.date.year}",
+                                    "${post.title}",
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
@@ -360,19 +410,20 @@ class _SearchHome extends State<SearchHome> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 10),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  post.imageUrl,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                           SizedBox(height: 10),
+ClipRRect(
+  borderRadius: BorderRadius.circular(10),
+  child: Image.network(
+    post.imageUrl,
+    width: MediaQuery.of(context).size.width,
+    height: 200,
+    fit: BoxFit.cover,
+  ),
+),
+
                               SizedBox(height: 10),
                               Text(
-                                post.caption,
+                                post.ingredients,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 10),

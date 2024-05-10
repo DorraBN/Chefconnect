@@ -14,6 +14,6 @@ class Post {
     required this.likes,
     required this.comments,
     required this.date,
-    required this.userProfileImageUrl,
+    required this.userProfileImageUrl, required authorImageUrl, required email, required ingredients,
   });
 }
