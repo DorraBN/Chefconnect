@@ -31,7 +31,7 @@ class SearchHome extends StatefulWidget {
 class Person {
   final String name;
   final String email;
-  final String imageUrl; // Ajouter une nouvelle propriété pour l'URL de l'image
+  final String imageUrl; 
 
   Person({
     required this.name,
@@ -40,9 +40,8 @@ class Person {
   });
 }
 class Post {
-  final String authorImageUrl; // Ajouter la propriété authorImageUrl
+  final String authorImageUrl; 
 
-  // Autres propriétés de Post
   final String email;
   final String imageUrl;
   final String ingredients;
@@ -52,7 +51,7 @@ class Post {
   int comments;
 
   Post({
-    required this.authorImageUrl, // Assurez-vous que la propriété est incluse dans le constructeur
+    required this.authorImageUrl, 
     required this.email,
     required this.imageUrl,
     required this.ingredients,
@@ -61,14 +60,14 @@ class Post {
      required this.likes, required this.comments,
   });
 
-  // Reste de la classe...
+
 }
 
 class _SearchHome extends State<SearchHome> {
   
   TextEditingController searchController = TextEditingController();
   static List previousSearchs = [];
-  bool isLiked = false; // Initialize liked state
+  bool isLiked = false; 
   bool isCommentVisible = true;
   late List<Person> people = [];
   Icon favorite_icon = new Icon(IconlyLight.heart);
@@ -90,11 +89,10 @@ class _SearchHome extends State<SearchHome> {
        
         likes: data['likes'] ?? 0,
         comments: data['comments'] ?? 0,
-        authorImageUrl: data['authorImageUrl'] ?? 'blob:http://localhost:55653/62f50f4e-45d9-41ae-8641-a6186aa720ad', // Utilisez la valeur de authorImageUrl si elle est disponible
-        email: data['email'] ?? '', // Assurez-vous d'inclure la propriété email dans la création de l'objet Post
-        ingredients: data['ingredients'] ?? '', // Assurez-vous d'inclure la propriété ingredients dans la création de l'objet Post
-        instructions: data['instructions'] ?? '', // Assurez-vous d'inclure la propriété instructions dans la création de l'objet Post
-        title: data['title'] ?? '', // Assurez-vous d'inclure la propriété title dans la création de l'objet Post
+        authorImageUrl: data['authorImageUrl'] ?? 'blob:http://localhost:55653/62f50f4e-45d9-41ae-8641-a6186aa720ad',
+        ingredients: data['ingredients'] ?? '',
+        instructions: data['instructions'] ?? '', 
+        title: data['title'] ?? '', 
       );
     }).toList();
 
@@ -679,12 +677,12 @@ ClipRRect(
 
   Future<void> saveLikeInfo(int recipeId) async {
     try {
-      // Get the user's email
+      
       String? userEmail = await getUserEmail();
 
-      // Check if the user email is not null
+    
       if (userEmail != null) {
-        // If not null, save the like info to Firestore
+     
         await FirebaseFirestore.instance.collection("favorites").add({
           'recipeId': recipeId,
           'userEmail': userEmail,
@@ -700,12 +698,11 @@ ClipRRect(
 
   Future<bool> isRecipeLikedByUser(int recipeId) async {
     try {
-      // Get the current user
+
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        // Check if a document exists in the Firestore collection
-        // where both the recipeId and the user's ID match
+      
         QuerySnapshot<Map<String, dynamic>> querySnapshot =
             await FirebaseFirestore.instance
                 .collection("favorites")
@@ -713,14 +710,14 @@ ClipRRect(
                 .where('userEmail', isEqualTo: user.email)
                 .get();
 
-        // If the document exists, the recipe is liked by the user
+        
         return querySnapshot.docs.isNotEmpty;
       } else {
-        // User is not authenticated
+        
         return false;
       }
     } catch (error) {
-      // Handle any errors
+   
       print('Error checking if recipe is liked: $error');
       return false;
     }
@@ -754,7 +751,6 @@ ClipRRect(
 
 
 
-// Modèle FeedItem
 class FeedItem {
   final String? title;
   final String? content;
@@ -766,7 +762,6 @@ class FeedItem {
   FeedItem({this.title, this.content, this.imageUrl, required this.ingredients, required this.instructions, required this.user});
 }
 
-// Modèle UserInfo
 class UserInfo {
   final String fullName;
   final String email;
@@ -778,7 +773,7 @@ class UserInfo {
 class ProfilePage2 extends StatefulWidget {
   final Person person;
 
-  // Modifiez le constructeur pour qu'il soit correctement défini
+  
   ProfilePage2({Key? key, required this.person}) : super(key: key);
 
 
@@ -793,7 +788,6 @@ class _ProfilePage2State extends State<ProfilePage2> {
   String? imageUrl;
   bool isLoading = true;
 
-  // Méthode pour obtenir l'utilisateur connecté
   Future<String?> getLoggedInUserEmail() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -803,13 +797,13 @@ class _ProfilePage2State extends State<ProfilePage2> {
     }
   }
 
-  // Méthode pour mettre à jour le statut de "friend" dans les préférences partagées
+
   Future<void> updateFriendStatus(bool isFollowing) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('${widget.person.email}_isFriend', isFollowing);
   }
 
-  // Méthode pour obtenir le statut de "friend" des préférences partagées
+
   Future<bool> getFriendStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('${widget.person.email}_isFriend') ?? false;
@@ -827,11 +821,10 @@ class _ProfilePage2State extends State<ProfilePage2> {
     });
   }
 
-  // Méthode pour charger les données utilisateur du profil consulté
   Future<void> _loadUserData() async {
     await Future.delayed(Duration(seconds: 2));
 
-    // Utiliser l'e-mail de la personne du profil
+
     String? currentUserEmail = widget.person.email;
     if (currentUserEmail != null) {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
@@ -882,10 +875,10 @@ class _ProfilePage2State extends State<ProfilePage2> {
                         onPressed: () {
                           setState(() {
                             isFollowing = !isFollowing;
-                            // Mettre à jour le statut de "friend" dans les préférences partagées
+                            
                             updateFriendStatus(isFollowing);
                             if (isFollowing) {
-                              // Ajouter l'e-mail du follower et du following dans la collection "following"
+                             
                               getLoggedInUserEmail().then((loggedInUserEmail) {
                                 if (loggedInUserEmail != null) {
                                   FirebaseFirestore.instance
@@ -897,7 +890,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                                 }
                               });
                             } else {
-                              // Supprimer le document de la collection "following"
+                              
                               getLoggedInUserEmail().then((loggedInUserEmail) {
                                 if (loggedInUserEmail != null) {
                                   FirebaseFirestore.instance
